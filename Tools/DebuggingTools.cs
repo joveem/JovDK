@@ -42,9 +42,10 @@ public static class DebuggingTools
 public static class GoodCollors
 {
 
-    static public string red = "#e11";
-    static public string yellow = "#bb0";
-    static public string green = "#0b0";
+    static public string red = "#e00";
+    static public string orange = "#ea0";
+    static public string yellow = "#aa0";
+    static public string green = "#0a0";
     static public string blue = "#00f";
     static public string pink = "#f0f";
 

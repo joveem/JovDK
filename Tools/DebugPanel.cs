@@ -13,10 +13,10 @@ public class DebugPanel : MonoBehaviour
 
     [Space(25)]
     [SerializeField]
-    private bool isShowingPanel = false;
+    bool isShowingPanel = false;
     [Space(10)]
-    [SerializeField]
-    private GameObject mainPanel;
+
+    [SerializeField] GameObject panelContainer;
 
     private void Awake()
     {
@@ -96,10 +96,10 @@ public class DebugPanel : MonoBehaviour
     private void ShowPanel()
     {
 
-        if (mainPanel != null)
+        if (panelContainer != null)
         {
 
-            mainPanel.SetActive(true);
+            panelContainer.SetActive(true);
 
             isShowingPanel = true;
 
@@ -109,10 +109,10 @@ public class DebugPanel : MonoBehaviour
     private void HidePanel()
     {
 
-        if (mainPanel != null)
+        if (panelContainer != null)
         {
 
-            mainPanel.SetActive(false);
+            panelContainer.SetActive(false);
 
             isShowingPanel = false;
 

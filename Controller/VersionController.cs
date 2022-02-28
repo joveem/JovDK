@@ -11,7 +11,6 @@ public class VersionController : MonoBehaviour
 
     public int gameVersionCode = 10;
 
-    public string _testCode = "0";
     public bool canLoadGame = false;
 
 

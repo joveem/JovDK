@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +11,14 @@ public class LanguageManager : MonoBehaviour
 
     public static LanguageManager instance;
 
+    public string selectedLanguage = "en-us";
+
     public Dictionary<string, string> dictionary;
+
+    public Language[] languagesList;
+
+    [SerializeField]
+    private LanguageSelector languageSelector;
 
     private void Awake()
     {
@@ -32,20 +40,65 @@ public class LanguageManager : MonoBehaviour
 
     }
 
+    private void Start()
+    {
+
+        if (!PlayerPrefs.HasKey("language"))
+        {
+
+            if (languageSelector != null)
+            {
+
+                languageSelector.ShowPanel();
+
+            }
+            else
+            {
+
+                DebugExtension.DevLogError("languageSelector IS NULL!");
+
+            }
+
+
+        }
+        else
+        {
+
+            SetLanguage(PlayerPrefs.GetString("language"));
+
+        }
+
+    }
+
+    public void SetLanguage(string _language)
+    {
+
+        PlayerPrefs.SetString("language", _language);
+        selectedLanguage = _language;
+        SetupDictionary();
+        ApplyCurrentLanguage();
+
+    }
+
     public void SetupDictionary()
     {
 
         dictionary = new Dictionary<string, string>();
 
 
-        string _filePath = "Assets/_Game/Editor/Resources/Locations/pt-br.txt";
+        //string _filePath = "Assets/_Game/Resources/Locations/" + selectedLanguage + ".txt";
 
-        string[] _fileTextLines;
+        //TextAsset _textAsset = Resources.Load<TextAsset>("Locations/" + selectedLanguage + ".txt");
+        TextAsset _textAsset = Resources.Load<TextAsset>("Locations/" + selectedLanguage);
 
+        string[] _fileTextLines = _textAsset.text.Split(
+            new string[] { "\r\n", "\r", "\n" },
+            StringSplitOptions.None
+        );
 
-        StreamReader reader = new StreamReader(_filePath);
+        //StreamReader reader = new StreamReader(_filePath);
 
-        _fileTextLines = File.ReadAllLines(_filePath);
+        //_fileTextLines = File.ReadAllLines(_filePath);
 
         foreach (string _line in _fileTextLines)
         {
@@ -57,6 +110,23 @@ public class LanguageManager : MonoBehaviour
                 string _textValue = _line.Substring(_line.IndexOf('=') + 1, _line.Length - (_line.IndexOf('=') + 1));
 
                 dictionary.Add(_textId, _textValue);
+
+            }
+
+        }
+
+    }
+
+    private void ApplyCurrentLanguage()
+    {
+
+        foreach (MultiLanguageText _text in FindObjectsOfTypeAll(typeof(MultiLanguageText)) as MultiLanguageText[])
+        {
+
+            if (_text != null)
+            {
+
+                _text.ApplyText();
 
             }
 
@@ -109,6 +179,10 @@ public class LanguageManager : MonoBehaviour
             DebugExtension.DevLogWarning("LanguageManager instance is NULL!");
 
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        //_textValue = "<color=#f0f>?</color>" + _textValue;
+#endif
 
         return _textValue;
 

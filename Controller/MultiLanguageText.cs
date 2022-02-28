@@ -16,6 +16,13 @@ public class MultiLanguageText : MonoBehaviour
     private void Start()
     {
 
+        ApplyText();
+
+    }
+
+    public void ApplyText()
+    {
+
         if (textId == "undefined")
         {
             DebugExtension.DevLogWarning("undefined textId on object \"" + gameObject.name + "\"!");
@@ -26,8 +33,7 @@ public class MultiLanguageText : MonoBehaviour
         else if (GetComponent<TextMeshProUGUI>() != null)
             GetComponent<TextMeshProUGUI>().text = LanguageManager.GetTextById(textId);
         else
-            DebugExtension.DevLogWarning("undefined TEXT COMPONENT on object \"" + gameObject.name + "\"!");
-
+            DebugExtension.DevLogError("undefined Text / TextMeshProUGUI COMPONENT on object \"" + gameObject.name + "\"!");
 
     }
 

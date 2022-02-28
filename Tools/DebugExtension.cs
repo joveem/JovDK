@@ -10,7 +10,7 @@ namespace JovDK.Debug
         {
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        UnityEngine.Debug.Log("- <color=#f0f>DEVLOG</color> | " + _message.DebugText());
+            UnityEngine.Debug.Log("- <color=#f0f>DEVLOG</color> | " + _message.DebugText());
 #endif
 
         }
@@ -18,7 +18,7 @@ namespace JovDK.Debug
         {
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        UnityEngine.Debug.LogWarning("- <color=#f0f>DEVLOG</color> | " + _message.DebugText());
+            UnityEngine.Debug.LogWarning("- <color=#f0f>DEVLOG</color> | " + _message.DebugText());
 #endif
 
         }
@@ -26,7 +26,7 @@ namespace JovDK.Debug
         {
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        UnityEngine.Debug.LogError("- <color=#f0f>DEVLOG</color> | " + _message.DebugText());
+            UnityEngine.Debug.LogError("- <color=#f0f>DEVLOG</color> | " + _message.DebugText());
 #endif
 
         }
@@ -36,11 +36,13 @@ namespace JovDK.Debug
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 
-        StackFrame _stackFrame = new StackFrame(2, true);
-        System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
+            StackFrame _stackFrame = new StackFrame(2, true);
+            System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
 
-        return _methodInfo.ReflectedType.FullName.ToColor(GoodCollors.yellow) + " | " + _stackFrame.GetMethod().Name.ToColor(GoodCollors.yellow) + " | " + _text;
+            return _methodInfo.ReflectedType.FullName.ToColor(GoodCollors.yellow) + " | " + _stackFrame.GetMethod().Name.ToColor(GoodCollors.yellow) + " | " + _text;
 
+#else
+        return "";
 #endif
 
         }

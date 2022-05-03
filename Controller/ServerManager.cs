@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using Newtonsoft.Json;
 
 using JovDK.Debug;
+using JovDK.Models;
 
 public class ServerManager : MonoBehaviour
 {

@@ -34,16 +34,24 @@ namespace JovDK.Debug
         static string DebugText(this string _text)
         {
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            string debugText = "";
+
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD && !UNITY_WEBGL)
 
             StackFrame _stackFrame = new StackFrame(2, true);
             System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
 
-            return _methodInfo.ReflectedType.FullName.ToColor(GoodCollors.yellow) + " | " + _stackFrame.GetMethod().Name.ToColor(GoodCollors.yellow) + " | " + _text;
+            debugText += _methodInfo.ReflectedType.FullName.ToColor(GoodCollors.yellow) + " | " + _stackFrame.GetMethod().Name.ToColor(GoodCollors.yellow) + " | ";
 
-#else
-        return "";
 #endif
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
+            debugText += _text;
+
+#endif
+
+            return debugText;
 
         }
     }

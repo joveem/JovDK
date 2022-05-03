@@ -10,7 +10,7 @@ using JovDK.Debug;
 public class Screenshot : MonoBehaviour
 {
     // Add a menu item named "Do Something" to MyMenu in the menu bar.
-    [MenuItem("MyMenu/SHOT!")]
+    [MenuItem("MyMenu/SHOT! #p")]
     static void DoSomething()
     {
 

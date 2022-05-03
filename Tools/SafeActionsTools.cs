@@ -13,101 +13,116 @@ namespace JovDK.SafeActions
 
     public static class SafeActionsTools
     {
-        // Start is called before the first frame update
+
+        public static void DoIfNull<T>(this T _object, Action _action, bool debugIfNotNull = true)
+        {
+
+            if (_object == null || _object.Equals(null))
+                _action();
+            else if (debugIfNotNull)
+                DebugExtension.DevLogWarning("<" + typeof(T) + ">" + (nameof(_object) + " IS NOT NULL!").ToColor(GoodCollors.orange));
+
+        }
+
+        public static void DoIfNotNull<T>(this T _object, Action _action)
+        {
+
+            if (_object != null && !_object.Equals(null))
+                _action();
+            else
+                DebugExtension.DevLogWarning("<" + typeof(T) + ">" + (nameof(_object) + " IS NULL!").ToColor(GoodCollors.orange));
+
+        }
+
+        public static void SetActiveIfNotNull<T>(this T _object, bool _value) where T : MonoBehaviour
+        {
+
+            _object.DoIfNotNull(() => _object.gameObject.SetActive(_value));
+
+        }
 
         public static void SetActiveIfNotNull(this GameObject _object, bool _value)
         {
 
-            if (_object != null)
-            {
-
-                _object.SetActive(_value);
-
-            }
-            else
-            {
-
-                // TODO: get original object property name
-                DebugExtension.DevLogError(nameof(_object) + " IS NULL!");
-
-            }
+            _object.DoIfNotNull(() => _object.SetActive(_value));
 
         }
 
         public static void SetActiveIfNotNull(this Transform _object, bool _value)
         {
 
-            if (_object != null)
-            {
-
-                _object.gameObject.SetActive(_value);
-
-            }
-            else
-            {
-
-                // TODO: get original object property name
-                DebugExtension.DevLogError(nameof(_object) + " IS NULL!");
-
-            }
+            _object.DoIfNotNull(() => _object.gameObject.SetActive(_value));
 
         }
 
-        public static void SetOnClickIfNotNull(this Button _button, Action _action)
+
+        public static bool TryGetComponent<T>(Component component, out T value) where T : Component
         {
 
-            if (_button != null)
+            value = null;
+
+            try
             {
 
-                if (_action != null)
-                {
-
-                    _button.onClick.AddListener(() =>
-                    {
-
-                        _action();
-
-                    });
-
-                }
-                else
-                {
-
-                    DebugExtension.DevLogError("_action IS NULL!");
-
-                }
-
+                value = component.GetComponent<T>();
 
             }
+            catch (System.Exception)
+            {
+
+                DebugExtension.DevLogWarning(("<" + typeof(T) + ">object NOT FOUND!").ToColor(GoodCollors.orange));
+
+            }
+
+            if (value != null)
+                return true;
             else
-            {
-
-                // TODO: get original object property name
-                DebugExtension.DevLogError(nameof(_button) + " IS NULL!");
-
-            }
+                return false;
 
         }
 
-        public static void DoIfNotNull(this object _object, Action _action)
+        public static bool TryFindGameObject<T>(out T value) where T : Component
         {
 
-            if (_object != null)
+            value = null;
+
+            try
             {
 
-                _action();
+                value = GameObject.FindObjectOfType<T>();
 
             }
+            catch (System.Exception)
+            {
+
+                DebugExtension.DevLogWarning(("<" + typeof(T) + "> object NOT FOUND!").ToColor(GoodCollors.orange));
+
+            }
+
+            if (value != null)
+                return true;
             else
-            {
-
-                DebugExtension.DevLogWarning((nameof(_object) + " IS NULL!").ToColor(GoodCollors.orange));
-
-            }
-
+                return false;
 
         }
 
+        #region Butons 
+        public static void SetOnClickIfNotNull(this Button _button, UnityEngine.Events.UnityAction _action)
+        {
+
+            _button.DoIfNotNull(() =>
+                _action.DoIfNotNull(() =>
+                    _button.onClick.AddListener(_action)));
+
+        }
+
+        public static void SetInteractableIfNotNull(this Button _button, bool _value)
+        {
+
+            _button.DoIfNotNull(() => _button.interactable = _value);
+
+        }
+        #endregion 
 
     }
 

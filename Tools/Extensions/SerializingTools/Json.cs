@@ -56,6 +56,13 @@ namespace JovDK.SerializingTools.Json
 
         }
 
+        public static T ConvertJsonObjectToObject<T>(object dynamicObject)
+        {
+
+            return ((Newtonsoft.Json.Linq.JObject)dynamicObject).ToObject<T>();
+
+        }
+
     }
 
 }

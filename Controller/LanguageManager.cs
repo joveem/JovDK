@@ -1,26 +1,24 @@
 using System;
-using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
+
+using TMPro;
 
 using JovDK.Debug;
+using JovDK.SafeActions;
+using JovDK.SerializingTools.Bson;
+using JovDK.SerializingTools.Json;
+
 
 public class LanguageManager : MonoBehaviour
 {
 
     public static LanguageManager instance;
 
-    public string selectedLanguage = "en-us";
-
-    public Dictionary<string, string> dictionary;
-
-    public Language[] languagesList;
-
-    [SerializeField]
-    private LanguageSelector languageSelector;
-
-    private void Awake()
+    public LanguageManager()
     {
 
         if (LanguageManager.instance == null)
@@ -36,6 +34,42 @@ public class LanguageManager : MonoBehaviour
 
         }
 
+    }
+
+
+    [Space(5), Header("[ Dependencies ]"), Space(10)]
+
+    bool dependencies;
+
+
+    [Space(5), Header("[ State ]"), Space(10)]
+
+    bool state;
+
+
+    [Space(5), Header("[ Parts ]"), Space(10)]
+
+    bool parts;
+
+
+    [Space(5), Header("[ Configs ]"), Space(10)]
+
+    bool configs;
+
+
+
+    public string selectedLanguage = "en-us";
+
+    public Dictionary<string, string> dictionary;
+
+    public Language[] languagesList;
+
+    [SerializeField]
+    private LanguageSelector languageSelector;
+
+    private void Awake()
+    {
+
         SetupDictionary();
 
     }
@@ -46,18 +80,18 @@ public class LanguageManager : MonoBehaviour
         if (!PlayerPrefs.HasKey("language"))
         {
 
-            if (languageSelector != null)
-            {
+            languageSelector.DoIfNotNull(
+                () => languageSelector.ShowPanel(),
+                () =>
+                {
 
-                languageSelector.ShowPanel();
+                    string debugText =
+                        "languageSelector IS NULL!"
+                        .ToColor(GoodCollors.orange);
 
-            }
-            else
-            {
+                    DebugExtension.DevLogWarning(debugText);
 
-                DebugExtension.DevLogError("languageSelector IS NULL!");
-
-            }
+                });
 
 
         }
@@ -85,20 +119,13 @@ public class LanguageManager : MonoBehaviour
 
         dictionary = new Dictionary<string, string>();
 
-
-        //string _filePath = "Assets/_Game/Resources/Locations/" + selectedLanguage + ".txt";
-
-        //TextAsset _textAsset = Resources.Load<TextAsset>("Locations/" + selectedLanguage + ".txt");
+        DebugExtension.DevLog("selectedLanguage = " + selectedLanguage);
         TextAsset _textAsset = Resources.Load<TextAsset>("Locations/" + selectedLanguage);
 
         string[] _fileTextLines = _textAsset.text.Split(
             new string[] { "\r\n", "\r", "\n" },
             StringSplitOptions.None
         );
-
-        //StreamReader reader = new StreamReader(_filePath);
-
-        //_fileTextLines = File.ReadAllLines(_filePath);
 
         foreach (string _line in _fileTextLines)
         {
@@ -120,15 +147,14 @@ public class LanguageManager : MonoBehaviour
     private void ApplyCurrentLanguage()
     {
 
-        foreach (MultiLanguageText _text in FindObjectsOfTypeAll(typeof(MultiLanguageText)) as MultiLanguageText[])
+        MultiLanguageText[] multiLanguageTextList =
+            Resources.FindObjectsOfTypeAll(typeof(MultiLanguageText)) as MultiLanguageText[];
+
+        foreach (MultiLanguageText _text in multiLanguageTextList)
         {
 
             if (_text != null)
-            {
-
                 _text.ApplyText();
-
-            }
 
         }
 
@@ -152,37 +178,31 @@ public class LanguageManager : MonoBehaviour
 
         string _textValue = ".....";
 
-        if (instance != null)
-        {
-
-            if (LanguageManager.instance.dictionary != null)
+        instance.DoIfNotNull(() =>
+            LanguageManager.instance.dictionary.DoIfNotNull(() =>
             {
 
-                if (!LanguageManager.instance.dictionary.TryGetValue(_textId, out _textValue))
+                if (!LanguageManager.instance.dictionary
+                    .TryGetValue(_textId, out _textValue))
                 {
 
-                    DebugExtension.DevLogWarning("The id \"" + _textId + "\" have NO CORRESPONDING text!");
+                    string debugText =
+                        "The id \"" + _textId + "\"" +
+                        " have NO CORRESPONDING text!";
+
+                    DebugExtension.DevLogWarning(debugText);
 
                 }
-            }
-            else
-            {
 
-                DebugExtension.DevLogWarning("Dictionary instance is NULL!");
+            }));
 
-            }
 
-        }
-        else
-        {
-
-            DebugExtension.DevLogWarning("LanguageManager instance is NULL!");
-
-        }
-
+        // uncomment to debug translations on Development versions
+        /*
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        //_textValue = "<color=#f0f>?</color>" + _textValue;
+        _textValue = "<color=#f0f>?</color>" + _textValue;
 #endif
+        */
 
         return _textValue;
 

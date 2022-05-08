@@ -24,13 +24,33 @@ namespace JovDK.SafeActions
 
         }
 
-        public static void DoIfNotNull<T>(this T _object, Action _action)
+        public static void DoIfNull<T>(this T _object, Action _action, Action _ifNotNullaction)
+        {
+
+            if (_object == null || _object.Equals(null))
+                _action();
+            else
+                _ifNotNullaction();
+
+        }
+
+        public static void DoIfNotNull<T>(this T _object, Action _action, bool debugIfNull = true)
+        {
+
+            if (_object != null && !_object.Equals(null))
+                _action();
+            else if (debugIfNull)
+                DebugExtension.DevLogWarning("<" + typeof(T) + ">" + (nameof(_object) + " IS NULL!").ToColor(GoodCollors.orange));
+
+        }
+
+        public static void DoIfNotNull<T>(this T _object, Action _action, Action _ifNullAction)
         {
 
             if (_object != null && !_object.Equals(null))
                 _action();
             else
-                DebugExtension.DevLogWarning("<" + typeof(T) + ">" + (nameof(_object) + " IS NULL!").ToColor(GoodCollors.orange));
+                _ifNullAction();
 
         }
 

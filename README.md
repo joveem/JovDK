@@ -30,4 +30,5 @@ git submodule update --recursive --init
 ##### Dependencies:
 
 [:link: .NET Framework 4.7.1](https://dotnet.microsoft.com/en-us/download/dotnet-framework/net471) (Edit > Project Settings > Player > Other Settings > Configuration > API Compatibility Level)
+
 [:link: Newtonsoft Json Unity Package ^3.0.0](https://docs.unity3d.com/Packages/com.unity.nuget.newtonsoft-json@3.0) (Unity Package Manager)

@@ -17,7 +17,7 @@ using JovDK.SerializingTools.Json;
 
 // from project
 // ...
- 
+
 public partial class #SCRIPTNAME# : MonoBehaviour
 {
 

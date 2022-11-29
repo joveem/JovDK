@@ -34,13 +34,12 @@ public partial class #SCRIPTNAME# : MonoBehaviour
     [Space(5), Header("[ Parts ]"), Space(10)]
 
     bool _parts;
-    [SerializeField] Transform _ballViewContainer;
 
 
     [Space(5), Header("[ Configs ]"), Space(10)]
 
     bool _configs;
- 
+
 
     void Awake()
     {

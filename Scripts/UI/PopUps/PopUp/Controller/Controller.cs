@@ -18,71 +18,10 @@ using JovDK.SerializingTools.Json;
 // from project
 // ...
 
-public class PopUp : MonoBehaviour
+
+public partial class PopUp : MonoBehaviour
 {
-
-    [Space(5), Header("[ State ]"), Space(10)]
-
-    Action _positiveCallback;
-    Action _negativeCallback;
-    Action _closeCallback;
-    Action _postPositiveCallback;
-    Action _postNegativeCallback;
-    Action _postCloseCallback;
-
-
-    [Space(5), Header("[ Parts ]"), Space(10)]
-
-    [SerializeField] TextMeshProUGUI _titleText, _descriptionText;
-    [SerializeField] Button _positiveButton, _negativeButton, _closeButton;
-
-
-    private void Awake()
-    {
-        _positiveButton.SetTextInButton(LanguageManager.GetTextById("PopUp.Ok"));
-        _negativeButton.SetTextInButton(LanguageManager.GetTextById("PopUp.Cancel"));
-        _closeButton.SetTextInButton(LanguageManager.GetTextById("PopUp.Close"));
-
-        _titleText.text = "";
-        _titleText.gameObject.SetActive(false);
-        _descriptionText.text = "";
-        _descriptionText.gameObject.SetActive(false);
-
-        _postPositiveCallback = () => ClosePanel();
-        _postNegativeCallback = () => ClosePanel();
-        _postCloseCallback = () => ClosePanel();
-    }
-
-    private void Start()
-    {
-        SetupButtons();
-    }
-
-    void PositiveButton()
-    {
-        _positiveCallback?.Invoke();
-        _postPositiveCallback?.Invoke();
-    }
-
-    void NegativeButton()
-    {
-        _negativeCallback?.Invoke();
-        _postNegativeCallback?.Invoke();
-    }
-
-    void CloseButton()
-    {
-        _closeCallback?.Invoke();
-        _postCloseCallback?.Invoke();
-    }
-
-    void SetupButtons()
-    {
-        _positiveButton.SetOnClickIfNotNull(PositiveButton);
-        _negativeButton.SetOnClickIfNotNull(NegativeButton);
-        _closeButton.SetOnClickIfNotNull(CloseButton);
-    }
-
+    // TODO: remove this, after inherites from DefaultPanel 
     private void ClosePanel()
     {
         Destroy(gameObject);
@@ -107,6 +46,7 @@ public class PopUp : MonoBehaviour
     {
         _postPositiveCallback = confirmationCallback;
     }
+
     public void SetPostCancelAction(Action postNegativeCallback)
     {
         _postNegativeCallback = postNegativeCallback;
@@ -137,7 +77,4 @@ public class PopUp : MonoBehaviour
         if (!string.IsNullOrWhiteSpace(closeText))
             _closeButton.SetTextInButton(closeText);
     }
-
-
 }
-

@@ -1,184 +1,141 @@
+// system / unity
 using System;
-using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
+// third
 using TMPro;
+
+// from company
+using JovDK.Debug;
+using JovDK.SafeActions;
+using JovDK.SerializingTools.Bson;
+using JovDK.SerializingTools.Json;
+
+// from project
+// ...
 
 public class PopUp : MonoBehaviour
 {
 
-    public TextMeshProUGUI title, description;
-    public Button confirmationButton, cancelButton, closeButton;
+    [Space(5), Header("[ State ]"), Space(10)]
 
-    Action confirmationAction, cancelAction, closeAction, postConfirmationAction, postCancelAction, postCloseAction;
+    Action _positiveCallback;
+    Action _negativeCallback;
+    Action _closeCallback;
+    Action _postPositiveCallback;
+    Action _postNegativeCallback;
+    Action _postCloseCallback;
+
+
+    [Space(5), Header("[ Parts ]"), Space(10)]
+
+    [SerializeField] TextMeshProUGUI _titleText, _descriptionText;
+    [SerializeField] Button _positiveButton, _negativeButton, _closeButton;
+
 
     private void Awake()
     {
+        _positiveButton.SetTextInButton(LanguageManager.GetTextById("PopUp.Ok"));
+        _negativeButton.SetTextInButton(LanguageManager.GetTextById("PopUp.Cancel"));
+        _closeButton.SetTextInButton(LanguageManager.GetTextById("PopUp.Close"));
 
-        confirmationButton.SetTextInButton(LanguageManager.GetTextById("PopUp.Ok"));
-        cancelButton.SetTextInButton(LanguageManager.GetTextById("PopUp.Cancel"));
-        closeButton.SetTextInButton(LanguageManager.GetTextById("PopUp.Close"));
+        _titleText.text = "";
+        _titleText.gameObject.SetActive(false);
+        _descriptionText.text = "";
+        _descriptionText.gameObject.SetActive(false);
 
-        title.text = "";
-        title.gameObject.SetActive(false);
-        description.text = "";
-        description.gameObject.SetActive(false);
-
-        postConfirmationAction = () => ClosePanel();
-        postCancelAction = () => ClosePanel();
-        postCloseAction = () => ClosePanel();
-
+        _postPositiveCallback = () => ClosePanel();
+        _postNegativeCallback = () => ClosePanel();
+        _postCloseCallback = () => ClosePanel();
     }
 
     private void Start()
     {
+        SetupButtons();
+    }
 
-        if (confirmationButton != null)
-        {
+    void PositiveButton()
+    {
+        _positiveCallback?.Invoke();
+        _postPositiveCallback?.Invoke();
+    }
 
-            confirmationButton.onClick.AddListener(() =>
-            {
-                confirmationAction();
-                postConfirmationAction();
+    void NegativeButton()
+    {
+        _negativeCallback?.Invoke();
+        _postNegativeCallback?.Invoke();
+    }
 
-            });
+    void CloseButton()
+    {
+        _closeCallback?.Invoke();
+        _postCloseCallback?.Invoke();
+    }
 
-        }
-
-        if (cancelButton != null)
-        {
-
-            cancelButton.onClick.AddListener(() =>
-            {
-                cancelAction();
-                postCancelAction();
-
-            });
-
-        }
-
-        if (closeButton != null)
-        {
-
-            closeButton.onClick.AddListener(() =>
-            {
-                closeAction();
-                postCloseAction();
-
-            });
-
-        }
-
+    void SetupButtons()
+    {
+        _positiveButton.SetOnClickIfNotNull(PositiveButton);
+        _negativeButton.SetOnClickIfNotNull(NegativeButton);
+        _closeButton.SetOnClickIfNotNull(CloseButton);
     }
 
     private void ClosePanel()
     {
-
         Destroy(gameObject);
-
     }
 
-    public void SetConfirmationAction(Action _action)
+    public void SetConfirmationAction(Action confirmationCallback)
     {
-
-        confirmationAction = _action;
-
-    }
-    public void SetCancelAction(Action _action)
-    {
-
-        cancelAction = _action;
-
-    }
-    public void SetCloseAction(Action _action)
-    {
-
-        closeAction = _action;
-
+        _positiveCallback = confirmationCallback;
     }
 
-    public void SetPostConfirmationAction(Action _action)
+    public void SetCancelAction(Action negativeCallback)
     {
-
-        postConfirmationAction = _action;
-
-    }
-    public void SetPostCancelAction(Action _action)
-    {
-
-        postCancelAction = _action;
-
-    }
-    public void SetPostCloseAction(Action _action)
-    {
-
-        postCloseAction = _action;
-
+        _negativeCallback = negativeCallback;
     }
 
-    public void SetTexts(string _title, string _description)
+    public void SetCloseAction(Action closeCallback)
     {
-
-        if (!String.IsNullOrWhiteSpace(_title))
-        {
-
-            title.gameObject.SetActive(true);
-            title.text = _title;
-
-        }
-        else
-        {
-
-            title.gameObject.SetActive(false);
-
-        }
-
-        if (!String.IsNullOrWhiteSpace(_description))
-        {
-
-            description.gameObject.SetActive(true);
-            description.text = _description;
-
-        }
-        else
-        {
-
-            description.gameObject.SetActive(false);
-
-        }
-
+        _closeCallback = closeCallback;
     }
 
-    public void SetButtonsTexts(string _confirmText = null, string _cancelText = null, string _closeText = null)
+    public void SetPostConfirmationAction(Action confirmationCallback)
     {
+        _postPositiveCallback = confirmationCallback;
+    }
+    public void SetPostCancelAction(Action postNegativeCallback)
+    {
+        _postNegativeCallback = postNegativeCallback;
+    }
 
-        if (!string.IsNullOrWhiteSpace(_confirmText))
-        {
+    public void SetPostCloseAction(Action postCloseCallback)
+    {
+        _postCloseCallback = postCloseCallback;
+    }
 
-            confirmationButton.gameObject.SetActive(true);
-            confirmationButton.SetTextInButton(_confirmText);
+    public void SetTexts(string title, string description)
+    {
+        if (!String.IsNullOrWhiteSpace(title))
+            this._titleText.text = title;
 
-        }
+        if (!String.IsNullOrWhiteSpace(description))
+            this._descriptionText.text = description;
+    }
 
-        if (!string.IsNullOrWhiteSpace(_cancelText))
-        {
+    public void SetButtonsTexts(string positiveText = null, string negativeText = null, string closeText = null)
+    {
+        if (!string.IsNullOrWhiteSpace(positiveText))
+            _positiveButton.SetTextInButton(positiveText);
 
-            cancelButton.gameObject.SetActive(true);
-            cancelButton.SetTextInButton(_cancelText);
+        if (!string.IsNullOrWhiteSpace(negativeText))
+            _negativeButton.SetTextInButton(negativeText);
 
-        }
-
-        if (!string.IsNullOrWhiteSpace(_closeText))
-        {
-
-            closeButton.gameObject.SetActive(true);
-            closeButton.SetTextInButton(_closeText);
-
-        }
-
+        if (!string.IsNullOrWhiteSpace(closeText))
+            _closeButton.SetTextInButton(closeText);
     }
 
 

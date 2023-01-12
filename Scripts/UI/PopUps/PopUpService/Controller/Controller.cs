@@ -24,7 +24,7 @@ namespace JovDK.Services
 {
     public partial class PopUpService : MonoBehaviour
     {
-        void ShowPopUpInformation(
+        public void ShowPopUpInformation(
             string title = null,
             string description = null,
             string positiveButtonText = null,
@@ -39,7 +39,7 @@ namespace JovDK.Services
 
         }
 
-        void ShowPopUpConfirmation(
+        public void ShowPopUpConfirmation(
             string title = null,
             string description = null,
             string positiveButtonText = null,

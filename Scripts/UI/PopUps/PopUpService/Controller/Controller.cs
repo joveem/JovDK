@@ -20,37 +20,40 @@ using JovDK.UI.PopUp;
 // ...
 
 
-public partial class PopUpService : MonoBehaviour
+namespace JovDK.Services
 {
-    void ShowPopUpInformation(
-        string title = null,
-        string description = null,
-        string positiveButtonText = null,
-        Action positiveCallback = null)
+    public partial class PopUpService : MonoBehaviour
     {
+        void ShowPopUpInformation(
+            string title = null,
+            string description = null,
+            string positiveButtonText = null,
+            Action positiveCallback = null)
+        {
 
-        PopUp popUpInstance = Instantiate(_informationPopUpPrefab, _popUpContainer);
+            PopUp popUpInstance = Instantiate(_informationPopUpPrefab, _popUpContainer);
 
-        popUpInstance.SetTexts(title, description);
-        popUpInstance.SetButtonsText(positiveButtonText);
-        positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback));
+            popUpInstance.SetTexts(title, description);
+            popUpInstance.SetButtonsText(positiveButtonText);
+            positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback));
 
-    }
+        }
 
-    void ShowPopUpConfirmation(
-        string title = null,
-        string description = null,
-        string positiveButtonText = null,
-        string negativeButtonText = null,
-        Action positiveCallback = null,
-        Action negativeCallback = null)
-    {
+        void ShowPopUpConfirmation(
+            string title = null,
+            string description = null,
+            string positiveButtonText = null,
+            string negativeButtonText = null,
+            Action positiveCallback = null,
+            Action negativeCallback = null)
+        {
 
-        PopUp popUpInstance = Instantiate(_confirmationPopUpPrefab, _popUpContainer);
+            PopUp popUpInstance = Instantiate(_confirmationPopUpPrefab, _popUpContainer);
 
-        popUpInstance.SetTexts(title, description);
-        positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback));
-        negativeCallback.DoIfNotNull(() => popUpInstance.SetCancelAction(positiveCallback));
+            popUpInstance.SetTexts(title, description);
+            positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback));
+            negativeCallback.DoIfNotNull(() => popUpInstance.SetCancelAction(positiveCallback));
 
+        }
     }
 }

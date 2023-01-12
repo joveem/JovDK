@@ -34,8 +34,11 @@ public partial class PopUp : MonoBehaviour
 
     [Space(5), Header("[ Parts ]"), Space(10)]
 
-    [SerializeField] TextMeshProUGUI _titleText, _descriptionText;
-    [SerializeField] Button _positiveButton, _negativeButton, _closeButton;
+    [SerializeField] TextMeshProUGUI _titleText;
+    [SerializeField] TextMeshProUGUI _descriptionText;
+    [SerializeField] Button _positiveButton;
+    [SerializeField] Button _negativeButton;
+    [SerializeField] Button _closeButton;
 
 
     private void Awake()

@@ -24,9 +24,13 @@ namespace JovDK.UI.PopUp
     {
         void SetupComponent()
         {
-            _positiveButton.SetTextInButton(LanguageManager.GetTextById("PopUp.Ok"));
-            _negativeButton.SetTextInButton(LanguageManager.GetTextById("PopUp.Cancel"));
-            _closeButton.SetTextInButton(LanguageManager.GetTextById("PopUp.Close"));
+            // TODO: REVIEW THIS
+            // TODO: check if it's text setup is needed, if
+            // TODO: the localization handling will not bee
+            // TODO: on the text component
+            // _positiveButton.SetTextInButton(LocalizationService.GetTextById("PopUp.Ok"));
+            // _negativeButton.SetTextInButton(LocalizationService.GetTextById("PopUp.Cancel"));
+            // _closeButton.SetTextInButton(LocalizationService.GetTextById("PopUp.Close"));
 
             _titleText.text = "";
             _titleText.gameObject.SetActive(false);

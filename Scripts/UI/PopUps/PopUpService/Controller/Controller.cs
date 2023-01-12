@@ -35,7 +35,8 @@ namespace JovDK.Services
 
             popUpInstance.SetTexts(title, description);
             popUpInstance.SetButtonsText(positiveButtonText);
-            positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback));
+
+            positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback), false);
 
         }
 
@@ -51,8 +52,10 @@ namespace JovDK.Services
             PopUp popUpInstance = Instantiate(_confirmationPopUpPrefab, _popUpContainer);
 
             popUpInstance.SetTexts(title, description);
-            positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback));
-            negativeCallback.DoIfNotNull(() => popUpInstance.SetCancelAction(positiveCallback));
+            popUpInstance.SetButtonsText(positiveButtonText, negativeButtonText);
+
+            positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback), false);
+            negativeCallback.DoIfNotNull(() => popUpInstance.SetCancelAction(positiveCallback), false);
 
         }
     }

@@ -62,10 +62,26 @@ namespace JovDK.UI.PopUp
         public void SetTexts(string title, string description)
         {
             if (!String.IsNullOrWhiteSpace(title))
-                this._titleText.text = title;
+            {
+                _titleText.gameObject.SetActive(true);
+                _titleText.text = title;
+            }
+            else
+            {
+                _titleText.text = "";
+                _titleText.gameObject.SetActive(false);
+            }
 
             if (!String.IsNullOrWhiteSpace(description))
-                this._descriptionText.text = description;
+            {
+                _descriptionText.gameObject.SetActive(true);
+                _descriptionText.text = description;
+            }
+            else
+            {
+                _descriptionText.text = "";
+                _descriptionText.gameObject.SetActive(false);
+            }
         }
 
         public void SetButtonsTexts(string positiveText = null, string negativeText = null, string closeText = null)

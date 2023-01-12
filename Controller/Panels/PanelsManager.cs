@@ -1,10 +1,21 @@
+// system / unity
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// third
+using TMPro;
+
+// from company
 using JovDK.Debug;
+using JovDK.SafeActions;
+using JovDK.UI.PopUp;
+
+// from project
+// ...
+
 
 public class PanelsManager : MonoBehaviour
 {

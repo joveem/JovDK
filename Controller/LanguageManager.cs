@@ -16,6 +16,10 @@ using JovDK.SerializingTools.Json;
 public class LocalizationService
 {
 
+    // TODO: REVIEW THIS
+    // TODO: replace this instance with an static confing
+    // TODO: confing to be used to all LocalizationServices
+    // TODO: objects
     public static LocalizationService instance;
 
     public LocalizationService()

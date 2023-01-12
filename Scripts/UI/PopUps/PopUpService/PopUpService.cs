@@ -20,7 +20,7 @@ using JovDK.UI.PopUp;
 // ...
 
 
-public partial class PopUpManager : MonoBehaviour
+public partial class PopUpService : MonoBehaviour
 {
 
     [Space(5), Header("[ Dependencies ]"), Space(10)]

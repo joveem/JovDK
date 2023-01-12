@@ -118,13 +118,13 @@ public class ServerManager : MonoBehaviour
     private void ShowConnectionError()
     {
 
-        PanelsManager.instance.ShowInformationPopup(LanguageManager.GetTextById("ServerManager.Connection.Error.Title.Text"), LanguageManager.GetTextById("ServerManager.Connection.Error.Description.Text"));
+        PanelsManager.instance.ShowInformationPopup(LocalizationService.GetTextById("ServerManager.Connection.Error.Title.Text"), LocalizationService.GetTextById("ServerManager.Connection.Error.Description.Text"));
 
     }
     private void ShowDataProcessingError()
     {
 
-        PanelsManager.instance.ShowInformationPopup(LanguageManager.GetTextById("ServerManager.DataProcessing.Error.Title.Text"), LanguageManager.GetTextById("ServerManager.DataProcessing.Error.Description.Text"));
+        PanelsManager.instance.ShowInformationPopup(LocalizationService.GetTextById("ServerManager.DataProcessing.Error.Title.Text"), LocalizationService.GetTextById("ServerManager.DataProcessing.Error.Description.Text"));
 
     }
 

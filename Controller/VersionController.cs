@@ -145,21 +145,21 @@ public class VersionController : MonoBehaviour
     private void ShowCanotFindVersion()
     {
 
-        PanelsManager.instance.ShowInformationPopup(null, LanguageManager.GetTextById("Update.CanotFind.Description")).SetConfirmationActions(() => { SearchForUpdates(); }, null, null).SetButtonsTexts(LanguageManager.GetTextById("Update.CanotFind.Confirmation"), null, null);
+        PanelsManager.instance.ShowInformationPopup(null, LocalizationService.GetTextById("Update.CanotFind.Description")).SetConfirmationActions(() => { SearchForUpdates(); }, null, null).SetButtonsTexts(LocalizationService.GetTextById("Update.CanotFind.Confirmation"), null, null);
 
     }
 
     private void ShowUpdateWarning()
     {
 
-        PanelsManager.instance.ShowConfirmationPopup(null, LanguageManager.GetTextById("Update.Available.Description")).RemovePostConfirmationAction().SetConfirmationActions(() => { DebugExtension.DevLog("OPENNING STORE..."); }, () => { canLoadGame = true; }, null).SetButtonsTexts(LanguageManager.GetTextById("Update.Available.Confirmation"), LanguageManager.GetTextById("Update.Available.Cancel"), null);
+        PanelsManager.instance.ShowConfirmationPopup(null, LocalizationService.GetTextById("Update.Available.Description")).RemovePostConfirmationAction().SetConfirmationActions(() => { DebugExtension.DevLog("OPENNING STORE..."); }, () => { canLoadGame = true; }, null).SetButtonsTexts(LocalizationService.GetTextById("Update.Available.Confirmation"), LocalizationService.GetTextById("Update.Available.Cancel"), null);
 
     }
 
     private void ShowBlockedWarning()
     {
 
-        PanelsManager.instance.ShowInformationPopup(null, LanguageManager.GetTextById("Update.Block.Description")).RemoveAllPostActions().SetConfirmationActions(() => { DebugExtension.DevLog("OPENNING STORE..."); }, null, null).SetButtonsTexts(LanguageManager.GetTextById("Update.Block.Confirmation"), null, null);
+        PanelsManager.instance.ShowInformationPopup(null, LocalizationService.GetTextById("Update.Block.Description")).RemoveAllPostActions().SetConfirmationActions(() => { DebugExtension.DevLog("OPENNING STORE..."); }, null, null).SetButtonsTexts(LocalizationService.GetTextById("Update.Block.Confirmation"), null, null);
 
     }
 

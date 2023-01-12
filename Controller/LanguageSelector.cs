@@ -27,7 +27,7 @@ public class LanguageSelector : MonoBehaviour
     private void LanguageButton(string _languageId)
     {
 
-        LanguageManager.instance.SetLanguage(_languageId);
+        LocalizationService.instance.SetLanguage(_languageId);
         HidePanel();
 
     }
@@ -111,7 +111,7 @@ public class LanguageSelector : MonoBehaviour
             if (!hasInstantiatedButtons)
             {
 
-                InstantiateLanguageButtons(LanguageManager.instance.languagesList);
+                InstantiateLanguageButtons(LocalizationService.instance.languagesList);
 
             }
 

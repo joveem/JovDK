@@ -29,9 +29,9 @@ public class MultiLanguageText : MonoBehaviour
         }
 
         if (GetComponent<Text>() != null)
-            GetComponent<Text>().text = LanguageManager.GetTextById(textId);
+            GetComponent<Text>().text = LocalizationService.GetTextById(textId);
         else if (GetComponent<TextMeshProUGUI>() != null)
-            GetComponent<TextMeshProUGUI>().text = LanguageManager.GetTextById(textId);
+            GetComponent<TextMeshProUGUI>().text = LocalizationService.GetTextById(textId);
         else
             DebugExtension.DevLogError("undefined Text / TextMeshProUGUI COMPONENT on object \"" + gameObject.name + "\"!");
 

@@ -13,15 +13,15 @@ using JovDK.SerializingTools.Bson;
 using JovDK.SerializingTools.Json;
 
 
-public class LanguageManager : MonoBehaviour
+public class LocalizationService
 {
 
-    public static LanguageManager instance;
+    public static LocalizationService instance;
 
-    public LanguageManager()
+    public LocalizationService()
     {
 
-        if (LanguageManager.instance == null)
+        if (LocalizationService.instance == null)
         {
 
             instance = this;
@@ -30,7 +30,7 @@ public class LanguageManager : MonoBehaviour
         {
 
             DebugExtension.DevLogWarning("one or more Language Managers instaces has been detected!");
-            Destroy(this);
+            // Destroy(this);
 
         }
 
@@ -179,10 +179,10 @@ public class LanguageManager : MonoBehaviour
         string _textValue = ".....";
 
         instance.DoIfNotNull(() =>
-            LanguageManager.instance.dictionary.DoIfNotNull(() =>
+            LocalizationService.instance.dictionary.DoIfNotNull(() =>
             {
 
-                if (!LanguageManager.instance.dictionary
+                if (!LocalizationService.instance.dictionary
                     .TryGetValue(_textId, out _textValue))
                 {
 

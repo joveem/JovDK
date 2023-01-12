@@ -18,31 +18,33 @@ using JovDK.SerializingTools.Json;
 // from project
 // ...
 
-
-public partial class PopUp : MonoBehaviour
+namespace JovDK.UI.PopUp
 {
-    void SetupButtons()
+    public partial class PopUp : MonoBehaviour
     {
-        _positiveButton.SetOnClickIfNotNull(PositiveButton);
-        _negativeButton.SetOnClickIfNotNull(NegativeButton);
-        _closeButton.SetOnClickIfNotNull(CloseButton);
-    }
+        void SetupButtons()
+        {
+            _positiveButton.SetOnClickIfNotNull(PositiveButton);
+            _negativeButton.SetOnClickIfNotNull(NegativeButton);
+            _closeButton.SetOnClickIfNotNull(CloseButton);
+        }
 
-    void PositiveButton()
-    {
-        _positiveCallback?.Invoke();
-        _postPositiveCallback?.Invoke();
-    }
+        void PositiveButton()
+        {
+            _positiveCallback?.Invoke();
+            _postPositiveCallback?.Invoke();
+        }
 
-    void NegativeButton()
-    {
-        _negativeCallback?.Invoke();
-        _postNegativeCallback?.Invoke();
-    }
+        void NegativeButton()
+        {
+            _negativeCallback?.Invoke();
+            _postNegativeCallback?.Invoke();
+        }
 
-    void CloseButton()
-    {
-        _closeCallback?.Invoke();
-        _postCloseCallback?.Invoke();
+        void CloseButton()
+        {
+            _closeCallback?.Invoke();
+            _postCloseCallback?.Invoke();
+        }
     }
 }

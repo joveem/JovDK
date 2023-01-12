@@ -3,82 +3,85 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class PopupTools
+namespace JovDK.UI.PopUp
 {
 
-    public static PopUp SetButtonsText(this PopUp _popup, string _confirmText = null, string _cancelText = null, string _closeText = null)
+    public static class PopupTools
     {
 
-        _popup.SetButtonsTexts(_confirmText, _cancelText, _closeText);
-
-        return _popup;
-
-    }
-
-    public static PopUp SetConfirmationActions(this PopUp _popup, Action _confirmationAction = null, Action _cancelAction = null, Action _closeAction = null)
-    {
-
-        if (_confirmationAction != null)
+        public static PopUp SetButtonsText(this PopUp _popup, string _confirmText = null, string _cancelText = null, string _closeText = null)
         {
 
-            _popup.SetConfirmationAction(_confirmationAction);
+            _popup.SetButtonsTexts(_confirmText, _cancelText, _closeText);
+
+            return _popup;
 
         }
 
-        if (_cancelAction != null)
+        public static PopUp SetConfirmationActions(this PopUp _popup, Action _confirmationAction = null, Action _cancelAction = null, Action _closeAction = null)
         {
 
-            _popup.SetCancelAction(_cancelAction);
+            if (_confirmationAction != null)
+            {
+
+                _popup.SetConfirmationAction(_confirmationAction);
+
+            }
+
+            if (_cancelAction != null)
+            {
+
+                _popup.SetCancelAction(_cancelAction);
+
+            }
+
+            if (_closeAction != null)
+            {
+
+                _popup.SetCloseAction(_closeAction);
+
+            }
+
+            return _popup;
 
         }
 
-        if (_closeAction != null)
+        public static PopUp RemovePostConfirmationAction(this PopUp _popup)
         {
 
-            _popup.SetCloseAction(_closeAction);
+            _popup.SetPostConfirmationAction(new Action(() => { }));
+
+            return _popup;
+
+        }
+        public static PopUp RemovePostCancelAction(this PopUp _popup)
+        {
+
+            _popup.SetPostCancelAction(new Action(() => { }));
+
+            return _popup;
+
+        }
+        public static PopUp RemovePostCloseAction(this PopUp _popup)
+        {
+
+            _popup.SetPostCloseAction(new Action(() => { }));
+
+            return _popup;
 
         }
 
-        return _popup;
+        public static PopUp RemoveAllPostActions(this PopUp _popup)
+        {
+
+            _popup.RemovePostConfirmationAction();
+            _popup.RemovePostCancelAction();
+            _popup.RemovePostCloseAction();
+
+            return _popup;
+
+        }
 
     }
-
-    public static PopUp RemovePostConfirmationAction(this PopUp _popup)
-    {
-
-        _popup.SetPostConfirmationAction(new Action(()=>{}));
-
-        return _popup;
-
-    }
-    public static PopUp RemovePostCancelAction(this PopUp _popup)
-    {
-
-        _popup.SetPostCancelAction(new Action(()=>{}));
-
-        return _popup;
-
-    }
-    public static PopUp RemovePostCloseAction(this PopUp _popup)
-    {
-
-        _popup.SetPostCloseAction(new Action(()=>{}));
-
-        return _popup;
-
-    }
-
-    public static PopUp RemoveAllPostActions(this PopUp _popup)
-    {
-
-        _popup.RemovePostConfirmationAction();
-        _popup.RemovePostCancelAction();
-        _popup.RemovePostCloseAction();
-
-        return _popup;
-
-    }
-
-
 
 }

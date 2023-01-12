@@ -19,62 +19,65 @@ using JovDK.SerializingTools.Json;
 // ...
 
 
-public partial class PopUp : MonoBehaviour
+namespace JovDK.UI.PopUp
 {
-    // TODO: remove this, after inherites from DefaultPanel 
-    private void ClosePanel()
+    public partial class PopUp : MonoBehaviour
     {
-        Destroy(gameObject);
-    }
+        // TODO: remove this, after inherites from DefaultPanel 
+        private void ClosePanel()
+        {
+            Destroy(gameObject);
+        }
 
-    public void SetConfirmationAction(Action confirmationCallback)
-    {
-        _positiveCallback = confirmationCallback;
-    }
+        public void SetConfirmationAction(Action confirmationCallback)
+        {
+            _positiveCallback = confirmationCallback;
+        }
 
-    public void SetCancelAction(Action negativeCallback)
-    {
-        _negativeCallback = negativeCallback;
-    }
+        public void SetCancelAction(Action negativeCallback)
+        {
+            _negativeCallback = negativeCallback;
+        }
 
-    public void SetCloseAction(Action closeCallback)
-    {
-        _closeCallback = closeCallback;
-    }
+        public void SetCloseAction(Action closeCallback)
+        {
+            _closeCallback = closeCallback;
+        }
 
-    public void SetPostConfirmationAction(Action confirmationCallback)
-    {
-        _postPositiveCallback = confirmationCallback;
-    }
+        public void SetPostConfirmationAction(Action confirmationCallback)
+        {
+            _postPositiveCallback = confirmationCallback;
+        }
 
-    public void SetPostCancelAction(Action postNegativeCallback)
-    {
-        _postNegativeCallback = postNegativeCallback;
-    }
+        public void SetPostCancelAction(Action postNegativeCallback)
+        {
+            _postNegativeCallback = postNegativeCallback;
+        }
 
-    public void SetPostCloseAction(Action postCloseCallback)
-    {
-        _postCloseCallback = postCloseCallback;
-    }
+        public void SetPostCloseAction(Action postCloseCallback)
+        {
+            _postCloseCallback = postCloseCallback;
+        }
 
-    public void SetTexts(string title, string description)
-    {
-        if (!String.IsNullOrWhiteSpace(title))
-            this._titleText.text = title;
+        public void SetTexts(string title, string description)
+        {
+            if (!String.IsNullOrWhiteSpace(title))
+                this._titleText.text = title;
 
-        if (!String.IsNullOrWhiteSpace(description))
-            this._descriptionText.text = description;
-    }
+            if (!String.IsNullOrWhiteSpace(description))
+                this._descriptionText.text = description;
+        }
 
-    public void SetButtonsTexts(string positiveText = null, string negativeText = null, string closeText = null)
-    {
-        if (!string.IsNullOrWhiteSpace(positiveText))
-            _positiveButton.SetTextInButton(positiveText);
+        public void SetButtonsTexts(string positiveText = null, string negativeText = null, string closeText = null)
+        {
+            if (!string.IsNullOrWhiteSpace(positiveText))
+                _positiveButton.SetTextInButton(positiveText);
 
-        if (!string.IsNullOrWhiteSpace(negativeText))
-            _negativeButton.SetTextInButton(negativeText);
+            if (!string.IsNullOrWhiteSpace(negativeText))
+                _negativeButton.SetTextInButton(negativeText);
 
-        if (!string.IsNullOrWhiteSpace(closeText))
-            _closeButton.SetTextInButton(closeText);
+            if (!string.IsNullOrWhiteSpace(closeText))
+                _closeButton.SetTextInButton(closeText);
+        }
     }
 }

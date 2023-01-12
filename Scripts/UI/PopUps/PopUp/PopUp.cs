@@ -18,37 +18,38 @@ using JovDK.SerializingTools.Json;
 // from project
 // ...
 
-
-public partial class PopUp : MonoBehaviour
+namespace JovDK.UI.PopUp
 {
-
-    [Space(5), Header("[ State ]"), Space(10)]
-
-    Action _positiveCallback;
-    Action _negativeCallback;
-    Action _closeCallback;
-    Action _postPositiveCallback;
-    Action _postNegativeCallback;
-    Action _postCloseCallback;
-
-
-    [Space(5), Header("[ Parts ]"), Space(10)]
-
-    [SerializeField] TextMeshProUGUI _titleText;
-    [SerializeField] TextMeshProUGUI _descriptionText;
-    [SerializeField] Button _positiveButton;
-    [SerializeField] Button _negativeButton;
-    [SerializeField] Button _closeButton;
-
-
-    private void Awake()
+    public partial class PopUp : MonoBehaviour
     {
-        SetupComponent();
-    }
 
-    private void Start()
-    {
-        SetupButtons();
-    }
+        [Space(5), Header("[ State ]"), Space(10)]
 
+        Action _positiveCallback;
+        Action _negativeCallback;
+        Action _closeCallback;
+        Action _postPositiveCallback;
+        Action _postNegativeCallback;
+        Action _postCloseCallback;
+
+
+        [Space(5), Header("[ Parts ]"), Space(10)]
+
+        [SerializeField] TextMeshProUGUI _titleText;
+        [SerializeField] TextMeshProUGUI _descriptionText;
+        [SerializeField] Button _positiveButton;
+        [SerializeField] Button _negativeButton;
+        [SerializeField] Button _closeButton;
+
+
+        private void Awake()
+        {
+            SetupComponent();
+        }
+
+        private void Start()
+        {
+            SetupButtons();
+        }
+    }
 }

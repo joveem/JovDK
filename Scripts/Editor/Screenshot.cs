@@ -9,20 +9,31 @@ using JovDK.Debug;
 
 public class Screenshot : MonoBehaviour
 {
-    // Add a menu item named "Do Something" to MyMenu in the menu bar.
-    [MenuItem("MyMenu/SHOT! #p")]
+    [MenuItem("JovDK/Tools/Play Mode/Screenshot! #p")]    
     static void DoSomething()
     {
+        DateTime nowDateTime = DateTime.Now;
 
-        DateTime dateNow_ = DateTime.Now;
+        string screenshotSufix = "scr";
+        string screenshotExtension = ".jpg";
+        string screenDimension = Screen.width + "x" + Screen.height;
 
-        string folderName_ = dateNow_.Day.ToString("00") + "-" + dateNow_.Month.ToString("00") + "-" + dateNow_.Year.ToString("0000");
-        string fileName_ = "scr_" + Screen.width + "x" + Screen.height + "_" + dateNow_.Hour.ToString("00") + "-" + dateNow_.Minute.ToString("00") + "-" + dateNow_.Second.ToString("00") + ".jpg";
+        string nowDate =
+            nowDateTime.Year.ToString("0000") + "-" +
+            nowDateTime.Month.ToString("00") + "-" +
+            nowDateTime.Day.ToString("00");
+        string nowTime =
+            nowDateTime.Hour.ToString("00") + "-" +
+            nowDateTime.Minute.ToString("00") + "-" +
+            nowDateTime.Second.ToString("00");
+
+        string folderName_ = nowDate;
+        string fileName_ = screenshotSufix + "_" + screenDimension + "_" + nowTime + screenshotExtension;
 
         Directory.CreateDirectory("Assets/Screenshots/" + folderName_);
 
         ScreenCapture.CaptureScreenshot("Assets/Screenshots/" + folderName_ + "/" + fileName_, 1);
-        DebugExtension.DevLogWarning("SHOT!");
+        DebugExtension.DevLogWarning("SCREENSHOT!");
     }
 
 }

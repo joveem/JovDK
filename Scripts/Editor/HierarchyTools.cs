@@ -5,7 +5,7 @@ public class HierarchyTools : EditorWindow
 {
     [SerializeField] private GameObject prefab;
 
-    [MenuItem("[ Tools ]/Editor/Tools/Replace Selected")]
+    [MenuItem("JovDK/Tools/Hierarchy/Replace selecteds with prefab")]
     static void CreateReplaceWithPrefab()
     {
         EditorWindow.GetWindow<HierarchyTools>();

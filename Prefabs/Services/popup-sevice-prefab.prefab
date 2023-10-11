@@ -24,6 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1072705807732301606}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,7 +32,6 @@ Transform:
   m_Children:
   - {fileID: 1072705808267522964}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1072705807732301601
 MonoBehaviour:
@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _popUpContainer: {fileID: 1072705808891124852}
-  _informationPopUpPrefab: {fileID: 6631917784625341875, guid: 53cde64fc8f89c74ba82e7ca61bcb304, type: 3}
-  _confirmationPopUpPrefab: {fileID: 4107448802243106338, guid: 0f26b6794decddd4c9424cb71c902e88, type: 3}
+  _informationPopUpPrefab: {fileID: 6631917784625341875, guid: 0f26b6794decddd4c9424cb71c902e88, type: 3}
+  _confirmationPopUpPrefab: {fileID: 4107448802243106338, guid: 53cde64fc8f89c74ba82e7ca61bcb304, type: 3}
 --- !u!1 &1072705808267522965
 GameObject:
   m_ObjectHideFlags: 0
@@ -81,7 +81,6 @@ RectTransform:
   m_Children:
   - {fileID: 1072705808891124852}
   m_Father: {fileID: 1072705807732301600}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -105,7 +104,9 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 1000
   m_TargetDisplay: 0
@@ -178,7 +179,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1072705808267522964}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}

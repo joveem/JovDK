@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using TMPro;
 
 using JovDK.Debug;
+using JovDK.LEGACY.Localization;
+
 
 public class MultiLanguageText : MonoBehaviour
 {

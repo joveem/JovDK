@@ -14,6 +14,7 @@ using JovDK.Debug;
 using JovDK.SafeActions;
 using JovDK.Models;
 using JovDK.UI.PopUp;
+using JovDK.LEGACY.Localization;
 
 // from project
 // ...

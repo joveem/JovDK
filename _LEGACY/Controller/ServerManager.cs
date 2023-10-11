@@ -9,6 +9,8 @@ using Newtonsoft.Json;
 using JovDK.Debug;
 using JovDK.SerializingTools.Json;
 using JovDK.Models;
+using JovDK.LEGACY.Localization;
+
 
 public class ServerManager : MonoBehaviour
 {

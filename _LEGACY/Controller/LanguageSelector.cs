@@ -6,145 +6,148 @@ using UnityEngine.UI;
 
 using JovDK.Debug;
 
-public class LanguageSelector : MonoBehaviour
+namespace JovDK.LEGACY.Localization
 {
 
-    private bool isShowing = false;
-    private bool hasInstantiatedButtons = false;
-
-
-    [SerializeField]
-    GameObject languageSelectorPanel;
-
-
-    [SerializeField]
-    Transform languageButtonsPivot;
-    [SerializeField]
-    Button languageButtonPrefab;
-
-
-
-    private void LanguageButton(string _languageId)
+    public class LanguageSelector : MonoBehaviour
     {
 
-        LocalizationService.instance.SetLanguage(_languageId);
-        HidePanel();
-
-    }
+        private bool isShowing = false;
+        private bool hasInstantiatedButtons = false;
 
 
+        [SerializeField]
+        GameObject languageSelectorPanel;
 
-    #region View
 
-    public void InstantiateLanguageButtons(Language[] _languages)
-    {
+        [SerializeField]
+        Transform languageButtonsPivot;
+        [SerializeField]
+        Button languageButtonPrefab;
 
-        foreach (Language _language in _languages)
+
+
+        private void LanguageButton(string _languageId)
         {
 
-            if (_language != null)
+            LocalizationService.instance.SetLanguage(_languageId);
+            HidePanel();
+
+        }
+
+
+
+        #region View
+
+        public void InstantiateLanguageButtons(Language[] _languages)
+        {
+
+            foreach (Language _language in _languages)
             {
 
-                if (!string.IsNullOrWhiteSpace(_language.languageId))
+                if (_language != null)
                 {
 
-                    GameObject _intance = Instantiate(languageButtonPrefab.gameObject, languageButtonsPivot);
-
-                    _intance.GetComponent<Button>().onClick.AddListener(() =>
+                    if (!string.IsNullOrWhiteSpace(_language.languageId))
                     {
 
-                        LanguageButton(_language.languageId);
+                        GameObject _intance = Instantiate(languageButtonPrefab.gameObject, languageButtonsPivot);
 
-                    });
-
-                    if (_intance.GetComponent<Image>() != null)
-                    {
-
-                        if (_language.sprite != null)
+                        _intance.GetComponent<Button>().onClick.AddListener(() =>
                         {
 
-                            _intance.GetComponent<Image>().sprite = _language.sprite;
+                            LanguageButton(_language.languageId);
+
+                        });
+
+                        if (_intance.GetComponent<Image>() != null)
+                        {
+
+                            if (_language.sprite != null)
+                            {
+
+                                _intance.GetComponent<Image>().sprite = _language.sprite;
+
+                            }
+                            else
+                            {
+
+                                DebugExtension.DevLogWarning("language SPRITE IS NULL! ( languageId = " + _language.languageId + " )");
+
+                            }
+
 
                         }
                         else
                         {
 
-                            DebugExtension.DevLogWarning("language SPRITE IS NULL! ( languageId = " + _language.languageId + " )");
+                            DebugExtension.DevLogWarning("languageButtonPrefab have NO IMAGE COMPONENT");
 
                         }
-
 
                     }
                     else
                     {
 
-                        DebugExtension.DevLogWarning("languageButtonPrefab have NO IMAGE COMPONENT");
+                        DebugExtension.DevLogError("Some language have an INVALIDE LANGUAGE ID!");
 
                     }
 
                 }
-                else
+
+            }
+
+            hasInstantiatedButtons = true;
+
+        }
+
+        public void ShowPanel()
+        {
+
+            isShowing = true;
+
+            if (languageSelectorPanel != null)
+            {
+
+                languageSelectorPanel.SetActive(true);
+
+                if (!hasInstantiatedButtons)
                 {
 
-                    DebugExtension.DevLogError("Some language have an INVALIDE LANGUAGE ID!");
+                    InstantiateLanguageButtons(LocalizationService.instance.languagesList);
 
                 }
 
             }
-
-        }
-
-        hasInstantiatedButtons = true;
-
-    }
-
-    public void ShowPanel()
-    {
-
-        isShowing = true;
-
-        if (languageSelectorPanel != null)
-        {
-
-            languageSelectorPanel.SetActive(true);
-
-            if (!hasInstantiatedButtons)
+            else
             {
 
-                InstantiateLanguageButtons(LocalizationService.instance.languagesList);
+                DebugExtension.DevLogError("languageSelectorPanel IS NULL!");
 
             }
 
         }
-        else
+
+        public void HidePanel()
         {
 
-            DebugExtension.DevLogError("languageSelectorPanel IS NULL!");
+            isShowing = false;
+
+            if (languageSelectorPanel != null)
+            {
+
+                languageSelectorPanel.SetActive(false);
+
+            }
+            else
+            {
+
+                DebugExtension.DevLogError("languageSelectorPanel IS NULL!");
+
+            }
 
         }
 
+        #endregion
     }
-
-    public void HidePanel()
-    {
-
-        isShowing = false;
-
-        if (languageSelectorPanel != null)
-        {
-
-            languageSelectorPanel.SetActive(false);
-
-        }
-        else
-        {
-
-            DebugExtension.DevLogError("languageSelectorPanel IS NULL!");
-
-        }
-
-    }
-
-    #endregion
-
 }

@@ -13,32 +13,38 @@ namespace JovDK.SerializingTools.Json
 
     public static class JsonSerializingTools
     {
-        public static string SerializeObjectToJSON(this object _object)
+        public static string SerializeObjectToJSON(
+            this object genericObject,
+            bool indent = false)
         {
 
-            string _value = "";
+            string value = "";
 
             try
             {
+                Formatting formatting = indent ? Formatting.Indented : Formatting.None;
 
-                _value = JsonConvert.SerializeObject(_object,
-                    Formatting.None,
+                JsonSerializerSettings jsonSerializerSettings =
                     new JsonSerializerSettings()
                     {
-                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-                    });
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    };
 
+                value = JsonConvert.SerializeObject(
+                    genericObject,
+                    formatting,
+                    jsonSerializerSettings);
             }
             catch (System.Exception _error)
             {
 
                 UnityEngine.Debug.LogError("001 | error: " + _error);
-                _value = "ERROR";
+                value = "ERROR";
                 //throw;
 
             }
 
-            return _value;
+            return value;
 
         }
 

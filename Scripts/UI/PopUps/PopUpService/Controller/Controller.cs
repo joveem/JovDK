@@ -38,6 +38,8 @@ namespace JovDK.Services
 
             positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback), false);
 
+            popUpInstance.HidePanelInstantaneously();
+            popUpInstance.PlayShowAnimation();
         }
 
         public void ShowPopUpConfirmation(
@@ -57,6 +59,8 @@ namespace JovDK.Services
             positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback), false);
             negativeCallback.DoIfNotNull(() => popUpInstance.SetCancelAction(positiveCallback), false);
 
+            popUpInstance.HidePanelInstantaneously();
+            popUpInstance.PlayShowAnimation();
         }
     }
 }

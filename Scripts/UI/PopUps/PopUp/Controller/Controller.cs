@@ -21,14 +21,8 @@ using JovDK.SerializingTools.Json;
 
 namespace JovDK.UI.PopUp
 {
-    public partial class PopUp : MonoBehaviour
+    public partial class PopUp : BasePanel
     {
-        // TODO: remove this, after inherites from DefaultPanel 
-        private void ClosePanel()
-        {
-            Destroy(gameObject);
-        }
-
         public void SetConfirmationAction(Action confirmationCallback)
         {
             _positiveCallback = confirmationCallback;

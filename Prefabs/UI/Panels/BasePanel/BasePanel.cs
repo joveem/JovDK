@@ -41,8 +41,8 @@ public partial class BasePanel : MonoBehaviour
 
     [Space(5), Header("[ Configs ]"), Space(10)]
 
-    Ease _backgroundPanelShowAnimationEase = Ease.OutBack;
-    Ease _backgroundPanelHideAnimationEase = Ease.OutExpo;
+    [SerializeField] Ease _backgroundPanelShowAnimationEase = Ease.OutBack;
+    [SerializeField] Ease _backgroundPanelHideAnimationEase = Ease.OutExpo;
     [SerializeField] float _maxFadeOpacity = 0.4f;
     [SerializeField] float _showAnimationDelay = 0.35f;
 

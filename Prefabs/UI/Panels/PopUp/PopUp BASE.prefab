@@ -317,7 +317,7 @@ GameObject:
   - component: {fileID: 637444416573715405}
   - component: {fileID: 4793052415344515904}
   m_Layer: 5
-  m_Name: background
+  m_Name: fade-background-image
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -395,7 +395,7 @@ GameObject:
   - component: {fileID: 8261316859599642776}
   - component: {fileID: 2587953987115494151}
   m_Layer: 5
-  m_Name: body
+  m_Name: body-container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1446,6 +1446,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f3440760491c374fa42c9ff84397615, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _fadeBackground: {fileID: 4793052415344515904}
+  _bodyContainer: {fileID: 8878104843272708972}
+  _backgroundPanelShowAnimationEase: 27
+  _backgroundPanelHideAnimationEase: 18
+  _maxFadeOpacity: 0.4
+  _showAnimationDelay: 0.35
   _titleText: {fileID: 5688146353737795269}
   _descriptionText: {fileID: 3315605278466153518}
   _positiveButton: {fileID: 5027443182653539772}

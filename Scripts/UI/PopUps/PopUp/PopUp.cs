@@ -20,7 +20,7 @@ using JovDK.SerializingTools.Json;
 
 namespace JovDK.UI.PopUp
 {
-    public partial class PopUp : MonoBehaviour
+    public partial class PopUp : BasePanel
     {
 
         [Space(5), Header("[ State ]"), Space(10)]

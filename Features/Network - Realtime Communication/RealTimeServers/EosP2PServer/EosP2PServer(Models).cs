@@ -43,7 +43,7 @@ namespace JovDK.Networking.Realtime
                 else
                 {
                     DebugExtension.DevLogWarning(
-                        "$$$ > ".ToColor(GoodCollors.pink) +
+                        "$$$ > ".ToColor(GoodColors.Pink) +
                         "productUserId IS INVALID!" + "\n" +
                         "productUserId = " +
                         productUserId.ToString());
@@ -62,7 +62,7 @@ namespace JovDK.Networking.Realtime
                 else
                 {
                     DebugExtension.DevLogWarning(
-                        "$$$ > ".ToColor(GoodCollors.pink) +
+                        "$$$ > ".ToColor(GoodColors.Pink) +
                         "productUserId IS INVALID!" + "\n" +
                         "productUserId = " +
                         productUserId.ToString());

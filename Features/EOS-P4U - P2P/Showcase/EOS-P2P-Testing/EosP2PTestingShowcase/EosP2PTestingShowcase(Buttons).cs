@@ -34,14 +34,14 @@ public partial class EosP2PTestingShowcase : MonoBehaviour
 
     void JoinButton()
     {
-        DebugExtension.DevLog("#> ".ToColor(GoodCollors.orange) + "JoinButton");
+        DebugExtension.DevLog("#> ".ToColor(GoodColors.Orange) + "JoinButton");
 
         TryToConnect();
     }
 
     void CopyUserIdButton()
     {
-        DebugExtension.DevLog("#> ".ToColor(GoodCollors.orange) + "CopyUserIdButton");
+        DebugExtension.DevLog("#> ".ToColor(GoodColors.Orange) + "CopyUserIdButton");
         ProductUserId localProductUserId = EOSManager.Instance.GetProductUserId();
 
         if (localProductUserId != null)
@@ -58,7 +58,7 @@ public partial class EosP2PTestingShowcase : MonoBehaviour
 
     void SendMessageButton()
     {
-        DebugExtension.DevLog("#> ".ToColor(GoodCollors.orange) + "SendMessageButton");
+        DebugExtension.DevLog("#> ".ToColor(GoodColors.Orange) + "SendMessageButton");
 
         UpdateMembersList();
         SendMessageToPlayersList();

@@ -61,7 +61,7 @@ namespace JovDK.Networking.Realtime
         void OnAuthenticationResponse(AuthLoginCallbackInfo loginCallbackInfo)
         {
             DebugExtension.DevLog(
-                "> ".ToColor(GoodCollors.orange) + "OnAuthenticationResponse" + "\n" +
+                "> ".ToColor(GoodColors.Orange) + "OnAuthenticationResponse" + "\n" +
                 "loginCallbackInfo.ResultCode = " + loginCallbackInfo.ResultCode.ToString());
 
             _popUpService.HideLoadingCover();
@@ -85,7 +85,7 @@ namespace JovDK.Networking.Realtime
         void ConnectAuthentication(AuthLoginCallbackInfo loginCallbackInfo)
         {
             DebugExtension.DevLog(
-                "> ".ToColor(GoodCollors.orange) + "ConnectAuthentication 01" + "\n" +
+                "> ".ToColor(GoodColors.Orange) + "ConnectAuthentication 01" + "\n" +
                 "loginCallbackInfo.ResultCode = " + loginCallbackInfo.ResultCode.ToString());
 
             _popUpService.ShowLoadingCover();
@@ -94,7 +94,7 @@ namespace JovDK.Networking.Realtime
                 (connectLoginCallbackInfo) =>
                 {
                     DebugExtension.DevLog(
-                        "> ".ToColor(GoodCollors.orange) + "ConnectAuthentication 02" + "\n" +
+                        "> ".ToColor(GoodColors.Orange) + "ConnectAuthentication 02" + "\n" +
                         "connectLoginCallbackInfo.ResultCode = " + connectLoginCallbackInfo.ResultCode.ToString());
 
                     _popUpService.HideLoadingCover();
@@ -114,7 +114,7 @@ namespace JovDK.Networking.Realtime
                     {
                         // ask user if they want to connect; sample assumes they do
                         DebugExtension.DevLogWarning(
-                            "$ > ".ToColor(GoodCollors.pink) +
+                            "$ > ".ToColor(GoodColors.Pink) +
                             "InvalidUser!" + " " +
                             "Creating new user...");
 
@@ -135,7 +135,7 @@ namespace JovDK.Networking.Realtime
                                         EOSManager.Instance.StartConnectLoginWithEpicAccount(loginCallbackInfo.LocalUserId, (ConnectLoginCallbackInfo retryConnectLoginCallbackInfo) =>
                                         {
                                             DebugExtension.DevLog(
-                                                "> ".ToColor(GoodCollors.orange) + "ConnectAuthentication 03" + "\n" +
+                                                "> ".ToColor(GoodColors.Orange) + "ConnectAuthentication 03" + "\n" +
                                                 "retryConnectLoginCallbackInfo.ResultCode = " + retryConnectLoginCallbackInfo.ResultCode.ToString());
 
                                             _popUpService.HideLoadingCover();
@@ -193,7 +193,7 @@ namespace JovDK.Networking.Realtime
             else
             {
                 DebugExtension.DevLogError(
-                    "$ > ".ToColor(GoodCollors.pink) +
+                    "$ > ".ToColor(GoodColors.Pink) +
                     "data IS NULL!");
             }
         }
@@ -213,7 +213,7 @@ namespace JovDK.Networking.Realtime
                     else
                     {
                         DebugExtension.DevLogWarning(
-                            "$$$ > ".ToColor(GoodCollors.pink) +
+                            "$$$ > ".ToColor(GoodColors.Pink) +
                             "productUserId IS INVALID!" + "\n" +
                             "productUserId = " +
                             productUserId.ToString());
@@ -222,14 +222,14 @@ namespace JovDK.Networking.Realtime
                 else
                 {
                     DebugExtension.DevLogWarning(
-                        "$$$ > ".ToColor(GoodCollors.pink) +
+                        "$$$ > ".ToColor(GoodColors.Pink) +
                         "productUserId IS NULL!");
                 }
             }
             catch (Exception exception)
             {
                 DebugExtension.DevLogError(
-                    "$$$ > ".ToColor(GoodCollors.pink) +
+                    "$$$ > ".ToColor(GoodColors.Pink) +
                     "ERROR trying to DebugLocalProductUserId!" + "\n" +
                     "exception =" + "\n" +
                     exception);
@@ -238,7 +238,7 @@ namespace JovDK.Networking.Realtime
 
         private void SubscribeToConnectionRequest()
         {
-            DebugExtension.DevLog("> ".ToColor(GoodCollors.orange) + "SubscribeToConnectionRequest");
+            DebugExtension.DevLog("> ".ToColor(GoodColors.Orange) + "SubscribeToConnectionRequest");
 
             if (_connectionNotificationId == 0)
             {
@@ -264,7 +264,7 @@ namespace JovDK.Networking.Realtime
         private void OnIncomingConnectionRequest(ref OnIncomingConnectionRequestInfo data)
         {
             DebugExtension.DevLog(
-                "> ".ToColor(GoodCollors.orange) + "OnIncomingConnectionRequest" + "\n" +
+                "> ".ToColor(GoodColors.Orange) + "OnIncomingConnectionRequest" + "\n" +
                 "data =" + "\n" +
                 data.SerializeObjectToJSON(true));
 
@@ -286,7 +286,7 @@ namespace JovDK.Networking.Realtime
             if (!isValidSocketId)
             {
                 DebugExtension.DevLogError(
-                    "$ > ".ToColor(GoodCollors.pink) +
+                    "$ > ".ToColor(GoodColors.Pink) +
                     "INVALID SocketId" + "\n" +
                     "socketName = " + socketName + "\n" +
                     "data =" + "\n" +

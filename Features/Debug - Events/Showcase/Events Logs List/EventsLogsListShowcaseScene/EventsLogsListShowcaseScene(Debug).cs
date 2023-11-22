@@ -28,7 +28,7 @@ public partial class EventsLogsListShowcaseScene : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            DebugExtension.DevLog("[1]".ToColor(GoodCollors.blue) + " Adding random EventLog...");
+            DebugExtension.DevLog("[1]".ToColor(GoodColors.Blue) + " Adding random EventLog...");
             AddRandomEventLog();
         }
     }

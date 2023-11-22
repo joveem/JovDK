@@ -60,7 +60,7 @@ public class ServerManager : MonoBehaviour
 
         UnityWebRequestAsyncOperation _requestOperation = _request.SendWebRequest();
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        DebugExtension.DevLog(("CALLING API ( " + apiUrl + _endPoint + " )").ToColor(GoodCollors.green) + ("[" + _requestMethod + "]").ToColor(GoodCollors.green) + "\n\ndata =\n\n" + _data.ToColor(GoodCollors.red));
+        DebugExtension.DevLog(("CALLING API ( " + apiUrl + _endPoint + " )").ToColor(GoodColors.Green) + ("[" + _requestMethod + "]").ToColor(GoodColors.Green) + "\n\ndata =\n\n" + _data.ToColor(GoodColors.Red));
 #endif
 
         while (!_requestOperation.isDone)
@@ -68,11 +68,11 @@ public class ServerManager : MonoBehaviour
 
             PanelsManager.instance.progress = (_request.uploadProgress + _request.downloadProgress) / 2;
 
-            DebugExtension.DevLog("waiting.....".ToColor(GoodCollors.red) + " | up = " + _request.uploadProgress + " down = " + _request.downloadProgress);
+            DebugExtension.DevLog("waiting.....".ToColor(GoodColors.Red) + " | up = " + _request.uploadProgress + " down = " + _request.downloadProgress);
             yield return null;
 
         }
-        DebugExtension.DevLog("DONE!".ToColor(GoodCollors.red) + " | up = " + _request.uploadProgress + " down = " + _request.downloadProgress);
+        DebugExtension.DevLog("DONE!".ToColor(GoodColors.Red) + " | up = " + _request.uploadProgress + " down = " + _request.downloadProgress);
 
         PanelsManager.instance.HideLoadingPanel();
 
@@ -84,7 +84,7 @@ public class ServerManager : MonoBehaviour
                     {
                         ShowConnectionError();
                     }
-                    DebugExtension.DevLog("CONNECTION ERROR".ToColor(GoodCollors.red));
+                    DebugExtension.DevLog("CONNECTION ERROR".ToColor(GoodColors.Red));
                     break;
 
                 }
@@ -93,7 +93,7 @@ public class ServerManager : MonoBehaviour
                 {
 
                     ShowDataProcessingError();
-                    DebugExtension.DevLog("DATA PROCESSING ERROR".ToColor(GoodCollors.red));
+                    DebugExtension.DevLog("DATA PROCESSING ERROR".ToColor(GoodColors.Red));
                     break;
 
                 }
@@ -110,7 +110,7 @@ public class ServerManager : MonoBehaviour
 
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        DebugExtension.DevLog(("API RESPONSE ( " + apiUrl + _endPoint + " )").ToColor(GoodCollors.yellow) + ("[" + _requestMethod + "]").ToColor(GoodCollors.yellow) + "\n\ncode = " + _requestOperation.webRequest.responseCode.ToString().ToColor(GoodCollors.red) + "\n\ndata =\n\n" + (string.IsNullOrWhiteSpace(_requestOperation.webRequest.downloadHandler.text) ? "NULL / EMPTY" : _requestOperation.webRequest.downloadHandler.text).ToColor(GoodCollors.red) + "\n\n");
+        DebugExtension.DevLog(("API RESPONSE ( " + apiUrl + _endPoint + " )").ToColor(GoodColors.Yellow) + ("[" + _requestMethod + "]").ToColor(GoodColors.Yellow) + "\n\ncode = " + _requestOperation.webRequest.responseCode.ToString().ToColor(GoodColors.Red) + "\n\ndata =\n\n" + (string.IsNullOrWhiteSpace(_requestOperation.webRequest.downloadHandler.text) ? "NULL / EMPTY" : _requestOperation.webRequest.downloadHandler.text).ToColor(GoodColors.Red) + "\n\n");
 #endif
 
         _response((int)_request.responseCode, _request.downloadHandler.text);

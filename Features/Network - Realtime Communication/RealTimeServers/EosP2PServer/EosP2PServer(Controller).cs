@@ -71,7 +71,7 @@ namespace JovDK.Networking.Realtime
                     if (!success)
                     {
                         DebugExtension.DevLogError(
-                            "$ > ".ToColor(GoodCollors.pink) +
+                            "$ > ".ToColor(GoodColors.Pink) +
                             "ERROR trying to UpdateMembersList!" + "\n" +
                             "member.UserId = " + member.UserId);
                     }

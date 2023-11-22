@@ -41,7 +41,7 @@ namespace JovDK.Debug
             StackFrame _stackFrame = new StackFrame(2, true);
             System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
 
-            debugText += _methodInfo.ReflectedType.FullName.ToColor(GoodCollors.yellow) + " | " + _stackFrame.GetMethod().Name.ToColor(GoodCollors.yellow) + " | ";
+            debugText += _methodInfo.ReflectedType.FullName.ToColor(GoodColors.Yellow) + " | " + _stackFrame.GetMethod().Name.ToColor(GoodColors.Yellow) + " | ";
 
 #endif
 

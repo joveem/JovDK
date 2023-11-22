@@ -38,7 +38,7 @@ public partial class EosP2PTestingShowcase : MonoBehaviour
         string password = _usernameInputField.text;
 
         string debugText =
-            "> ".ToColor(GoodCollors.orange) +
+            "> ".ToColor(GoodColors.Orange) +
             "TryToConnect" + "\n" +
             "username = " + username + "\n" +
             "password = " + password + "\n" +

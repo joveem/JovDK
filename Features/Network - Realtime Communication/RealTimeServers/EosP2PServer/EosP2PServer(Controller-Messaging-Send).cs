@@ -59,7 +59,7 @@ namespace JovDK.Networking.Realtime
                     default:
                         {
                             string debugText =
-                                "$$$ > ".ToColor(GoodCollors.orange) +
+                                "$$$ > ".ToColor(GoodColors.Orange) +
                                 "UNEXPECTED message sending result!" + "\n" +
                                 "result = " + result.ToString();
                             DebugExtension.DevLogWarning(debugText);
@@ -72,7 +72,7 @@ namespace JovDK.Networking.Realtime
             else
             {
                 DebugExtension.DevLogError(
-                    "$ > ".ToColor(GoodCollors.pink) +
+                    "$ > ".ToColor(GoodColors.Pink) +
                     "INVALID friendId!" + "\n" +
                     "remoteUserId = " + remoteUserId.SerializeObjectToJSON(true));
             }

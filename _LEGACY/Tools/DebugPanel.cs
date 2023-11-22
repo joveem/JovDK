@@ -25,7 +25,7 @@ public class DebugPanel : MonoBehaviour
         DebugExtension.DevLog("Destroing Debug Panel".ToColor(GoodCollors.red));
         Destroy(gameObject);
 #endif
-        DebugExtension.DevLog("Keeping Debug Panel".ToColor(GoodCollors.green));
+        DebugExtension.DevLog("Keeping Debug Panel".ToColor(GoodColors.Green));
 
 
 

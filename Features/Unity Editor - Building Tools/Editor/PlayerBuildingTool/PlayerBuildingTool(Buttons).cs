@@ -33,7 +33,7 @@ namespace JovDK.Unity.Editor.Build
         void BuildAllSelectedPlatforms()
         {
             // ! NOT IMPLEMENTED!!!
-            DebugExtension.DevLogWarning("NOT IMPLEMENTED!!!".ToColor(GoodCollors.red));
+            DebugExtension.DevLogWarning("NOT IMPLEMENTED!!!".ToColor(GoodColors.Red));
             // ...
             // HandleBuildVersions();
         }

@@ -93,7 +93,7 @@ namespace JovDK.LEGACY.Localization
 
                         string debugText =
                             "languageSelector IS NULL!"
-                            .ToColor(GoodCollors.orange);
+                            .ToColor(GoodColors.Orange);
 
                         DebugExtension.DevLogWarning(debugText);
 

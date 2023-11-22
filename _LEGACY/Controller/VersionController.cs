@@ -76,7 +76,7 @@ public class VersionController : MonoBehaviour
                             case Models.versionStatus.Updated:
                                 {
                                     // current version is updated!
-                                    DebugExtension.DevLog("game updated!".ToColor(GoodCollors.green));
+                                    DebugExtension.DevLog("game updated!".ToColor(GoodColors.Green));
                                     canLoadGame = true;
                                     break;
                                 }

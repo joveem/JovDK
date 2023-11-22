@@ -38,7 +38,7 @@ public partial class EosP2PTestingShowcase : MonoBehaviour
 
     void OnConnectionSucceed()
     {
-        DebugExtension.DevLog("#> ".ToColor(GoodCollors.pink) + "OnConnectionSucceed");
+        DebugExtension.DevLog("#> ".ToColor(GoodColors.Pink) + "OnConnectionSucceed");
 
         ApplyInteractionState();
 

@@ -76,7 +76,7 @@ namespace JovDK.Networking.Realtime
                     {
                         // try deliver the received raw message
                         string debugText =
-                            "#> ".ToColor(GoodCollors.orange) +
+                            "#> ".ToColor(GoodColors.Orange) +
                             "Message received: senderId=" + senderId + "\n" +
                             "socketId=" + socketId + "\n" +
                             "data=" + Encoding.UTF8.GetString(rawData);
@@ -103,7 +103,7 @@ namespace JovDK.Networking.Realtime
                 default:
                     {
                         string debugText =
-                            "$$$ > ".ToColor(GoodCollors.orange) +
+                            "$$$ > ".ToColor(GoodColors.Orange) +
                             "UNEXPECTED message receiving result!" + "\n" +
                             "result = " + result.ToString();
                         DebugExtension.DevLogWarning(debugText);

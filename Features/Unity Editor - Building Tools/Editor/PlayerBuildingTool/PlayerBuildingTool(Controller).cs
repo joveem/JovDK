@@ -42,9 +42,9 @@ namespace JovDK.Unity.Editor.Build
         public void BuildAndroid(Action OnFinish = null)
         {
             if (_isDevelopmentBuild)
-                DebugExtension.DevLog("[ Android ] ".ToColor(GoodCollors.orange) + "Starting Build " + "( DEV ) ".ToColor(GoodCollors.pink));
+                DebugExtension.DevLog("[ Android ] ".ToColor(GoodColors.Orange) + "Starting Build " + "( DEV ) ".ToColor(GoodColors.Pink));
             else
-                DebugExtension.DevLog("[ Android ] ".ToColor(GoodCollors.orange) + "Starting Build...");
+                DebugExtension.DevLog("[ Android ] ".ToColor(GoodColors.Orange) + "Starting Build...");
 
             BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
 
@@ -81,10 +81,10 @@ namespace JovDK.Unity.Editor.Build
             BuildSummary summary = report.summary;
 
             if (summary.result == BuildResult.Succeeded)
-                DebugExtension.DevLog("[ Android ] ".ToColor(GoodCollors.green) + "Build succeeded: ~" + summary.totalSize / 7943573 + " MB (" + summary.totalSize + " bytes)");
+                DebugExtension.DevLog("[ Android ] ".ToColor(GoodColors.Green) + "Build succeeded: ~" + summary.totalSize / 7943573 + " MB (" + summary.totalSize + " bytes)");
 
             if (summary.result == BuildResult.Failed)
-                DebugExtension.DevLogError("[ Android ] ".ToColor(GoodCollors.red) + "Build failed");
+                DebugExtension.DevLogError("[ Android ] ".ToColor(GoodColors.Red) + "Build failed");
 
             OnFinish?.Invoke();
         }

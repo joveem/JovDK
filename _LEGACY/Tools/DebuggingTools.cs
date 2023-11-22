@@ -1,5 +1,5 @@
 // system / unity
-// ...
+using System;
 
 // third
 // ...
@@ -61,6 +61,7 @@ namespace JovDK.Debug
 
     }
 
+    [Obsolete("This class need to be replaced with \"GoodColors\" class")]
     public static class GoodCollors
     {
         static public string red = "#e00";
@@ -69,5 +70,15 @@ namespace JovDK.Debug
         static public string green = "#0a0";
         static public string blue = "#00f";
         static public string pink = "#f0f";
+    }
+
+    public static class GoodColors
+    {
+        static public string Red = "#e00";
+        static public string Orange = "#f61";
+        static public string Yellow = "#aa0";
+        static public string Green = "#0a0";
+        static public string Blue = "#00f";
+        static public string Pink = "#f0f";
     }
 }

@@ -1,8 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+// system / unity
+// ...
 
-using Newtonsoft.Json;
+// third
+// ...
+
+// from company
+// ...
+
+// from project
+// ...
+
 
 public static class DebuggingTools
 {
@@ -32,6 +39,20 @@ public static class DebuggingTools
 
         if (!string.IsNullOrWhiteSpace(_colorCode))
             return "<color=" + _colorCode + ">" + _text + "</color>";
+        else
+            return _text;
+
+    }
+
+    public static string ToShortId(this string _text)
+    {
+
+        bool isShortable =
+            !string.IsNullOrWhiteSpace(_text) &&
+            _text.Length > 4;
+
+        if (isShortable)
+            return "(..." + _text.Substring(_text.Length - 4) + ")";
         else
             return _text;
 

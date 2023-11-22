@@ -48,6 +48,7 @@ MonoBehaviour:
   _popUpContainer: {fileID: 1072705808891124852}
   _informationPopUpPrefab: {fileID: 6631917784625341875, guid: 0f26b6794decddd4c9424cb71c902e88, type: 3}
   _confirmationPopUpPrefab: {fileID: 4107448802243106338, guid: 53cde64fc8f89c74ba82e7ca61bcb304, type: 3}
+  _coverPopUpPrefab: {fileID: 6631917784625341875, guid: fa7174ff05b364044ab05d40ba9ec992, type: 3}
 --- !u!1 &1072705808267522965
 GameObject:
   m_ObjectHideFlags: 0

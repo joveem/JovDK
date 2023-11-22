@@ -32,6 +32,8 @@ public partial class PopUpShowcaseSceneManager : MonoBehaviour
         // confirmation
         _showConfirmationPopUpButton.SetOnClickIfNotNull(ShowConfirmationPopUpButton);
         _showConfirmationPopUpWithTwoCallbacksButton.SetOnClickIfNotNull(ShowConfirmationPopUpWithTwoCallbacksButton);
+        // confirmation
+        _showLoadingPopUpButton.SetOnClickIfNotNull(ShowLoadingPopUpButton);
     }
 
     void ShowTitleOnlyPopUpButton()
@@ -64,4 +66,8 @@ public partial class PopUpShowcaseSceneManager : MonoBehaviour
         ShowConfirmationPopUpWithTwoCallbacks();
     }
 
+    void ShowLoadingPopUpButton()
+    {
+        ShowLoadingPopUp();
+    }
 }

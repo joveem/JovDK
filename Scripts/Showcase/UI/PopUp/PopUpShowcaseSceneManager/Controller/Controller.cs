@@ -122,6 +122,14 @@ public partial class PopUpShowcaseSceneManager : MonoBehaviour
             negativeCallback);
     }
 
+    async void ShowLoadingPopUp()
+    {
+        _popUpService.ShowLoadingCover();
+        int waitingSeconds = 2;
+        await Task.Delay(waitingSeconds * 1000);
+        _popUpService.HideLoadingCover();
+    }
+
     void ShowCallbackPopUp()
     {
         string description = "That's a callback PopUp";

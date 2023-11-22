@@ -24,13 +24,12 @@ namespace JovDK.Services
 {
     public partial class PopUpService : MonoBehaviour
     {
-        public void ShowPopUpInformation(
+        public PopUp ShowPopUpInformation(
             string title = null,
             string description = null,
             string positiveButtonText = null,
             Action positiveCallback = null)
         {
-
             PopUp popUpInstance = Instantiate(_informationPopUpPrefab, _popUpContainer);
 
             popUpInstance.SetTexts(title, description);
@@ -40,9 +39,11 @@ namespace JovDK.Services
 
             popUpInstance.HidePanelInstantaneously();
             popUpInstance.PlayShowAnimation();
+
+            return popUpInstance;
         }
 
-        public void ShowPopUpConfirmation(
+        public PopUp ShowPopUpConfirmation(
             string title = null,
             string description = null,
             string positiveButtonText = null,
@@ -50,7 +51,6 @@ namespace JovDK.Services
             Action positiveCallback = null,
             Action negativeCallback = null)
         {
-
             PopUp popUpInstance = Instantiate(_confirmationPopUpPrefab, _popUpContainer);
 
             popUpInstance.SetTexts(title, description);
@@ -61,6 +61,39 @@ namespace JovDK.Services
 
             popUpInstance.HidePanelInstantaneously();
             popUpInstance.PlayShowAnimation();
+
+            return popUpInstance;
+        }
+
+        public PopUp ShowPopUpCover(
+            string title = null,
+            string description = null)
+        {
+            PopUp popUpInstance = Instantiate(_coverPopUpPrefab, _popUpContainer);
+
+            popUpInstance.SetTexts(title, description);
+
+            popUpInstance.HidePanelInstantaneously();
+            popUpInstance.PlayShowAnimation();
+
+            return popUpInstance;
+        }
+
+        public void ShowLoadingCover()
+        {
+            _loadingCoverPopup.DoIfNull(() =>
+            {
+                _loadingCoverPopup = ShowPopUpCover("Loading...");
+            });
+        }
+
+        public void HideLoadingCover()
+        {
+            _loadingCoverPopup.DoIfNotNull(() =>
+            {
+                _loadingCoverPopup.ClosePanel();
+                _loadingCoverPopup = null;
+            });
         }
     }
 }

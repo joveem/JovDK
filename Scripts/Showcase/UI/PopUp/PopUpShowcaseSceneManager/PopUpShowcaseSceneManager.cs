@@ -28,9 +28,9 @@ public partial class PopUpShowcaseSceneManager : MonoBehaviour
     [SerializeField] PopUpService _popUpService;
 
 
-    [Space(5), Header("[ State ]"), Space(10)]
+    // [Space(5), Header("[ State ]"), Space(10)]
 
-    bool _state;
+    // bool _state;
 
 
     [Space(5), Header("[ Parts ]"), Space(10)]
@@ -43,31 +43,33 @@ public partial class PopUpShowcaseSceneManager : MonoBehaviour
     // confirmation
     [SerializeField] Button _showConfirmationPopUpButton;
     [SerializeField] Button _showConfirmationPopUpWithTwoCallbacksButton;
+    // loading
+    [SerializeField] Button _showLoadingPopUpButton;
 
 
-    [Space(5), Header("[ Configs ]"), Space(10)]
+    // [Space(5), Header("[ Configs ]"), Space(10)]
 
-    bool _configs;
+    // bool _configs;
 
 
-    void Awake()
-    {
+    // void Awake()
+    // {
 
-    }
+    // }
 
     void Start()
     {
         SetupButtons();
     }
 
-    void Update()
-    {
+    // void Update()
+    // {
 
-    }
+    // }
 
-    void FixedUpdate()
-    {
+    // void FixedUpdate()
+    // {
 
-    }
+    // }
 
 }

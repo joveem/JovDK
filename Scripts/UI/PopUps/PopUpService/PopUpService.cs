@@ -24,14 +24,15 @@ namespace JovDK.Services
     public partial class PopUpService : MonoBehaviour
     {
 
-        [Space(5), Header("[ Dependencies ]"), Space(10)]
+        // [Space(5), Header("[ Dependencies ]"), Space(10)]
 
-        bool _dependencies;
+        // bool _dependencies;
 
 
         [Space(5), Header("[ State ]"), Space(10)]
 
-        bool _state;
+        PopUp _loadingCoverPopup = null;
+
 
 
         [Space(5), Header("[ Parts ]"), Space(10)]
@@ -43,6 +44,7 @@ namespace JovDK.Services
 
         [SerializeField] PopUp _informationPopUpPrefab;
         [SerializeField] PopUp _confirmationPopUpPrefab;
+        [SerializeField] PopUp _coverPopUpPrefab;
 
 
         void Awake()

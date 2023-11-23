@@ -17,7 +17,6 @@ using JovDK.SafeActions;
 using JovDK.SerializingTools.Bson;
 using JovDK.SerializingTools.Json;
 using PlayEveryWare.EpicOnlineServices;
-using NUnit.Framework;
 
 // from project
 // ...

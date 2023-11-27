@@ -45,15 +45,20 @@ namespace JovDK.Debug
 
         }
 
-        public static string ToShortId(this string _text)
+        public static string ToShortId(
+            this string _text,
+            bool ignoreParentheses = false)
         {
 
             bool isShortable =
                 !string.IsNullOrWhiteSpace(_text) &&
                 _text.Length > 4;
 
+            string startParenteses = ignoreParentheses ? "" : "(";
+            string endParenteses = ignoreParentheses ? "" : ")";
+
             if (isShortable)
-                return "(..." + _text.Substring(_text.Length - 4) + ")";
+                return startParenteses + "..." + _text.Substring(_text.Length - 4) + endParenteses;
             else
                 return _text;
 

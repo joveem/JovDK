@@ -64,6 +64,43 @@ namespace JovDK.Debug
 
         }
 
+        public static string ToNestedText(
+            this string _text,
+            bool isSingleItem = false)
+        {
+            string value = "";
+
+            string[] breakLinesList = new string[] { "\r\n", "\r", "\n" };
+            string[] textLines = _text.Split(breakLinesList, StringSplitOptions.RemoveEmptyEntries);
+
+            string firstLineText = isSingleItem ? "└─ " : "├─ ";
+            string middleLineText = isSingleItem ? "   " : "├─ ";
+            string lastLineText = isSingleItem ? "   " : "└─ ";
+
+            for (int i = 0; i < textLines.Length; i++)
+            {
+                string textLine = textLines[i];
+
+                bool isSingleLine = (textLines.Length == 1);
+                bool isFirstInList = (i == 0);
+                bool isLastInList = (i == textLines.Length - 1);
+
+                if (!isSingleLine)
+                {
+                    if (isLastInList)
+                        value += lastLineText + textLine + "\n";
+                    else if (isFirstInList)
+                        value += firstLineText + textLine + "\n";
+                    else
+                        value += middleLineText + textLine + "\n";
+                }
+                // is single line
+                else
+                    value += "└─ " + textLine + "\n";
+            }
+
+            return value;
+        }
     }
 
     [Obsolete("This class need to be replaced with \"GoodColors\" class")]

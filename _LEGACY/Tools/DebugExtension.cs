@@ -1,4 +1,15 @@
+// system / unity
 using System.Diagnostics;
+using UnityEngine;
+
+// third
+// ...
+
+// from company
+// ...
+
+// from project
+// ...
 
 
 namespace JovDK.Debug
@@ -53,6 +64,15 @@ namespace JovDK.Debug
 
             return debugText;
 
+        }
+
+        public static void DebugPosition(Vector3 globalPosition, Color lineColor)
+        {
+            float lineSize = 5f;
+            Vector3 positionDelta = Vector3.up * lineSize;
+            positionDelta = globalPosition + positionDelta;
+
+            UnityEngine.Debug.DrawLine(globalPosition, positionDelta, lineColor);
         }
     }
 

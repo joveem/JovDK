@@ -20,7 +20,7 @@ using JovDK.Debug.Events;
 // ...
 
 
-public partial class EventsLogsListShowcaseScene : MonoBehaviour
+public partial class Asmb_EventsLogsListShowcaseScene : MonoBehaviour
 {
 
     void SetupComponent()

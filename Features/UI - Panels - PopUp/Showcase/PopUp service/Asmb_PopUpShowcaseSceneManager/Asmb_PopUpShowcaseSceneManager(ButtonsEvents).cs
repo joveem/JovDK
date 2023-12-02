@@ -20,7 +20,7 @@ using JovDK.Services;
 // ...
 
 
-public partial class PopUpShowcaseSceneManager : MonoBehaviour
+public partial class Asmb_PopUpShowcaseSceneManager : MonoBehaviour
 {
     void SetupButtons()
     {

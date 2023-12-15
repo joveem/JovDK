@@ -1,4 +1,5 @@
 // system / unity
+using System.Collections.Generic;
 using System.Diagnostics;
 using UnityEngine;
 
@@ -73,6 +74,48 @@ namespace JovDK.Debug
             positionDelta = globalPosition + positionDelta;
 
             UnityEngine.Debug.DrawLine(globalPosition, positionDelta, lineColor);
+        }
+
+        public static void DebugPosition(Vector3 globalPosition, Color lineColor, float duration)
+        {
+            float lineSize = 5f;
+            Vector3 positionDelta = Vector3.up * lineSize;
+            positionDelta = globalPosition + positionDelta;
+
+            UnityEngine.Debug.DrawLine(globalPosition, positionDelta, lineColor, duration);
+        }
+
+        public static void DebugPath(
+            List<Vector3> pathPositionsList,
+            Color lineColor = default)
+        {
+            if (lineColor.Equals(default))
+                lineColor = new Color(1f, 0f, 0f);
+
+            for (int i = 0; i < pathPositionsList.Count - 1; i++)
+            {
+                Vector3 segmendStartPosition = pathPositionsList[i];
+                Vector3 segmendEndPosition = pathPositionsList[i + 1];
+
+                UnityEngine.Debug.DrawLine(segmendStartPosition, segmendEndPosition, lineColor);
+            }
+        }
+
+        public static void DebugPath(
+            List<Vector3> pathPositionsList,
+            float duration,
+            Color lineColor = default)
+        {
+            if (lineColor.Equals(default))
+                lineColor = new Color(1f, 0f, 0f);
+
+            for (int i = 0; i < pathPositionsList.Count - 1; i++)
+            {
+                Vector3 segmendStartPosition = pathPositionsList[i];
+                Vector3 segmendEndPosition = pathPositionsList[i + 1];
+
+                UnityEngine.Debug.DrawLine(segmendStartPosition, segmendEndPosition, lineColor, duration);
+            }
         }
     }
 

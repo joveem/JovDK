@@ -85,9 +85,9 @@ namespace JovDK.Control.Touch
 
         // }
 
-        void FixedUpdate()
-        {
+        // void FixedUpdate()
+        // {
 
-        }
+        // }
     }
 }

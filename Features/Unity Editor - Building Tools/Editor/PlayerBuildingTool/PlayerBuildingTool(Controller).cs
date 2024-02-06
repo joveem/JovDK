@@ -41,6 +41,8 @@ namespace JovDK.Unity.Editor.Build
 
         public void BuildAndroid(Action OnFinish = null)
         {
+            DateTime buildStart = DateTime.UtcNow;
+
             if (_isDevelopmentBuild)
                 DebugExtension.DevLog("[ Android ] ".ToColor(GoodColors.Orange) + "Starting Build " + "( DEV ) ".ToColor(GoodColors.Pink));
             else
@@ -67,6 +69,7 @@ namespace JovDK.Unity.Editor.Build
             buildPlayerOptions.options = BuildOptions.None;
 
             EditorUserBuildSettings.buildAppBundle = !_buildApkInsteadOfAab;
+            EditorUserBuildSettings.androidCreateSymbols = AndroidCreateSymbols.Debugging; // TODO: REVIEW THIS!
 
             if (_isDevelopmentBuild)
                 buildPlayerOptions.options = BuildOptions.Development;
@@ -80,11 +83,14 @@ namespace JovDK.Unity.Editor.Build
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildSummary summary = report.summary;
 
+            DateTime buildEnd = DateTime.UtcNow;
+            TimeSpan buildDuration = buildEnd.Subtract(buildStart);
+
             if (summary.result == BuildResult.Succeeded)
-                DebugExtension.DevLog("[ Android ] ".ToColor(GoodColors.Green) + "Build succeeded: ~" + summary.totalSize / 7943573 + " MB (" + summary.totalSize + " bytes)");
+                DebugExtension.DevLog("[ Android ] ".ToColor(GoodColors.Green) + "Build succeeded! (duration = " + buildDuration.ToString() + ")  ~" + summary.totalSize / 7943573 + " MB (" + summary.totalSize + " bytes)");
 
             if (summary.result == BuildResult.Failed)
-                DebugExtension.DevLogError("[ Android ] ".ToColor(GoodColors.Red) + "Build failed");
+                DebugExtension.DevLogError("[ Android ] ".ToColor(GoodColors.Red) + "Build failed (duration = " + buildDuration.ToString() + ")");
 
             OnFinish?.Invoke();
         }

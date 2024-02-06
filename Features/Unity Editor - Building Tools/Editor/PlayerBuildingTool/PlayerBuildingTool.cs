@@ -75,10 +75,14 @@ namespace JovDK.Unity.Editor.Build
             GetWindow<PlayerBuildingTool>("[JD] Build");
         }
 
-        private void Awake()
+        void Awake()
         {
             LoadBuildProperties();
         }
 
+        void OnEnable()
+        {
+            LoadBuildProperties();
+        }
     }
 }

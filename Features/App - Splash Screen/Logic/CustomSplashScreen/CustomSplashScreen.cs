@@ -52,8 +52,19 @@ namespace JovDK.App.SplashScreen
 
         void Awake()
         {
-            ShowContent();
-            HideLogo();
+            bool hasToShowSplashScreen = true;
+
+#if UNITY_EDITOR
+            hasToShowSplashScreen = _DEBUG_simulateUnitySplashOnEditor;
+#endif
+
+            if (hasToShowSplashScreen)
+            {
+                ShowContent();
+                HideLogo();
+            }
+            else
+                Destroy(gameObject);
         }
 
         IEnumerator Start()

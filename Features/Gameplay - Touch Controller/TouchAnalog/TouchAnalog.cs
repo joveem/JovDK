@@ -35,6 +35,7 @@ namespace JovDK.Control.Touch
 
         Vector3 _stickInitialPosition;
         float _stickHeight = 100f;
+        float _canvasHeight = 1080f;
 
         Vector3 _touchDownPosition;
 

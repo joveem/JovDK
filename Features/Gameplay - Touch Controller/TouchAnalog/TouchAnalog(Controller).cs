@@ -28,6 +28,8 @@ namespace JovDK.Control.Touch
         {
             _stickInitialPosition = _stickBaseImage.rectTransform.position;
             _stickHeight = _stickBaseImage.rectTransform.sizeDelta.y;
+            CanvasScaler stickCanvasScaler = _stickBaseImage.rectTransform.GetComponentInParent<CanvasScaler>();
+            stickCanvasScaler.DoIfNotNull(() => _canvasHeight = stickCanvasScaler.referenceResolution.y);
         }
     }
 }

@@ -50,7 +50,7 @@ namespace JovDK.Control.Touch
 
             Vector3 touchPosition = eventData.position;
             Vector3 positionDelta = touchPosition - _touchDownPosition;
-            float screenFactor = ((float)Screen.height) / 1080f;
+            float screenFactor = ((float)Screen.height) / _canvasHeight;
             float scaledStickHeight = _stickHeight * screenFactor;
 
             if (positionDelta.magnitude > (scaledStickHeight / 2f))

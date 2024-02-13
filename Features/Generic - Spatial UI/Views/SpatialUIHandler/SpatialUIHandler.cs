@@ -54,7 +54,12 @@ namespace JovDK.Generic.SpatialUI
 
         // }
 
-        void Update()
+        // void Update()
+        // {
+
+        // }
+
+        void LateUpdate()
         {
             HandleUIPositioning();
             HandleUISorting();

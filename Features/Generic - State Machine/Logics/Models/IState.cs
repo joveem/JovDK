@@ -22,7 +22,7 @@ namespace JovDK.Generic.StateMachine
 {
     public interface IState
     {
-        void Tick();
+        void Tick(float deltaTime);
         void OnEnter();
         void OnExit();
     }

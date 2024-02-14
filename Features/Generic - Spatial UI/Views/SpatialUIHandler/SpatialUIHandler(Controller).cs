@@ -62,6 +62,12 @@ namespace JovDK.Generic.SpatialUI
             }
         }
 
+        public void RemoveUIItemRegister(RectTransform relativeUITransform)
+        {
+            if (_currentSpatialUIItemList.ContainsKey(relativeUITransform))
+                _currentSpatialUIItemList.Remove(relativeUITransform);
+        }
+
         void HandleUIPositioning()
         {
             if (_baseCamera == null)

@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using SystemRandom = System.Random;
+using UnityRandom = UnityEngine.Random;
 
 // third
 using TMPro;
@@ -80,6 +82,41 @@ namespace JovDK.Math
             }
 
             return positionsList;
+        }
+
+        public static Vector3 GetRandomNearPositionInArea(
+            Vector3 initialPosition,
+            Vector3 areaStartPosition,
+            Vector3 areaEndPosition,
+            Vector3 maxDeltaArea)
+        {
+            Vector3 value = default;
+
+            float randomDeltaMovementX = UnityRandom.Range(-maxDeltaArea.x / 2, maxDeltaArea.x / 2f);
+            float randomDeltaMovementY = UnityRandom.Range(-maxDeltaArea.y / 2, maxDeltaArea.y / 2f);
+            float randomDeltaMovementZ = UnityRandom.Range(-maxDeltaArea.z / 2, maxDeltaArea.z / 2f);
+            Vector3 randomDeltaPosition = new Vector3(randomDeltaMovementX, randomDeltaMovementY, randomDeltaMovementZ);
+
+            value = initialPosition + randomDeltaPosition;
+            value = ClampPositionInArea(value, areaStartPosition, areaEndPosition);
+
+            return value;
+        }
+
+        public static Vector3 ClampPositionInArea(
+            Vector3 basePosition,
+            Vector3 areaStartPosition,
+            Vector3 areaEndPosition)
+        {
+            Vector3 value = default;
+
+            float clampedX = Mathf.Clamp(basePosition.x, areaStartPosition.x, areaEndPosition.x);
+            float clampedY = Mathf.Clamp(basePosition.y, areaStartPosition.y, areaEndPosition.y);
+            float clampedZ = Mathf.Clamp(basePosition.z, areaStartPosition.z, areaEndPosition.z);
+
+            value = new Vector3(clampedX, clampedY, clampedZ);
+
+            return value;
         }
     }
 }

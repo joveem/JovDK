@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using SystemRandom = System.Random;
+using UnityRandom = UnityEngine.Random;
 
 // third
 using TMPro;

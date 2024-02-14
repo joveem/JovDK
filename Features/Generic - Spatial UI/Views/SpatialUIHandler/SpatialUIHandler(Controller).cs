@@ -49,8 +49,8 @@ namespace JovDK.Generic.SpatialUI
 
         public void RegisterSpatialUIItems(SpatialUIItem spatialUIItem)
         {
-            if (!_currentSpatialUIItemList.Contains(spatialUIItem))
-                _currentSpatialUIItemList.Add(spatialUIItem);
+            if (!_currentSpatialUIItemList.ContainsKey(spatialUIItem.RelativeUITransform))
+                _currentSpatialUIItemList.Add(spatialUIItem.RelativeUITransform, spatialUIItem);
             else
             {
                 string debugText =
@@ -67,7 +67,7 @@ namespace JovDK.Generic.SpatialUI
             if (_baseCamera == null)
                 _baseCamera = Camera.main;
 
-            foreach (SpatialUIItem spatialUIItem in _currentSpatialUIItemList)
+            foreach (SpatialUIItem spatialUIItem in _currentSpatialUIItemList.Values)
             {
                 spatialUIItem.DoIfNotNull(() =>
                 {
@@ -87,7 +87,7 @@ namespace JovDK.Generic.SpatialUI
         {
             List<int> availableIndexesList = new List<int>();
 
-            foreach (SpatialUIItem spatialUIItem in _currentSpatialUIItemList)
+            foreach (SpatialUIItem spatialUIItem in _currentSpatialUIItemList.Values)
             {
                 spatialUIItem.DoIfNotNull(() =>
                 {
@@ -97,11 +97,13 @@ namespace JovDK.Generic.SpatialUI
             }
 
             availableIndexesList = availableIndexesList.OrderBy((item) => item).ToList();
-            _currentSpatialUIItemList = _currentSpatialUIItemList.OrderByDescending((item) => item.CameraDistance).ToList();
+            List<SpatialUIItem> spatialUIItemList =
+                _currentSpatialUIItemList.Values.OrderByDescending(
+                    (item) => item.CameraDistance).ToList();
 
-            for (int i = 0; i < _currentSpatialUIItemList.Count; i++)
+            for (int i = 0; i < spatialUIItemList.Count; i++)
             {
-                SpatialUIItem spatialUIItem = _currentSpatialUIItemList[i];
+                SpatialUIItem spatialUIItem = spatialUIItemList[i];
                 int containerSortIndex = availableIndexesList[i];
 
                 spatialUIItem.DoIfNotNull(() =>

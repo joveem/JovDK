@@ -30,7 +30,7 @@ namespace JovDK.Generic.SpatialUI
 
         [Space(5), Header("[ State ]"), Space(10)]
 
-        List<SpatialUIItem> _currentSpatialUIItemList = new List<SpatialUIItem>();
+        Dictionary<RectTransform, SpatialUIItem> _currentSpatialUIItemList = new Dictionary<RectTransform, SpatialUIItem>();
         Camera _baseCamera;
 
 

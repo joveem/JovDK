@@ -36,7 +36,7 @@ namespace JovDK.Control.Touch
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
-            // DebugExtension.DevLog("> ".ToColor(GoodCollors.green) + "OnPointerDown");
+            // DebugExtension.DevLog("> ".ToColor(GoodColors.Green) + "OnPointerDown");
 
             _touchDownPosition = eventData.position;
             ApplyStickPosition(_touchDownPosition);
@@ -46,7 +46,7 @@ namespace JovDK.Control.Touch
 
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
-            // DebugExtension.DevLog("> ".ToColor(GoodCollors.orange) + "OnDrag");
+            // DebugExtension.DevLog("> ".ToColor(GoodColors.Orange) + "OnDrag");
 
             Vector3 touchPosition = eventData.position;
             Vector3 positionDelta = touchPosition - _touchDownPosition;
@@ -64,7 +64,7 @@ namespace JovDK.Control.Touch
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
-            // DebugExtension.DevLog("> ".ToColor(GoodCollors.red) + "OnPointerUp");
+            // DebugExtension.DevLog("> ".ToColor(GoodColors.Red) + "OnPointerUp");
 
             ApplyInitialStickPosition();
 

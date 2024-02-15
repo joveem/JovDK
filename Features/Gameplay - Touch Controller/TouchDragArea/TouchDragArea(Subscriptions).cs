@@ -36,7 +36,7 @@ namespace JovDK.Control.Touch
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
-            // DebugExtension.DevLog("> ".ToColor(GoodCollors.green) + "OnPointerDown");
+            // DebugExtension.DevLog("> ".ToColor(GoodColors.Green) + "OnPointerDown");
 
             Vector3 screenPosition = eventData.position;
             OnTouchBegin(screenPosition);
@@ -44,7 +44,7 @@ namespace JovDK.Control.Touch
 
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
-            // DebugExtension.DevLog("> ".ToColor(GoodCollors.orange) + "OnDrag");
+            // DebugExtension.DevLog("> ".ToColor(GoodColors.Orange) + "OnDrag");
 
             Vector3 screenPosition = eventData.position;
             Vector3 positionDelta = eventData.delta;
@@ -56,7 +56,7 @@ namespace JovDK.Control.Touch
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
-            // DebugExtension.DevLog("> ".ToColor(GoodCollors.red) + "OnPointerUp");
+            // DebugExtension.DevLog("> ".ToColor(GoodColors.Red) + "OnPointerUp");
 
             Vector3 screenPosition = eventData.position;
             OnTouchFinish(screenPosition);

@@ -22,7 +22,7 @@ public class DebugPanel : MonoBehaviour
     {
 
 #if !(UNITY_EDITOR || DEVELOPMENT_BUILD)
-        DebugExtension.DevLog("Destroing Debug Panel".ToColor(GoodCollors.red));
+        DebugExtension.DevLog("Destroing Debug Panel".ToColor(GoodColors.Red));
         Destroy(gameObject);
 #endif
         DebugExtension.DevLog("Keeping Debug Panel".ToColor(GoodColors.Green));

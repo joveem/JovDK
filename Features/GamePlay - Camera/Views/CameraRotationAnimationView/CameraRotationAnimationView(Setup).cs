@@ -24,10 +24,9 @@ namespace JovDK.GamePlay.Camera
     {
         void SetupComponent()
         {
-            _baseRigidbody.DoIfNull(() =>
-            {
-                _baseRigidbody = gameObject.GetComponent<Rigidbody>();
-            });
+            _baseRigidbody.DoIfNull(
+                () => _baseRigidbody = gameObject.GetComponent<Rigidbody>(),
+                false);
         }
     }
 }

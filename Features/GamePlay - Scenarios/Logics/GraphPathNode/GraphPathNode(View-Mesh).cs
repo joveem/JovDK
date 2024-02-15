@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 // third
 using TMPro;
@@ -73,6 +75,7 @@ public partial class GraphPathNode : MonoBehaviour
 
         middlePosition = middlePosition + Vector3.up * 20;
 
+#if UNITY_EDITOR
         Handles.DrawBezier(
             startPosition,
             endPosition,
@@ -81,6 +84,7 @@ public partial class GraphPathNode : MonoBehaviour
             lineColor,
             null,
             thickness);
+#endif
     }
 
     // static Mesh _customCylinderMesh = null;

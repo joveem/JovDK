@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 // system / unity
 using System;
 using System.Collections;
@@ -606,3 +607,4 @@ public partial class GraphPathNode : MonoBehaviour
         }
     }
 }
+#endif

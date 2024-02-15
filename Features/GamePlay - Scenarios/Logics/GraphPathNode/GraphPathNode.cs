@@ -14,7 +14,9 @@ using JovDK.Debug;
 using JovDK.SafeActions;
 using JovDK.SerializingTools.Bson;
 using JovDK.SerializingTools.Json;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 // from project
 // ...
@@ -80,16 +82,20 @@ public partial class GraphPathNode : MonoBehaviour
     {
         bool value = false;
 
+#if UNITY_EDITOR
         string prefKey = GetProjectPrefKey("jovdk-graph-path-node-has-to-draw-gizmos");
         value = EditorPrefs.GetBool(prefKey, true);
+#endif
 
         return value;
     }
 
     static void SetHasToDrawGizmos(bool value)
     {
+#if UNITY_EDITOR
         string prefKey = GetProjectPrefKey("jovdk-graph-path-node-has-to-draw-gizmos");
         EditorPrefs.SetBool(prefKey, value);
+#endif
     }
 
     static string GetProjectPrefKey(string baseKey)

@@ -62,7 +62,7 @@ namespace JovDK.SafeActions
 
         }
 
-        public static void SetActiveIfNotNull<T>(this T objectValue, bool setActive) where T : MonoBehaviour
+        public static void SetActiveIfNotNull<T>(this T objectValue, bool setActive) where T : Component
         {
 
             objectValue.DoIfNotNull(() => objectValue.gameObject.SetActive(setActive));

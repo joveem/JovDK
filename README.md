@@ -1,7 +1,19 @@
-#  JovDK
+#  JovDK.Core
+
 ---
 
-## About the project
+## Summary:
+
+- [About](#about)
+- [Getting started](#getting-started)
+    - [Dependencies](#dependencies)
+    - [Adding repo as git-submodule](#adding-repo-as-git-submodule)
+    - [If the project already has the submodule](#if-the-project-already-has-the-submodule)
+- [Additional submodules](#additional-submodules)
+
+---
+
+## About
 
 JovDK is Unity **D**evelopment **K**it that groups tools and implementations that are not single-project-specifics. All Code on this kit need to have the intent of being used on any project with litle or none dependencies
 
@@ -32,7 +44,7 @@ Make sure to have all that before installation
 
 ``` sh
 # adding the submodule:
-git submodule add https://github.com/joveem/JovDK/ Assets/_JovDK
+git submodule add "https://github.com/joveem/JovDK" "Assets/_JovDK/_JovDK-Core"
 #
 ```
 
@@ -42,4 +54,11 @@ git submodule add https://github.com/joveem/JovDK/ Assets/_JovDK
 # Install dependencies:
 git submodule update --recursive --init
 #
+```
+
+## Additional submodules
+
+[JovDK.App.Monetization.AdMob](https://github.com/joveem/JovDK-App-Monetization-AdMob)
+``` sh
+git submodule add "https://github.com/joveem/JovDK-App-Monetization-AdMob" "Assets/_JovDK/JovDK-App-Monetization-AdMob"
 ```

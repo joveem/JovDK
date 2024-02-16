@@ -18,9 +18,23 @@ namespace JovDK.Debug
 
     public static class DebugExtension
     {
+        static public void NDLog(string _message)
+        {
+            UnityEngine.Debug.Log("- <color=#83f>NDLOG</color> | " + _message.DebugText());
+        }
+
+        static public void NDLogWarning(string _message)
+        {
+            UnityEngine.Debug.LogWarning("- <color=#83f>NDLOG</color> | " + _message.DebugText());
+        }
+
+        static public void NDLogError(string _message)
+        {
+            UnityEngine.Debug.LogError("- <color=#83f>NDLOG</color> | " + _message.DebugText());
+        }
+
         static public void DevLog(string _message)
         {
-
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             UnityEngine.Debug.Log("- <color=#f0f>DEVLOG</color> | " + _message.DebugText());
 #endif

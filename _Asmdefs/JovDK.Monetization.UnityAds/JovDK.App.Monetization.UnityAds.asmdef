@@ -1,0 +1,19 @@
+{
+    "name": "JovDK.App.Monetization.UnityAds",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a183fb74a1e458644b6a5bb9a8d0ab67",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:ff6de30450f3748908ff580f6ec64d9a",
+        "GUID:eb51336d7912e41739bc491a768fa824"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

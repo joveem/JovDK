@@ -1,5 +1,5 @@
 {
-    "name": "JovDK.Monetization.AdMob",
+    "name": "JovDK.App.Monetization.AdMob",
     "rootNamespace": "",
     "references": [
         "GUID:a183fb74a1e458644b6a5bb9a8d0ab67",

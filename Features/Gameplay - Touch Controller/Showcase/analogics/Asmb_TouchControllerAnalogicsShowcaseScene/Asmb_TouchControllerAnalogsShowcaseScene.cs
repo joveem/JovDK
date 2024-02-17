@@ -10,8 +10,8 @@ using UnityEngine.UI;
 // ...
 
 // from company
-using JovDK.Debug;
-using JovDK.Debug.Input;
+using JovDK.Debugging;
+using JovDK.Debugging.Input;
 using JovDK.Control.Touch;
 
 // from project

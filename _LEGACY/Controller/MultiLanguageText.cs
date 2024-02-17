@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 using TMPro;
 
-using JovDK.Debug;
+using JovDK.Debugging;
 using JovDK.LEGACY.Localization;
 
 

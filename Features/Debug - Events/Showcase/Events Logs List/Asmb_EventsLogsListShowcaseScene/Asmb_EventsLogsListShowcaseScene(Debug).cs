@@ -11,11 +11,11 @@ using Random = UnityEngine.Random;
 using TMPro;
 
 // from company
-using JovDK.Debug;
+using JovDK.Debugging;
 using JovDK.SafeActions;
 using JovDK.SerializingTools.Bson;
 using JovDK.SerializingTools.Json;
-using JovDK.Debug.Events;
+using JovDK.Debugging.Events;
 
 // from project
 // ...

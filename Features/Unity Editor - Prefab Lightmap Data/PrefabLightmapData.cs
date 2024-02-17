@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
-using JovDK.Debug;
+using JovDK.Debugging;
 public class PrefabLightmapData : MonoBehaviour
 {
     [SerializeField] bool _ignorePrefabSaving = false;

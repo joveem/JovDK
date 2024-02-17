@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 using Newtonsoft.Json;
 
-using JovDK.Debug;
+using JovDK.Debugging;
 using JovDK.SerializingTools.Json;
 using JovDK.Models;
 using JovDK.LEGACY.Localization;

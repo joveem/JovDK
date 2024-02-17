@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using JovDK.Debug;
+using JovDK.Debugging;
 
 public class DebugPanel : MonoBehaviour
 {

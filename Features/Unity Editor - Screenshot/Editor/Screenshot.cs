@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using UnityEditor;
 
-using JovDK.Debug;
+using JovDK.Debugging;
 
 public class Screenshot : MonoBehaviour
 {

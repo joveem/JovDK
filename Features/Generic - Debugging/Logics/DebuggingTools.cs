@@ -1,5 +1,11 @@
 // system / unity
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.UI;
 
 // third
 // ...
@@ -11,9 +17,9 @@ using System;
 // ...
 
 
-namespace JovDK.Debug
+namespace JovDK.Debugging
 {
-    public static class DebuggingTools
+    public static partial class DebuggingTools
     {
         public static string TextIfIsNull(this object _object, string _textIfNull, string _textIfNotNull = "")
         {

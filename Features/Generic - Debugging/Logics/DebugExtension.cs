@@ -1,7 +1,11 @@
 // system / unity
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 // third
 // ...
@@ -13,10 +17,9 @@ using UnityEngine;
 // ...
 
 
-namespace JovDK.Debug
+namespace JovDK.Debugging
 {
-
-    public static class DebugExtension
+    public static partial class DebugExtension
     {
         static public void NDLog(string _message)
         {
@@ -132,5 +135,4 @@ namespace JovDK.Debug
             }
         }
     }
-
 }

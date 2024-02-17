@@ -10,7 +10,7 @@ using UnityEngine.UI;
 using TMPro;
 
 // from company
-using JovDK.Debug;
+using JovDK.Debugging;
 using JovDK.SafeActions;
 using JovDK.SerializingTools.Bson;
 using JovDK.SerializingTools.Json;
@@ -19,7 +19,7 @@ using JovDK.SerializingTools.Json;
 // ...
 
 
-namespace JovDK.Debug.Input
+namespace JovDK.Debugging.Input
 {
     public partial class AxysDebugView : MonoBehaviour
     {

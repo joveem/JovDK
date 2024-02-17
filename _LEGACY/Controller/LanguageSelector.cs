@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-using JovDK.Debug;
+using JovDK.Debugging;
 
 namespace JovDK.LEGACY.Localization
 {

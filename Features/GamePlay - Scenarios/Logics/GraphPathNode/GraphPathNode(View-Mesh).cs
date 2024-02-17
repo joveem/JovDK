@@ -13,7 +13,7 @@ using UnityEditor;
 using TMPro;
 
 // from company
-using JovDK.Debug;
+using JovDK.Debugging;
 using JovDK.SafeActions;
 using JovDK.SerializingTools.Bson;
 using JovDK.SerializingTools.Json;

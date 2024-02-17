@@ -10,8 +10,8 @@ using UnityEngine.UI;
 using TMPro;
 
 // from company
-using JovDK.Debug;
-using JovDK.Debug.Input;
+using JovDK.Debugging;
+using JovDK.Debugging.Input;
 using JovDK.SafeActions;
 using JovDK.SerializingTools.Bson;
 using JovDK.SerializingTools.Json;

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using Debug = UnityEngine.Debug;
 
 // third
 // ...
@@ -21,67 +22,116 @@ namespace JovDK.Debugging
 {
     public static partial class DebugExtension
     {
-        static public void NDLog(string _message)
+        static public void NDLog()
         {
-            UnityEngine.Debug.Log("- <color=#83f>NDLOG</color> | " + _message.DebugText());
+            NDLog(">".ToColor(GoodColors.Orange));
         }
 
-        static public void NDLogWarning(string _message)
+        static public void NDLog(string message)
         {
-            UnityEngine.Debug.LogWarning("- <color=#83f>NDLOG</color> | " + _message.DebugText());
+            string debugText = NDDevLogText(message);
+            Debug.Log(debugText);
         }
 
-        static public void NDLogError(string _message)
+        static public void NDLogWarning(string message)
         {
-            UnityEngine.Debug.LogError("- <color=#83f>NDLOG</color> | " + _message.DebugText());
+            string debugText = NDDevLogText(message);
+            Debug.LogWarning(debugText);
         }
 
-        static public void DevLog(string _message)
+        static public void NDLogError(string message)
+        {
+            string debugText = NDDevLogText(message);
+            Debug.LogError(debugText);
+        }
+
+        static string NDDevLogText(string message)
+        {
+            string value = "";
+
+            value += "- " + "NDLOG".ToColor("#83f") + " | ";
+            value += message.DebugText();
+
+            return value;
+        }
+
+        static public void DevLog()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            UnityEngine.Debug.Log("- <color=#f0f>DEVLOG</color> | " + _message.DebugText());
+            DevLog(">".ToColor(GoodColors.Orange));
 #endif
-
         }
-        static public void DevLogWarning(string _message)
+
+        static public void DevLog(string message)
         {
-
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            UnityEngine.Debug.LogWarning("- <color=#f0f>DEVLOG</color> | " + _message.DebugText());
+            string debugText = DevLogText(message);
+            Debug.Log(debugText);
 #endif
-
         }
-        static public void DevLogError(string _message)
-        {
 
+        static public void DevLogWarning(string message)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD 
+            string debugText = DevLogText(message);
+            Debug.LogWarning(debugText);
+#endif
+        }
+
+        static public void DevLogError(string message)
+        {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            UnityEngine.Debug.LogError("- <color=#f0f>DEVLOG</color> | " + _message.DebugText());
+            string debugText = DevLogText(message);
+            Debug.LogError(debugText);
+#endif
+        }
+
+        static string DevLogText(string message)
+        {
+            string value = "";
+
+            value += "- " + "DEVLOG".ToColor(GoodColors.Pink) + " | ";
+            value += message.DebugText();
+
+            return value;
+        }
+
+        static string NDDebugText(this string _text)
+        {
+            string debugText = "";
+
+#if !UNITY_WEBGL
+            StackFrame _stackFrame = new StackFrame(2, true);
+            System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
+
+            debugText +=
+                _methodInfo.ReflectedType.FullName.ToColor(GoodColors.Yellow) + " | " +
+                _stackFrame.GetMethod().Name.ToColor(GoodColors.Yellow) + " | ";
 #endif
 
+            debugText += _text;
+
+            return debugText;
         }
 
         static string DebugText(this string _text)
         {
-
             string debugText = "";
 
-#if UNITY_EDITOR || (DEVELOPMENT_BUILD && !UNITY_WEBGL)
-
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD  && !UNITY_WEBGL)
             StackFrame _stackFrame = new StackFrame(2, true);
             System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
 
-            debugText += _methodInfo.ReflectedType.FullName.ToColor(GoodColors.Yellow) + " | " + _stackFrame.GetMethod().Name.ToColor(GoodColors.Yellow) + " | ";
-
+            debugText +=
+                _methodInfo.ReflectedType.FullName.ToColor(GoodColors.Yellow) + " | " +
+                _stackFrame.GetMethod().Name.ToColor(GoodColors.Yellow) + " | ";
 #endif
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-
+#if UNITY_EDITOR || DEVELOPMENT_BUILD 
             debugText += _text;
-
 #endif
 
             return debugText;
-
         }
 
         public static void DebugPosition(Vector3 globalPosition, Color lineColor)

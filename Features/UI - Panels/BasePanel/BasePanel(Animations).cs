@@ -28,6 +28,8 @@ public partial class BasePanel : MonoBehaviour
         {
             _isShowing = true;
 
+            gameObject.SetActive(true);
+
             _fadeBackground.DoIfNotNull(
                 () =>
                 {
@@ -64,7 +66,12 @@ public partial class BasePanel : MonoBehaviour
                         .DOFade(0f, _showAnimationDelay)
                         .SetEase(_backgroundPanelHideAnimationEase);
 
-                    fadeTween.onComplete += () => _fadeBackground.gameObject.SetActive(true);
+                    fadeTween.onComplete +=
+                        () =>
+                        {
+                            _fadeBackground.gameObject.SetActive(false);
+                            gameObject.SetActive(false);
+                        };
                 });
 
             _bodyContainer.DoIfNotNull(
@@ -81,7 +88,12 @@ public partial class BasePanel : MonoBehaviour
                         .DOScale(Vector3.zero, _showAnimationDelay)
                         .SetEase(_backgroundPanelHideAnimationEase);
 
-                    bodyTween.onComplete += () => finalOnFinishCallback?.Invoke();
+                    bodyTween.onComplete +=
+                        () =>
+                        {
+                            finalOnFinishCallback?.Invoke();
+                            gameObject.SetActive(false);
+                        };
                 });
         }
     }

@@ -101,7 +101,8 @@ namespace JovDK.Debugging
             string debugText = "";
 
 #if !UNITY_WEBGL
-            StackFrame _stackFrame = new StackFrame(2, true);
+            int stackBackSteps = 3;
+            StackFrame _stackFrame = new StackFrame(stackBackSteps, true);
             System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
 
             debugText +=
@@ -118,8 +119,9 @@ namespace JovDK.Debugging
         {
             string debugText = "";
 
-#if UNITY_EDITOR || (DEVELOPMENT_BUILD  && !UNITY_WEBGL)
-            StackFrame _stackFrame = new StackFrame(2, true);
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD && !UNITY_WEBGL)
+            int stackBackSteps = 3;
+            StackFrame _stackFrame = new StackFrame(stackBackSteps, true);
             System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
 
             debugText +=

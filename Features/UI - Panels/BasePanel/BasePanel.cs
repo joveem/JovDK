@@ -30,7 +30,8 @@ public partial class BasePanel : MonoBehaviour
 
     [Space(5), Header("[ State ]"), Space(10)]
 
-    bool _isShowing = false;
+    protected bool _isShowing = false;
+    public bool IsShowing { get => _isShowing; }
 
 
     [Space(5), Header("[ Parts ]"), Space(10)]

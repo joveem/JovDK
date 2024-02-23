@@ -26,12 +26,16 @@ public partial class BasePanel : MonoBehaviour
     {
         _isShowing = true;
 
+        gameObject.SetActive(true);
         _fadeBackground.SetActiveIfNotNull(true);
         _bodyContainer.SetActiveIfNotNull(true);
 
-        Color fadeColor = _fadeBackground.color;
-        fadeColor.a = _maxFadeOpacity;
-        _fadeBackground.color = fadeColor;
+        if (_fadeBackground != null)
+        {
+            Color fadeColor = _fadeBackground.color;
+            fadeColor.a = _maxFadeOpacity;
+            _fadeBackground.color = fadeColor;
+        }
 
         _bodyContainer.localScale = Vector3.one;
     }
@@ -42,10 +46,14 @@ public partial class BasePanel : MonoBehaviour
 
         _fadeBackground.SetActiveIfNotNull(false);
         _bodyContainer.SetActiveIfNotNull(false);
+        gameObject.SetActive(false);
 
-        Color fadeColor = _fadeBackground.color;
-        fadeColor.a = 0f;
-        _fadeBackground.color = fadeColor;
+        if (_fadeBackground != null)
+        {
+            Color fadeColor = _fadeBackground.color;
+            fadeColor.a = 0f;
+            _fadeBackground.color = fadeColor;
+        }
 
         _bodyContainer.localScale = Vector3.zero;
     }

@@ -26,7 +26,7 @@ namespace JovDK.SafeActions
                     "<" + typeof(T) + ">" +
                     (nameof(objectValue) + " IS NOT NULL!").ToColor(GoodColors.Orange);
 
-                DebugExtension.DevLogWarning(debugText);
+                DebugExtension.DevLogWarning(debugText, 4);
 
             }
 
@@ -48,7 +48,7 @@ namespace JovDK.SafeActions
             if (objectValue != null && !objectValue.Equals(null))
                 action();
             else if (debugIfNull)
-                DebugExtension.DevLogWarning("<" + typeof(T) + ">" + (nameof(objectValue) + " IS NULL!").ToColor(GoodColors.Orange));
+                DebugExtension.DevLogWarning("<" + typeof(T) + ">" + (nameof(objectValue) + " IS NULL!").ToColor(GoodColors.Orange), 4);
 
         }
 
@@ -102,7 +102,7 @@ namespace JovDK.SafeActions
                     "<" + typeof(T) + ">" +
                     "object NOT FOUND!".ToColor(GoodColors.Orange);
 
-                DebugExtension.DevLogWarning(debugText);
+                DebugExtension.DevLogWarning(debugText, 4);
 
             }
 
@@ -127,7 +127,7 @@ namespace JovDK.SafeActions
             catch (System.Exception)
             {
 
-                DebugExtension.DevLogWarning(("<" + typeof(T) + "> object NOT FOUND!").ToColor(GoodColors.Orange));
+                DebugExtension.DevLogWarning(("<" + typeof(T) + "> object NOT FOUND!").ToColor(GoodColors.Orange), 4);
 
             }
 

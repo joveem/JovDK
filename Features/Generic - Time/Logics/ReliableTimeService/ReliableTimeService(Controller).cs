@@ -54,9 +54,9 @@ namespace JovDK.Generic.TimeManagement
                 string rawJsonResponse = www.downloadHandler.text;
                 WorldTimeResponse worldTimeResponse = rawJsonResponse.DeserializeJsonToObject<WorldTimeResponse>();
 
-                Debug.Log("response = " + "\n" + rawJsonResponse);
+                // Debug.Log("response = " + "\n" + rawJsonResponse);
                 _startUTCTime = worldTimeResponse.DateTime.ToUniversalTime();
-                Debug.Log("UTC now =  " + "\n" + _startUTCTime);
+                // Debug.Log("UTC now =  " + "\n" + _startUTCTime);
             }
 
             _isInitialized = true;
@@ -67,7 +67,7 @@ namespace JovDK.Generic.TimeManagement
         {
             DateTime value;
 
-            value = _startUTCTime.AddMinutes(Time.time);
+            value = _startUTCTime.AddSeconds(Time.time);
 
             return value;
         }

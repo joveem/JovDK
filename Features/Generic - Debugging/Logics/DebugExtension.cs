@@ -24,33 +24,33 @@ namespace JovDK.Debugging
     {
         static public void NDLog()
         {
-            NDLog(">".ToColor(GoodColors.Orange));
+            NDLog(">".ToColor(GoodColors.Orange), 4);
         }
 
-        static public void NDLog(string message)
+        static public void NDLog(string message, int stackBackSteps = 3)
         {
-            string debugText = NDDevLogText(message);
+            string debugText = NDDevLogText(message, stackBackSteps);
             Debug.Log(debugText);
         }
 
-        static public void NDLogWarning(string message)
+        static public void NDLogWarning(string message, int stackBackSteps = 3)
         {
-            string debugText = NDDevLogText(message);
+            string debugText = NDDevLogText(message, stackBackSteps);
             Debug.LogWarning(debugText);
         }
 
-        static public void NDLogError(string message)
+        static public void NDLogError(string message, int stackBackSteps = 3)
         {
-            string debugText = NDDevLogText(message);
+            string debugText = NDDevLogText(message, stackBackSteps);
             Debug.LogError(debugText);
         }
 
-        static string NDDevLogText(string message)
+        static string NDDevLogText(string message, int stackBackSteps = 3)
         {
             string value = "";
 
             value += "- " + "NDLOG".ToColor("#83f") + " | ";
-            value += message.DebugText();
+            value += message.NDDebugText(stackBackSteps);
 
             return value;
         }
@@ -58,50 +58,49 @@ namespace JovDK.Debugging
         static public void DevLog()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            DevLog(">".ToColor(GoodColors.Orange));
+            DevLog(">".ToColor(GoodColors.Orange), 4);
 #endif
         }
 
-        static public void DevLog(string message)
+        static public void DevLog(string message, int stackBackSteps = 3)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            string debugText = DevLogText(message);
+            string debugText = DevLogText(message, stackBackSteps);
             Debug.Log(debugText);
 #endif
         }
 
-        static public void DevLogWarning(string message)
+        static public void DevLogWarning(string message, int stackBackSteps = 3)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD 
-            string debugText = DevLogText(message);
+            string debugText = DevLogText(message, stackBackSteps);
             Debug.LogWarning(debugText);
 #endif
         }
 
-        static public void DevLogError(string message)
+        static public void DevLogError(string message, int stackBackSteps = 3)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            string debugText = DevLogText(message);
+            string debugText = DevLogText(message, stackBackSteps);
             Debug.LogError(debugText);
 #endif
         }
 
-        static string DevLogText(string message)
+        static string DevLogText(string message, int stackBackSteps = 3)
         {
             string value = "";
 
             value += "- " + "DEVLOG".ToColor(GoodColors.Pink) + " | ";
-            value += message.DebugText();
+            value += message.DebugText(stackBackSteps);
 
             return value;
         }
 
-        static string NDDebugText(this string _text)
+        static string NDDebugText(this string _text, int stackBackSteps = 3)
         {
             string debugText = "";
 
 #if !UNITY_WEBGL
-            int stackBackSteps = 3;
             StackFrame _stackFrame = new StackFrame(stackBackSteps, true);
             System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
 
@@ -115,12 +114,11 @@ namespace JovDK.Debugging
             return debugText;
         }
 
-        static string DebugText(this string _text)
+        static string DebugText(this string _text, int stackBackSteps = 3)
         {
             string debugText = "";
 
 #if UNITY_EDITOR || (DEVELOPMENT_BUILD && !UNITY_WEBGL)
-            int stackBackSteps = 3;
             StackFrame _stackFrame = new StackFrame(stackBackSteps, true);
             System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
 

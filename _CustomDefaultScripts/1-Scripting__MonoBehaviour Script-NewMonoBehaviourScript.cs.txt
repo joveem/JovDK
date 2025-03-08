@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using SystemRandom = System.Random;
+using UnityRandom = UnityEngine.Random;
 
 // third
 using TMPro;
@@ -25,30 +27,46 @@ namespace PackageName.MajorContext.MinorContext
 
         // [Space(5), Header("[ Dependencies ]"), Space(10)]
 
-        // bool _dependencies;
+        // [SerializeField] bool _dependencies;
 
 
         // [Space(5), Header("[ State ]"), Space(10)]
 
-        // bool _state;
+        // [SerializeField] bool _state;
 
 
         // [Space(5), Header("[ Parts ]"), Space(10)]
 
-        // bool _parts;
+        // [SerializeField] bool _parts;
+        // [SerializeField] Button _mainButton;
+        // [SerializeField] TextMeshProUGUI _mainText;
+        // [SerializeField] Image _mainImage;
 
 
         // [Space(5), Header("[ Configs ]"), Space(10)]
 
-        // bool _configs;
+        // [SerializeField] bool _configs;
 
 
-        // void Awake()
-        // {
+        #region MonoBehaviour
+        void Awake()
+        {
+            SetInitialState();
+        }
 
-        // }
+        void OnEnable()
+        {
+            // TODO: review this!
+            SubscribeAllListenersOnEnable();
+        }
 
-        // void Start()
+        void Start()
+        {
+            // TODO: review this!
+            SubscribeAllListenersOnStart();
+        }
+
+        // void FixedUpdate()
         // {
 
         // }
@@ -58,9 +76,81 @@ namespace PackageName.MajorContext.MinorContext
 
         // }
 
-        // void FixedUpdate()
+        void OnDisable()
+        {
+            // TODO: review this!
+            UnsubscribeAllListenersOnDisable();
+        }
+
+        void OnDestroy()
+        {
+            // TODO: review this!
+            UnsubscribeAllListenersOnDestroy();
+        }
+        #endregion MonoBehaviour
+
+        #region Buttons
+        // void SetupButtons()
+        // {
+        //     _mainButton.SetOnClickIfNotNull(MainButton);
+        // }
+
+        // void MainButton()
         // {
 
         // }
+        #endregion Buttons
+
+        #region Subscriptions
+        // AWAKE/START <-> destroy
+        // inverse of UnsubscribeAllListenersOnDestroy
+        void SubscribeAllListenersOnStart()
+        {
+            // this scripts -> other script            
+            // ! destroy
+            // _randomDataBus.IdkProperty.AsObservable().TakeUntilDestroy(gameObject).Subscribe(OnQuantumRegionUpdate);
+        }
+
+        // awake/start <-> DESTROY
+        // inverse of SubscribeAllListenersOnStart
+        void UnsubscribeAllListenersOnDestroy()
+        {
+            // this scripts -> other script
+            // ! destroy
+            // REVIEW THIS quantumRegionReactive <- OnQuantumRegionUpdate is unsubscribed on destroy automatically
+        }
+
+        // ENABLE <-> disable
+        // inverse of UnsubscribeAllListenersOnDisable
+        void SubscribeAllListenersOnEnable()
+        {
+            // this scripts -> other script            
+            // ! disable
+            // _randomDataBus.IdkProperty.AsObservable().TakeUntilDisable(gameObject).Subscribe(OnQuantumRegionUpdate);
+        }
+
+        // enable <-> DISABLE
+        // inverse of SubscribeAllListenersOnEnable
+        void UnsubscribeAllListenersOnDisable()
+        {
+            // this scripts -> other script
+            // ! disable
+            // REVIEW THIS quantumRegionReactive <- OnQuantumRegionUpdate is unsubscribed on disable automatically
+        }
+        #endregion Subscriptions
+
+        #region Controller
+        void SetInitialState()
+        {
+
+        }
+        #endregion Controller
+
+        #region View
+        public void ShowPanel()
+        {
+
+        }
+        #endregion View
     }
 }

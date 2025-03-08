@@ -6,6 +6,7 @@
         "com.Epic.OnlineServices",
         "com.playeveryware.eos",
         "com.playeveryware.eos.core",
+        "DOTweenModule",
         "DOTween.Modules"
     ],
     "includePlatforms": [],

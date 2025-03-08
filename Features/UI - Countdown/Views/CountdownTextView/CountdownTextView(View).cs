@@ -153,12 +153,16 @@ namespace JovDK.UI.CountDown
             string positiveHexColor = null,
             string negativeHexColor = null)
         {
+            if (_initialColor.Equals(default))
+                _text.DoIfNotNull(() => _initialColor = _text.color);
+
             if (!isNegative)
             {
                 if (positiveHexColor != null)
                     _text.color = Color.white;
                 else
                     _text.color = _initialColor;
+                    // _text.color = Color.cyan;
             }
             else
             {
@@ -166,6 +170,7 @@ namespace JovDK.UI.CountDown
                     _text.color = Color.white;
                 else
                     _text.color = _initialColor;
+                    // _text.color = Color.cyan;
             }
         }
 

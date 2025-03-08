@@ -32,12 +32,11 @@ namespace JovDK.UI.CountDown.Testing.Showcase
 
         void HandleCountDownUpdate(float deltaTime)
         {
-            _elapsedTime += deltaTime;
-            float timeUpdateGap = 1f;
+            _elapsedTimeFromLastCountdownUpdate += deltaTime;
 
-            if (_elapsedTime >= timeUpdateGap)
+            if (_elapsedTimeFromLastCountdownUpdate >= _countdownUpdateGap)
             {
-                _elapsedTime -= timeUpdateGap;
+                _elapsedTimeFromLastCountdownUpdate -= _countdownUpdateGap;
 
                 _notNegativeCountdownTextView.ApplyTimeNotNegative(DateTime.UtcNow, _deadLineTime, null, GoodColors.Red);
                 _countdownTextView.ApplyTime(DateTime.UtcNow, _deadLineTime, GoodColors.Green, GoodColors.Red);

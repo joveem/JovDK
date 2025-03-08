@@ -20,9 +20,9 @@ using JovDK.SerializingTools.Json;
 // ...
 
 
-namespace JovDK.UI.CountDown.Testing.Showcase
+namespace JovDK.Generic.TimeManagement
 {
-    public partial class CountdownTextViewShowcaseScene : MonoBehaviour
+    public partial class ReliableTimeService : MonoBehaviour
     {
 
         // [Space(5), Header("[ Dependencies ]"), Space(10)]
@@ -32,21 +32,20 @@ namespace JovDK.UI.CountDown.Testing.Showcase
 
         [Space(5), Header("[ State ]"), Space(10)]
 
-        DateTime _deadLineTime;
-        float _elapsedTimeFromLastCountdownUpdate = 0f;
+        bool _isInitialized = false;
+        DateTime _startUTCTime;
+
+        public Action OnInitializedCallback = null;
 
 
-        [Space(5), Header("[ Parts ]"), Space(10)]
+        // [Space(5), Header("[ Parts ]"), Space(10)]
 
-        [SerializeField] CountdownTextView _notNegativeCountdownTextView;
-        [SerializeField] CountdownTextView _countdownTextView;
-        [SerializeField] CountdownRectView _countdownRectView;
+        // bool _parts;
 
 
         [Space(5), Header("[ Configs ]"), Space(10)]
 
-        [SerializeField] int _testDeadlineDurationInSeconds = 120;
-        [SerializeField] float _countdownUpdateGap = 1f;
+        const string _worldTimeApiUrl = "https://worldtimeapi.org/api/ip";
 
 
         // void Awake()
@@ -59,10 +58,10 @@ namespace JovDK.UI.CountDown.Testing.Showcase
             SetInitialState();
         }
 
-        void Update()
-        {
-            HandleCountDownUpdate(Time.deltaTime);
-        }
+        // void Update()
+        // {
+
+        // }
 
         // void FixedUpdate()
         // {

@@ -55,6 +55,19 @@ namespace JovDK.Debugging
             return value;
         }
 
+        /// <summary>
+        /// Logs an default <c>System.Exception</c> with. A console debug
+        /// LogException that IS COMPILATED out of Unity Editor and
+        /// not-development players builds
+        /// </summary>
+        /// <param name="message">
+        /// The message of <c>System.Exception</c>
+        /// </param>
+        static public void LogException(string message)
+        {
+            UnityEngine.Debug.LogException(new Exception(message));
+        }
+
         static public void DevLog()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD

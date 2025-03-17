@@ -9,6 +9,7 @@ using SystemRandom = System.Random;
 using UnityRandom = UnityEngine.Random;
 
 // third
+using DG.Tweening;
 using TMPro;
 
 // from company

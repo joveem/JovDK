@@ -24,7 +24,7 @@ namespace JovDK.SafeActions
 
                 string debugText =
                     "<" + typeof(T) + ">" +
-                    (nameof(objectValue) + " IS NOT NULL!").ToColor(GoodColors.Orange);
+                    nameof(objectValue) + (" IS " + "NOT".ToColor(GoodColors.Pink) + " NULL!").ToColor(GoodColors.Orange);
 
                 DebugExtension.DevLogWarning(debugText, 4);
 

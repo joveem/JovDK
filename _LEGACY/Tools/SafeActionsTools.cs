@@ -62,24 +62,24 @@ namespace JovDK.SafeActions
 
         }
 
-        public static void SetActiveIfNotNull<T>(this T objectValue, bool setActive) where T : Component
+        public static void SetActiveIfNotNull<T>(this T objectValue, bool setActive, bool debugIfNull = true) where T : Component
         {
 
-            objectValue.DoIfNotNull(() => objectValue.gameObject.SetActive(setActive));
+            objectValue.DoIfNotNull(() => objectValue.gameObject.SetActive(setActive), debugIfNull);
 
         }
 
-        public static void SetActiveIfNotNull(this GameObject objectValue, bool setActive)
+        public static void SetActiveIfNotNull(this GameObject objectValue, bool setActive, bool debugIfNull = true)
         {
 
-            objectValue.DoIfNotNull(() => objectValue.SetActive(setActive));
+            objectValue.DoIfNotNull(() => objectValue.SetActive(setActive), debugIfNull);
 
         }
 
-        public static void SetActiveIfNotNull(this Transform objectValue, bool setActive)
+        public static void SetActiveIfNotNull(this Transform objectValue, bool setActive, bool debugIfNull = true)
         {
 
-            objectValue.DoIfNotNull(() => objectValue.gameObject.SetActive(setActive));
+            objectValue.DoIfNotNull(() => objectValue.gameObject.SetActive(setActive), debugIfNull);
 
         }
 

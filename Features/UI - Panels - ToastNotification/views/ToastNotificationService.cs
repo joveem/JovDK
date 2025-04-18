@@ -163,13 +163,19 @@ namespace PackageName.MajorContext.MinorContext
         public void _INTERNAL_AddNotification(
             string descriptionText,
             Action onContentClickCallback = null,
-            Action onCloseButtonClickCallback = null)
+            Action onCloseButtonClickCallback = null,
+            float? durationInSeconds = null,
+            Color? backgroundColor = null)
         {
             ToastNotificationView instance = Instantiate(_toastNotificationViewPrefab, _notifictionsContainer);
 
             instance.SetDescriptionText(descriptionText);
+            instance.SetDuration(durationInSeconds);
             instance.SetOnContentClickCallback(onContentClickCallback);
             instance.SetOnCloseButtonClickCallback(onCloseButtonClickCallback);
+
+            if (backgroundColor != null)
+                instance.SetBackgroundColor((Color)backgroundColor);
 
             instance.HidePanelInstantaneously();
             instance.PlayShowAnimation();
@@ -183,14 +189,18 @@ namespace PackageName.MajorContext.MinorContext
             this ToastNotificationService baseToasNotificationService,
             string descriptionText,
             Action onContentClickCallback = null,
-            Action onCloseButtonClickCallback = null)
+            Action onCloseButtonClickCallback = null,
+            float? durationInSeconds = null,
+            Color? backgroundColor = null)
         {
             baseToasNotificationService.DoIfNotNull(() =>
             {
                 baseToasNotificationService._INTERNAL_AddNotification(
                     descriptionText,
                     onContentClickCallback,
-                    onCloseButtonClickCallback);
+                    onCloseButtonClickCallback,
+                    durationInSeconds,
+                    backgroundColor);
             });
         }
     }

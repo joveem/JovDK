@@ -320,6 +320,7 @@ MonoBehaviour:
   _mainButton: {fileID: 2161618945756598972}
   _closeButton: {fileID: 719972416229817536}
   _mainText: {fileID: 8512478665194457706}
+  _backgroundImage: {fileID: 3015939203692580824}
 --- !u!222 &1816951384032234298
 CanvasRenderer:
   m_ObjectHideFlags: 0

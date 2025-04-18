@@ -33,6 +33,9 @@ namespace JovDK.UI.ToastNotification
 
         [Space(5), Header("[ State ]"), Space(10)]
 
+        bool _hasDuration = false;
+        bool _hasReachedDurationEnd = false;
+        float _ramaingDuration = -1f;
         Action _onContentClickCallback = null;
         Action _onCloseButtonClickCallback = null;
 
@@ -42,6 +45,7 @@ namespace JovDK.UI.ToastNotification
         [SerializeField] Button _mainButton;
         [SerializeField] Button _closeButton;
         [SerializeField] TextMeshProUGUI _mainText;
+        [SerializeField] Image _backgroundImage;
 
 
         // [Space(5), Header("[ Configs ]"), Space(10)]
@@ -82,10 +86,10 @@ namespace JovDK.UI.ToastNotification
 
         // }
 
-        // void Update()
-        // {
-
-        // }
+        void Update()
+        {
+            HandleDurationUpdate(Time.deltaTime);
+        }
 
         // void OnDisable()
         // {
@@ -122,7 +126,7 @@ namespace JovDK.UI.ToastNotification
 
         void MainButton()
         {
-            DebugExtension.DevLog("#>".ToColor(GoodColors.Orange));
+            // DebugExtension.DevLog("#>".ToColor(GoodColors.Orange));
 
             if (_isShowing && _onContentClickCallback != null)
             {
@@ -133,7 +137,7 @@ namespace JovDK.UI.ToastNotification
 
         void CloseButton()
         {
-            DebugExtension.DevLog("#>".ToColor(GoodColors.Orange));
+            // DebugExtension.DevLog("#>".ToColor(GoodColors.Orange));
 
             if (_isShowing)
             {
@@ -187,9 +191,51 @@ namespace JovDK.UI.ToastNotification
 
         // }
 
+        void HandleDurationUpdate(float deltaTime)
+        {
+            if (_hasDuration && !_hasReachedDurationEnd)
+            {
+                _hasReachedDurationEnd = _ramaingDuration <= 0f;
+
+                if (!_hasReachedDurationEnd)
+                    _ramaingDuration -= deltaTime;
+
+                _hasReachedDurationEnd = _ramaingDuration <= 0f;
+
+                if (_hasReachedDurationEnd)
+                {
+                    if (_isShowing)
+                        ClosePanel();
+                }
+            }
+        }
+
         public void SetDescriptionText(string content)
         {
             _mainText.DoIfNotNull(() => _mainText.text = content);
+        }
+
+        public void SetDuration(float? durationInSeconds)
+        {
+            if (durationInSeconds != null)
+            {
+                _hasDuration = true;
+                _hasReachedDurationEnd = false;
+
+                _ramaingDuration = (float)durationInSeconds;
+            }
+        }
+
+        public void SetBackgroundColor(Color color)
+        {
+            // DebugExtension.DevLog(">".ToColor(GoodColors.Orange));
+
+            _backgroundImage.DoIfNotNull(() =>
+            {
+                float previousAlpha = _backgroundImage.color.a;
+                Color newColor = new Color(color.r, color.g, color.b, previousAlpha);
+                _backgroundImage.color = newColor;
+            });
         }
 
         public void SetOnContentClickCallback(Action callback)

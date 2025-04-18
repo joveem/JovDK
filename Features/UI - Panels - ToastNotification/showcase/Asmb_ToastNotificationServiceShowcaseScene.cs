@@ -100,49 +100,62 @@ namespace PackageName.MajorContext.MinorContext
         #region Buttons
         void SetupButtons()
         {
+            float defaultDuration = 3f;
+            string currentTitle = "UNDEFINED";
+
+            currentTitle = "[ " + defaultDuration + " segs  ] " + "normal notification";
             InstantiateButton(
-                "normal notification",
+                currentTitle,
+                null,
+                null,
+                defaultDuration);
+
+            currentTitle = "[infinite] normal notification";
+            InstantiateButton(
+                currentTitle,
+                null,
+                null);
+
+            currentTitle = "[ " + defaultDuration + " segs  ] " + "content click callback notification";
+            InstantiateButton(
+                currentTitle,
+                () => _popUpService.ShowPopUpInformation("content click callback notification"),
+                null,
+                defaultDuration);
+
+            currentTitle = "[ " + defaultDuration + " segs  ] " + "close click callback notification";
+            InstantiateButton(
+                currentTitle,
+                null,
+                () => _popUpService.ShowPopUpInformation("close click callback notification"),
+                defaultDuration);
+
+            currentTitle = "[ " + defaultDuration + " segs  ] " + "both clicks callback notification";
+            InstantiateButton(
+                currentTitle,
+                () => _popUpService.ShowPopUpInformation("[both clicks] content click callback notification"),
+                () => _popUpService.ShowPopUpInformation("[both clicks] close click callback notification"),
+                defaultDuration);
+
+            currentTitle = "[ " + defaultDuration + " segs  ] " + "randon color notification";
+            InstantiateButton(
+                currentTitle,
                 () =>
                 {
+                    string title = currentTitle;
+                    float r = UnityRandom.Range(0f, 1f);
+                    float g = UnityRandom.Range(0f, 1f);
+                    float b = 1f - r - g;
+
+                    Color randomColor = new Color(r, g, b);
+
                     _toastNotificationService.AddNotification(
-                        "normal notification",
+                        "[ " + defaultDuration + " segs  ] " + "randon color notification",
                         null,
-                        null);
-                }
-            );
-
-            InstantiateButton(
-                "content click callback notification",
-                () =>
-                {
-                    _toastNotificationService.AddNotification(
-                        "content click callback notification",
-                        () => _popUpService.ShowPopUpInformation("content click callback notification"),
-                        null);
-                }
-            );
-
-            InstantiateButton(
-                "close click callback notification",
-                () =>
-                {
-                    _toastNotificationService.AddNotification(
-                        "close click callback notification",
                         null,
-                        () => _popUpService.ShowPopUpInformation("close click callback notification"));
-                }
-            );
-
-            InstantiateButton(
-                "both clicks callback notification",
-                () =>
-                {
-                    _toastNotificationService.AddNotification(
-                        "both clicks callback notification",
-                        () => _popUpService.ShowPopUpInformation("[both clicks] content click callback notification"),
-                        () => _popUpService.ShowPopUpInformation("[both clicks] close click callback notification"));
-                }
-            );
+                        defaultDuration,
+                        randomColor);
+                });
         }
 
         void InstantiateButton(string textContent, UnityEngine.Events.UnityAction clickCallback)
@@ -151,6 +164,29 @@ namespace PackageName.MajorContext.MinorContext
 
             instance.SetTextInButton(textContent);
             instance.SetOnClickIfNotNull(clickCallback);
+        }
+
+        void InstantiateButton(
+            string title,
+            Action onContentClickCallback = null,
+            Action onCloseButtonClickCallback = null,
+            float? durationInSeconds = null,
+            Color? backgroundColor = null)
+        {
+            Button instance = Instantiate(_buttonPrefab, _buttonsContainer);
+
+            instance.SetTextInButton(title);
+            instance.SetOnClickIfNotNull(
+                () =>
+                {
+                    _toastNotificationService.AddNotification(
+                        title,
+                        onContentClickCallback,
+                        onCloseButtonClickCallback,
+                        durationInSeconds,
+                        backgroundColor);
+                }
+            );
         }
         #endregion Buttons
 

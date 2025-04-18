@@ -109,7 +109,7 @@ namespace PackageName.MajorContext.MinorContext
         {
             // this scripts -> other script            
             // ! destroy
-            // _randomDataBus.IdkProperty.AsObservable().TakeUntilDestroy(gameObject).Subscribe(OnQuantumRegionUpdate);
+            // _randomDataBus.IdkProperty.AsObservable().TakeUntilDestroy(gameObject).Subscribe(OnIdkPropertyUpdate);
         }
 
         // awake/start <-> DESTROY
@@ -118,7 +118,7 @@ namespace PackageName.MajorContext.MinorContext
         {
             // this scripts -> other script
             // ! destroy
-            // REVIEW THIS quantumRegionReactive <- OnQuantumRegionUpdate is unsubscribed on destroy automatically
+            // REVIEW THIS IdkProperty <- OnIdkPropertyUpdate is unsubscribed on destroy automatically
         }
 
         // ENABLE <-> disable
@@ -127,7 +127,7 @@ namespace PackageName.MajorContext.MinorContext
         {
             // this scripts -> other script            
             // ! disable
-            // _randomDataBus.IdkProperty.AsObservable().TakeUntilDisable(gameObject).Subscribe(OnQuantumRegionUpdate);
+            // _randomDataBus.IdkProperty.AsObservable().TakeUntilDisable(gameObject).Subscribe(OnIdkPropertyUpdate);
         }
 
         // enable <-> DISABLE
@@ -136,7 +136,7 @@ namespace PackageName.MajorContext.MinorContext
         {
             // this scripts -> other script
             // ! disable
-            // REVIEW THIS quantumRegionReactive <- OnQuantumRegionUpdate is unsubscribed on disable automatically
+            // REVIEW THIS IdkProperty <- OnIdkPropertyUpdate is unsubscribed on disable automatically
         }
         #endregion Subscriptions
 

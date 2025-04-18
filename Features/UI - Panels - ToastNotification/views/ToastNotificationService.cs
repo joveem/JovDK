@@ -16,13 +16,12 @@ using TMPro;
 using JovDK.Debugging;
 using JovDK.SafeActions;
 using JovDK.SerializingTools.Json;
-using JovDK.UI.ToastNotification;
 
 // from project
 // ...
 
 
-namespace PackageName.MajorContext.MinorContext
+namespace JovDK.UI.ToastNotification
 {
     public partial class ToastNotificationService : MonoBehaviour
     {

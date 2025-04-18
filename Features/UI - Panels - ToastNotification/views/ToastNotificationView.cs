@@ -212,7 +212,12 @@ namespace JovDK.UI.ToastNotification
 
         public void SetDescriptionText(string content)
         {
-            _mainText.DoIfNotNull(() => _mainText.text = content);
+            _mainText.DoIfNotNull(() =>
+            {
+                _mainText.text = content;
+                LayoutRebuilder.ForceRebuildLayoutImmediate(_mainText.rectTransform);
+                LayoutRebuilder.ForceRebuildLayoutImmediate(transform as RectTransform);
+            });
         }
 
         public void SetDuration(float? durationInSeconds)

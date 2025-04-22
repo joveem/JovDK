@@ -30,6 +30,12 @@ namespace JovDK.Unity.Editor.Build
             BuildAndroid();
         }
 
+        void BuildPcButton()
+        {
+            HandleBuildVersions();
+            BuildPc();
+        }
+
         void BuildAllSelectedPlatforms()
         {
             // ! NOT IMPLEMENTED!!!

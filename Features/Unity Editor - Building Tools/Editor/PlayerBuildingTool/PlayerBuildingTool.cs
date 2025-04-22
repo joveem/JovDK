@@ -46,6 +46,9 @@ namespace JovDK.Unity.Editor.Build
         int _currentBuildBundleCode = 1;
         bool _isEditingAppBundleVersion = false;
 
+        // PC
+        bool _hasToBuildPc = false;
+
         // Android
         bool _hasToBuildAndroid = false;
         bool _buildApkInsteadOfAab = false;

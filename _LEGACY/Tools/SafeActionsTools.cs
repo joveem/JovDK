@@ -1,3 +1,4 @@
+// system / unity
 using System;
 using System.Diagnostics;
 using System.Collections;
@@ -5,7 +6,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// third
+using TMPro;
+
+// from company
 using JovDK.Debugging;
+
+// from project
+// ...
 
 
 namespace JovDK.SafeActions
@@ -154,8 +162,37 @@ namespace JovDK.SafeActions
             button.DoIfNotNull(() => button.interactable = setInteractable);
 
         }
-        #endregion 
+        #endregion
 
+        #region Image
+        public static void SetSpriteIfNotNull(this Image image, Sprite sprite, bool debugIfNull = true)
+        {
+            image.DoIfNotNull(() => image.sprite = sprite, debugIfNull);
+        }
+
+        public static void SetColorIfNotNull(this Image image, Color color, bool debugIfNull = true)
+        {
+            image.DoIfNotNull(() => image.color = color, debugIfNull);
+        }
+
+        public static void SetColorAlphaIfNotNull(this Image image, float alphaValue, bool debugIfNull = true)
+        {
+            image.DoIfNotNull(() =>
+            {
+                Color color = image.color;
+
+                color.a = alphaValue;
+                image.color = color;
+            }, debugIfNull);
+        }
+        #endregion Image
+
+        #region Text
+        public static void SetTextIfNotNull(this TextMeshProUGUI text, string content, bool debugIfNull = true)
+        {
+            text.DoIfNotNull(() => text.text = content, debugIfNull);
+        }
+        #endregion Text
     }
 
 }

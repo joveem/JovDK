@@ -95,7 +95,7 @@ namespace PackageName.MajorContext.MinorContext
         #region Callbacks
         // void OnIdk()
         // {
-        //        // DebugExtension.DevLog(">".ToColor(GoodColors.Orange));
+        //     // DebugExtension.DevLog(">".ToColor(GoodColors.Orange));
         // }
         #endregion Callbacks
 
@@ -107,7 +107,7 @@ namespace PackageName.MajorContext.MinorContext
 
         // void MainButton()
         // {
-        //        // DebugExtension.DevLog("#>".ToColor(GoodColors.Orange));
+        //     DebugExtension.DevLog("#>".ToColor(GoodColors.Orange));
         // }
         #endregion Buttons
 
@@ -127,7 +127,8 @@ namespace PackageName.MajorContext.MinorContext
         // {
         //     // this scripts -> other script
         //     // ! destroy
-        //     // REVIEW THIS IdkProperty <- OnIdkPropertyUpdate is unsubscribed on destroy automatically
+        //     // ! REVIEW THIS
+        //     // IdkProperty <- OnIdkPropertyUpdate is unsubscribed on destroy automatically
         // }
 
         // // ENABLE <-> disable
@@ -145,13 +146,14 @@ namespace PackageName.MajorContext.MinorContext
         // {
         //     // this scripts -> other script
         //     // ! disable
-        //     // REVIEW THIS IdkProperty <- OnIdkPropertyUpdate is unsubscribed on disable automatically
+        //     // ! REVIEW THIS
+        //     // IdkProperty <- OnIdkPropertyUpdate is unsubscribed on disable automatically
         // }
 
         // void OnIdkPropertyUpdate(int newValue)
         // {
         //     // DebugExtension.DevLog(
-        //     //     "#>".ToColor(GoodColors.Pink) +
+        //     //     "#> ".ToColor(GoodColors.Pink) +
         //     //     "newValue = " + newValue.SerializeObjectToJSON() + "\n" +
         //     //     "");
         // }
@@ -160,7 +162,7 @@ namespace PackageName.MajorContext.MinorContext
         #region Controller
         // void SetInitialState()
         // {
-        //     // DebugExtension.DevLog(">".ToColor(GoodColors.Orange));
+        //     DebugExtension.DevLog(">".ToColor(GoodColors.Orange));
         // }
         #endregion Controller
 

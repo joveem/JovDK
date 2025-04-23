@@ -140,7 +140,7 @@ namespace JovDK.UI.ToastNotification
         // void OnIdkPropertyUpdate(int newValue)
         // {
         //     // DebugExtension.DevLog(
-        //     //     "#>".ToColor(GoodColors.Pink) +
+        //     //     "#> ".ToColor(GoodColors.Pink) +
         //     //     "newValue = " + newValue.SerializeObjectToJSON() + "\n" +
         //     //     "");
         // }

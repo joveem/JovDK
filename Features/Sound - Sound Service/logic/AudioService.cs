@@ -136,6 +136,72 @@ namespace JovDK.Audio.Service
 
                     // TODO: REVIEW THIS!
                     audioSourceToPlay.pitch = defaultPitch * pitchMultiplier;
+                    audioSourceToPlay.Play();
+                });
+            }
+            else
+            {
+                DebugExtension.DevLogError(
+                    "Audio was not found!" + "\n" +
+                    "sfxId = " + sfxId.SerializeObjectToJSON() + "\n" +
+                    "");
+            }
+        }
+
+        public void _INTERNAL_StopSfx(string sfxId, float pitchMultiplier = 1f)
+        {
+            bool isAlreadyRegistered = _currentAudiosById.ContainsKey(sfxId);
+
+            if (isAlreadyRegistered)
+            {
+                AudioConfig audioConfig = _currentAudiosById[sfxId];
+
+                int randomIndex = 0;
+                int variationsAmount = audioConfig.AudioClipsVariationsList.Length;
+
+                if (variationsAmount > 0)
+                    randomIndex = UnityRandom.Range(0, variationsAmount);
+
+                AudioSource audioSourceToPlay = audioConfig.AudioSourceIntances[randomIndex];
+                audioSourceToPlay.DoIfNotNull(() =>
+                {
+                    float defaultPitch = audioConfig.PitchFactor;
+
+                    // TODO: REVIEW THIS!
+                    audioSourceToPlay.pitch = defaultPitch * pitchMultiplier;
+                    audioSourceToPlay.Stop();
+                });
+            }
+            else
+            {
+                DebugExtension.DevLogError(
+                    "Audio was not found!" + "\n" +
+                    "sfxId = " + sfxId.SerializeObjectToJSON() + "\n" +
+                    "");
+            }
+        }
+
+        public void _INTERNAL_PlayOneShotSfx(string sfxId, float pitchMultiplier = 1f)
+        {
+            bool isAlreadyRegistered = _currentAudiosById.ContainsKey(sfxId);
+
+            if (isAlreadyRegistered)
+            {
+                AudioConfig audioConfig = _currentAudiosById[sfxId];
+
+                int randomIndex = 0;
+                int variationsAmount = audioConfig.AudioClipsVariationsList.Length;
+
+                if (variationsAmount > 0)
+                    randomIndex = UnityRandom.Range(0, variationsAmount);
+
+                AudioSource audioSourceToPlay = audioConfig.AudioSourceIntances[randomIndex];
+                audioSourceToPlay.DoIfNotNull(() =>
+                {
+                    float defaultPitch = audioConfig.PitchFactor;
+
+                    // TODO: REVIEW THIS!
+                    audioSourceToPlay.pitch = defaultPitch * pitchMultiplier;
                     audioSourceToPlay.PlayOneShot(audioSourceToPlay.clip);
                 });
             }
@@ -166,6 +232,16 @@ namespace JovDK.Audio.Service
         public static void PlaySfx(this AudioService baseAudioService, string sfxId, float pitchMultiplier = 1f)
         {
             baseAudioService.DoIfNotNull(() => baseAudioService._INTERNAL_PlaySfx(sfxId, pitchMultiplier));
+        }
+
+        public static void StopSfx(this AudioService baseAudioService, string sfxId, float pitchMultiplier = 1f)
+        {
+            baseAudioService.DoIfNotNull(() => baseAudioService._INTERNAL_StopSfx(sfxId, pitchMultiplier));
+        }
+
+        public static void PlayOneShotSfx(this AudioService baseAudioService, string sfxId, float pitchMultiplier = 1f)
+        {
+            baseAudioService.DoIfNotNull(() => baseAudioService._INTERNAL_PlayOneShotSfx(sfxId, pitchMultiplier));
         }
     }
 }

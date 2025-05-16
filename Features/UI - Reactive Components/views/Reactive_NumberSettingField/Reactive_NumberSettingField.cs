@@ -109,21 +109,21 @@ namespace JovDK.UI.Reactive
         {
             // DebugExtension.DevLog("#>".ToColor(GoodColors.Orange));
 
-            dynamic currentValue = CurrentValue.Value;
-            currentValue = currentValue - 1;
+            double currentValue = Convert.ToDouble(CurrentValue.Value);
 
-            if (currentValue >= _minValue)
-                CurrentValue.Value = currentValue;
+            if (currentValue - 1 >= _minValue)
+                currentValue -= 1;
+
+            CurrentValue.Value = (T)Convert.ChangeType(currentValue, typeof(T));
         }
 
         void PlusButton()
         {
             // DebugExtension.DevLog("#>".ToColor(GoodColors.Orange));
 
-            dynamic currentValue = CurrentValue.Value;
-            currentValue = currentValue + 1;
-
-            CurrentValue.Value = currentValue;
+            double currentValue = Convert.ToDouble(CurrentValue.Value);
+            currentValue += 1;
+            CurrentValue.Value = (T)Convert.ChangeType(currentValue, typeof(T));
         }
         #endregion Buttons
 
@@ -169,12 +169,12 @@ namespace JovDK.UI.Reactive
         {
             // DebugExtension.DevLog("#> ".ToColor(GoodColors.Pink) + "value = " + value.ToString());
 
-            dynamic dynamicValue = value;
+            double currentValue = Convert.ToDouble(value);
 
-            if (dynamicValue >= _minValue)
+            if (currentValue >= _minValue)
             {
-                _previousValue = dynamicValue;
-                string valueAsText = dynamicValue.ToString();
+                _previousValue = (T)Convert.ChangeType(currentValue, typeof(T));
+                string valueAsText = currentValue.ToString();
                 _mainText.SetTextIfNotNull(valueAsText);
             }
             else

@@ -281,17 +281,6 @@ namespace JovDK.Audio.Service
         #endregion Controller
     }
 
-    [Serializable]
-    public class AudioConfig
-    {
-        public string Id = "UNDEFINED";
-        public AudioClip[] AudioClipsVariationsList;
-        public float VolumeFactor = 1f;
-        public float PitchFactor = 1f;
-        public bool Is2D = true;
-        [HideInInspector] public AudioSource[] AudioSourceIntances;
-    }
-
     public static class AudioServiceExtension
     {
         public static AudioTaskResult PlaySfx(

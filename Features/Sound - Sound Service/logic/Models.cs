@@ -24,6 +24,17 @@ using JovDK.SerializingTools.Json;
 
 namespace JovDK.Audio.Service
 {
+    [Serializable]
+    public class AudioConfig
+    {
+        public string Id = "UNDEFINED";
+        public AudioClip[] AudioClipsVariationsList;
+        public float VolumeFactor = 1f;
+        public float PitchFactor = 1f;
+        public bool Is2D = true;
+        [HideInInspector] public AudioSource[] AudioSourceIntances;
+    }
+
     public class AudioTaskResult
     {
         public bool Success = false;

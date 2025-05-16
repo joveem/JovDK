@@ -38,6 +38,7 @@ namespace JovDK.Audio.Service
     public class AudioTaskResult
     {
         public bool Success = false;
+        public float AudioMaxDuration = -1f;
         public int RandomVariationIndex = -1;
     }
 }

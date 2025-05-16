@@ -165,6 +165,7 @@ namespace JovDK.Audio.Service
                     audioSourceToPlay.Play();
 
                     result.Success = true;
+                    result.AudioMaxDuration = audioSourceToPlay.clip.length;
                     result.RandomVariationIndex = randomIndex;
                 });
             }
@@ -265,6 +266,7 @@ namespace JovDK.Audio.Service
                     audioSourceToPlay.PlayOneShot(audioSourceToPlay.clip);
 
                     result.Success = true;
+                    result.AudioMaxDuration = audioSourceToPlay.clip.length;
                     result.RandomVariationIndex = randomIndex;
                 });
             }

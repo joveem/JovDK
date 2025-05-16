@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +17,6 @@ using TMPro;
 using JovDK.Debugging;
 using JovDK.SafeActions;
 using JovDK.SerializingTools.Json;
-using System.Linq;
 
 // from project
 // ...
@@ -115,8 +115,15 @@ namespace JovDK.Audio.Service
             });
         }
 
-        public void _INTERNAL_PlaySfx(string sfxId, float pitchMultiplier = 1f)
+        public AudioTaskResult _INTERNAL_PlaySfx(
+            string sfxId,
+            float pitchMultiplier = 1f,
+            int? ignoreRandomIndex = null,
+            int? forceRandomIndex = null)
         {
+            AudioTaskResult result = new AudioTaskResult();
+            result.Success = false;
+
             bool isAlreadyRegistered = _currentAudiosById.ContainsKey(sfxId);
 
             if (isAlreadyRegistered)
@@ -127,7 +134,26 @@ namespace JovDK.Audio.Service
                 int variationsAmount = audioConfig.AudioClipsVariationsList.Length;
 
                 if (variationsAmount > 0)
-                    randomIndex = UnityRandom.Range(0, variationsAmount);
+                {
+                    if (forceRandomIndex == null)
+                    {
+                        if (ignoreRandomIndex == null)
+                        {
+
+                            randomIndex = UnityRandom.Range(0, variationsAmount);
+                        }
+                        else
+                        {
+                            do
+                            {
+                                randomIndex = UnityRandom.Range(0, variationsAmount);
+                            }
+                            while (randomIndex == (int)ignoreRandomIndex);
+                        }
+                    }
+                    else
+                        randomIndex = (int)forceRandomIndex;
+                }
 
                 AudioSource audioSourceToPlay = audioConfig.AudioSourceIntances[randomIndex];
                 audioSourceToPlay.DoIfNotNull(() =>
@@ -137,6 +163,9 @@ namespace JovDK.Audio.Service
                     // TODO: REVIEW THIS!
                     audioSourceToPlay.pitch = defaultPitch * pitchMultiplier;
                     audioSourceToPlay.Play();
+
+                    result.Success = true;
+                    result.RandomVariationIndex = randomIndex;
                 });
             }
             else
@@ -146,31 +175,34 @@ namespace JovDK.Audio.Service
                     "sfxId = " + sfxId.SerializeObjectToJSON() + "\n" +
                     "");
             }
+
+            return result;
         }
 
-        public void _INTERNAL_StopSfx(string sfxId, float pitchMultiplier = 1f)
+        public AudioTaskResult _INTERNAL_StopSfx(string sfxId, float pitchMultiplier = 1f)
         {
+            AudioTaskResult result = new AudioTaskResult();
+            result.Success = false;
+
             bool isAlreadyRegistered = _currentAudiosById.ContainsKey(sfxId);
 
             if (isAlreadyRegistered)
             {
                 AudioConfig audioConfig = _currentAudiosById[sfxId];
 
-                int randomIndex = 0;
-                int variationsAmount = audioConfig.AudioClipsVariationsList.Length;
-
-                if (variationsAmount > 0)
-                    randomIndex = UnityRandom.Range(0, variationsAmount);
-
-                AudioSource audioSourceToPlay = audioConfig.AudioSourceIntances[randomIndex];
-                audioSourceToPlay.DoIfNotNull(() =>
+                foreach (AudioSource audioSourceToPlay in audioConfig.AudioSourceIntances)
                 {
-                    float defaultPitch = audioConfig.PitchFactor;
+                    audioSourceToPlay.DoIfNotNull(() =>
+                    {
+                        float defaultPitch = audioConfig.PitchFactor;
 
-                    // TODO: REVIEW THIS!
-                    audioSourceToPlay.pitch = defaultPitch * pitchMultiplier;
-                    audioSourceToPlay.Stop();
-                });
+                        // TODO: REVIEW THIS!
+                        audioSourceToPlay.pitch = defaultPitch * pitchMultiplier;
+                        audioSourceToPlay.Stop();
+
+                        result.Success = true;
+                    });
+                }
             }
             else
             {
@@ -179,10 +211,19 @@ namespace JovDK.Audio.Service
                     "sfxId = " + sfxId.SerializeObjectToJSON() + "\n" +
                     "");
             }
+
+            return result;
         }
 
-        public void _INTERNAL_PlayOneShotSfx(string sfxId, float pitchMultiplier = 1f)
+        public AudioTaskResult _INTERNAL_PlayOneShotSfx(
+            string sfxId,
+            float pitchMultiplier = 1f,
+            int? ignoreRandomIndex = null,
+            int? forceRandomIndex = null)
         {
+            AudioTaskResult result = new AudioTaskResult();
+            result.Success = false;
+
             bool isAlreadyRegistered = _currentAudiosById.ContainsKey(sfxId);
 
             if (isAlreadyRegistered)
@@ -193,7 +234,26 @@ namespace JovDK.Audio.Service
                 int variationsAmount = audioConfig.AudioClipsVariationsList.Length;
 
                 if (variationsAmount > 0)
-                    randomIndex = UnityRandom.Range(0, variationsAmount);
+                {
+                    if (forceRandomIndex == null)
+                    {
+                        if (ignoreRandomIndex == null)
+                        {
+
+                            randomIndex = UnityRandom.Range(0, variationsAmount);
+                        }
+                        else
+                        {
+                            do
+                            {
+                                randomIndex = UnityRandom.Range(0, variationsAmount);
+                            }
+                            while (randomIndex == (int)ignoreRandomIndex);
+                        }
+                    }
+                    else
+                        randomIndex = (int)forceRandomIndex;
+                }
 
                 AudioSource audioSourceToPlay = audioConfig.AudioSourceIntances[randomIndex];
                 audioSourceToPlay.DoIfNotNull(() =>
@@ -203,6 +263,9 @@ namespace JovDK.Audio.Service
                     // TODO: REVIEW THIS!
                     audioSourceToPlay.pitch = defaultPitch * pitchMultiplier;
                     audioSourceToPlay.PlayOneShot(audioSourceToPlay.clip);
+
+                    result.Success = true;
+                    result.RandomVariationIndex = randomIndex;
                 });
             }
             else
@@ -212,6 +275,8 @@ namespace JovDK.Audio.Service
                     "sfxId = " + sfxId.SerializeObjectToJSON() + "\n" +
                     "");
             }
+
+            return result;
         }
         #endregion Controller
     }
@@ -229,19 +294,44 @@ namespace JovDK.Audio.Service
 
     public static class AudioServiceExtension
     {
-        public static void PlaySfx(this AudioService baseAudioService, string sfxId, float pitchMultiplier = 1f)
+        public static AudioTaskResult PlaySfx(
+            this AudioService baseAudioService,
+            string sfxId,
+            float pitchMultiplier = 1f,
+            int? ignoreRandomIndex = null,
+            int? forceRandomIndex = null)
         {
-            baseAudioService.DoIfNotNull(() => baseAudioService._INTERNAL_PlaySfx(sfxId, pitchMultiplier));
+            AudioTaskResult result = new AudioTaskResult();
+            result.Success = false;
+
+            baseAudioService.DoIfNotNull(() => result = baseAudioService._INTERNAL_PlaySfx(sfxId, pitchMultiplier));
+
+            return result;
         }
 
-        public static void StopSfx(this AudioService baseAudioService, string sfxId, float pitchMultiplier = 1f)
+        public static AudioTaskResult StopSfx(this AudioService baseAudioService, string sfxId, float pitchMultiplier = 1f)
         {
-            baseAudioService.DoIfNotNull(() => baseAudioService._INTERNAL_StopSfx(sfxId, pitchMultiplier));
+            AudioTaskResult result = new AudioTaskResult();
+            result.Success = false;
+
+            baseAudioService.DoIfNotNull(() => result = baseAudioService._INTERNAL_StopSfx(sfxId, pitchMultiplier));
+
+            return result;
         }
 
-        public static void PlayOneShotSfx(this AudioService baseAudioService, string sfxId, float pitchMultiplier = 1f)
+        public static AudioTaskResult PlayOneShotSfx(
+            this AudioService baseAudioService,
+            string sfxId,
+            float pitchMultiplier = 1f,
+            int? ignoreRandomIndex = null,
+            int? forceRandomIndex = null)
         {
-            baseAudioService.DoIfNotNull(() => baseAudioService._INTERNAL_PlayOneShotSfx(sfxId, pitchMultiplier));
+            AudioTaskResult result = new AudioTaskResult();
+            result.Success = false;
+
+            baseAudioService.DoIfNotNull(() => result = baseAudioService._INTERNAL_PlayOneShotSfx(sfxId, pitchMultiplier));
+
+            return result;
         }
     }
 }

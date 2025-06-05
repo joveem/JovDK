@@ -34,7 +34,8 @@ namespace JovDK.SafeActions
                     "<" + typeof(T) + ">" +
                     nameof(objectValue) + (" IS " + "NOT".ToColor(GoodColors.Pink) + " NULL!").ToColor(GoodColors.Orange);
 
-                DebugExtension.DevLogWarning(debugText, 4);
+                // DebugExtension.DevLogWarning(debugText, 4);
+                DebugExtension.DevLogWarning(4, debugText);
 
             }
 
@@ -56,7 +57,8 @@ namespace JovDK.SafeActions
             if (objectValue != null && !objectValue.Equals(null))
                 action();
             else if (debugIfNull)
-                DebugExtension.DevLogWarning("<" + typeof(T) + ">" + (nameof(objectValue) + " IS NULL!").ToColor(GoodColors.Orange), 4);
+                // DebugExtension.DevLogWarning("<" + typeof(T) + ">" + (nameof(objectValue) + " IS NULL!").ToColor(GoodColors.Orange), 4);
+                DebugExtension.DevLogWarning(4, "<" + typeof(T) + ">" + (nameof(objectValue) + " IS NULL!").ToColor(GoodColors.Orange));
 
         }
 
@@ -110,7 +112,8 @@ namespace JovDK.SafeActions
                     "<" + typeof(T) + ">" +
                     "object NOT FOUND!".ToColor(GoodColors.Orange);
 
-                DebugExtension.DevLogWarning(debugText, 4);
+                // DebugExtension.DevLogWarning(debugText, 4);
+                DebugExtension.DevLogWarning(4, debugText);
 
             }
 
@@ -123,27 +126,21 @@ namespace JovDK.SafeActions
 
         public static bool TryFindGameObject<T>(out T outValue) where T : Component
         {
-
             outValue = null;
 
             try
             {
-
-                outValue = GameObject.FindObjectOfType<T>();
-
+                outValue = GameObject.FindFirstObjectByType<T>();
             }
-            catch (System.Exception)
+            catch (Exception)
             {
-
-                DebugExtension.DevLogWarning(("<" + typeof(T) + "> object NOT FOUND!").ToColor(GoodColors.Orange), 4);
-
+                DebugExtension.DevLogWarning(4, ("<" + typeof(T) + "> object NOT FOUND!").ToColor(GoodColors.Orange));
             }
 
             if (outValue != null)
                 return true;
             else
                 return false;
-
         }
 
         #region Butons 

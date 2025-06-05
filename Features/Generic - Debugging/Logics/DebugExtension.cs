@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,131 +23,289 @@ namespace JovDK.Debugging
 {
     public static partial class DebugExtension
     {
-        static public void NDLog()
-        {
-            NDLog(">".ToColor(GoodColors.Orange), 4);
-        }
-
-        static public void NDLog(string message, int stackBackSteps = 3)
-        {
-            string debugText = NDDevLogText(message, stackBackSteps);
-            Debug.Log(debugText);
-        }
-
-        static public void NDLogWarning(string message, int stackBackSteps = 3)
-        {
-            string debugText = NDDevLogText(message, stackBackSteps);
-            Debug.LogWarning(debugText);
-        }
-
-        static public void NDLogError(string message, int stackBackSteps = 3)
-        {
-            string debugText = NDDevLogText(message, stackBackSteps);
-            Debug.LogError(debugText);
-        }
-
-        static string NDDevLogText(string message, int stackBackSteps = 3)
-        {
-            string value = "";
-
-            value += "- " + "NDLOG".ToColor("#83f") + " | ";
-            value += message.NDDebugText(stackBackSteps);
-
-            return value;
-        }
-
         /// <summary>
-        /// Logs an default <c>System.Exception</c> with. A console debug
-        /// LogException that IS COMPILATED out of Unity Editor and
-        /// not-development players builds
+        /// Logs a default System.Exception message.
         /// </summary>
         /// <param name="message">
-        /// The message of <c>System.Exception</c>
+        /// The message of System.Exception.
         /// </param>
         static public void LogException(string message)
         {
-            UnityEngine.Debug.LogException(new Exception(message));
+            Debug.LogException(new Exception(message));
         }
 
         static public void DevLog()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            DevLog(">".ToColor(GoodColors.Orange), 4);
+            DevLog(">".ToColor(GoodColors.Orange));
 #endif
         }
 
-        static public void DevLog(string message, int stackBackSteps = 3)
+        /// <summary>
+        /// Logs a dev message in Unity Editor or Development builds.
+        /// </summary>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void DevLog(params string[] messages)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            string debugText = DevLogText(message, stackBackSteps);
+            int stackBackSteps = 3;
+            DevLog(stackBackSteps, messages);
+#endif
+        }
+
+        /// <summary>
+        /// Logs a dev message in Unity Editor or Development builds.
+        /// </summary>
+        /// <param name="stackBackSteps">
+        /// Stack trace depth (default is 3).
+        /// </param>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void DevLog(int stackBackSteps, params string[] messages)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            string debugText = DevLogText(messages);
             Debug.Log(debugText);
 #endif
         }
 
-        static public void DevLogWarning(string message, int stackBackSteps = 3)
+        /// <summary>
+        /// Logs a warning in Unity Editor or Development builds.
+        /// </summary>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void DevLogWarning(params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD 
-            string debugText = DevLogText(message, stackBackSteps);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            int stackBackSteps = 3;
+            DevLogWarning(stackBackSteps, messages);
+#endif
+        }
+
+        /// <summary>
+        /// Logs a warning in Unity Editor or Development builds.
+        /// </summary>
+        /// <param name="stackBackSteps">
+        /// Stack trace depth (default is 3).
+        /// </param>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void DevLogWarning(int stackBackSteps, params string[] messages)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            string debugText = DevLogText(messages);
             Debug.LogWarning(debugText);
 #endif
         }
 
-        static public void DevLogError(string message, int stackBackSteps = 3)
+        /// <summary>
+        /// Logs an error in Unity Editor or Development builds.
+        /// </summary>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void DevLogError(params string[] messages)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            string debugText = DevLogText(message, stackBackSteps);
+            int stackBackSteps = 3;
+            DevLogError(stackBackSteps, messages);
+#endif
+        }
+
+        /// <summary>
+        /// Logs an error in Unity Editor or Development builds.
+        /// </summary>
+        /// <param name="stackBackSteps">
+        /// Stack trace depth (default is 3).
+        /// </param>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void DevLogError(int stackBackSteps, params string[] messages)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            string debugText = DevLogText(stackBackSteps, messages);
             Debug.LogError(debugText);
 #endif
         }
 
-        static string DevLogText(string message, int stackBackSteps = 3)
+        /// <summary>
+        /// Formats dev log messages.
+        /// </summary>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        /// <returns>
+        /// Formatted debug message.
+        /// </returns>
+        static string DevLogText(params string[] messages)
         {
-            string value = "";
-
-            value += "- " + "DEVLOG".ToColor(GoodColors.Pink) + " | ";
-            value += message.DebugText(stackBackSteps);
-
-            return value;
+            int stackBackSteps = 1;
+            return DevLogText(stackBackSteps, messages);
         }
 
-        static string NDDebugText(this string _text, int stackBackSteps = 3)
+        static string DevLogText(int stackBackSteps = 1, params string[] messages)
         {
-            string debugText = "";
+            StringBuilder stringBuilder = new StringBuilder();
 
-#if !UNITY_WEBGL
-            StackFrame _stackFrame = new StackFrame(stackBackSteps, true);
-            System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
-
-            debugText +=
-                _methodInfo.ReflectedType.FullName.ToColor(GoodColors.Yellow) + " | " +
-                _stackFrame.GetMethod().Name.ToColor(GoodColors.Yellow) + " | ";
+#if UNITY_EDITOR || DEVELOPMENT_BUILD 
+            stringBuilder.AppendWithColor("DEVLOG", GoodColors.Pink);
+            stringBuilder.Append(" | ");
 #endif
-
-            debugText += _text;
-
-            return debugText;
-        }
-
-        static string DebugText(this string _text, int stackBackSteps = 3)
-        {
-            string debugText = "";
 
 #if UNITY_EDITOR || (DEVELOPMENT_BUILD && !UNITY_WEBGL)
             StackFrame _stackFrame = new StackFrame(stackBackSteps, true);
             System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
 
-            debugText +=
-                _methodInfo.ReflectedType.FullName.ToColor(GoodColors.Yellow) + " | " +
-                _stackFrame.GetMethod().Name.ToColor(GoodColors.Yellow) + " | ";
+            stringBuilder.AppendWithColor(_methodInfo.ReflectedType.FullName, GoodColors.Yellow);
+            stringBuilder.Append(" | ");
+            stringBuilder.AppendWithColor(_stackFrame.GetMethod().Name, GoodColors.Yellow);
+            stringBuilder.Append(" | ");
 #endif
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD 
-            debugText += _text;
+            foreach (string message in messages)
+                stringBuilder.Append(message);
 #endif
 
-            return debugText;
+            return stringBuilder.ToString();
         }
 
+        static public void NDLog()
+        {
+            NDLog(4, ">".ToColor(GoodColors.Orange));
+        }
+
+        /// <summary>
+        /// Logs a message even in non-development builds.
+        /// </summary>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void NDLog(params string[] messages)
+        {
+            int stackBackSteps = 3;
+            NDLog(stackBackSteps, messages);
+        }
+
+        /// <summary>
+        /// Logs a message even in non-development builds.
+        /// </summary>
+        /// <param name="stackBackSteps">
+        /// Stack trace depth (default is 3).
+        /// </param>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void NDLog(int stackBackSteps = 3, params string[] messages)
+        {
+            string debugText = NotDevDebugText(stackBackSteps, messages);
+            Debug.Log(debugText);
+        }
+
+        /// <summary>
+        /// Logs a warning even in non-development builds.
+        /// </summary>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void NDLogWarning(params string[] messages)
+        {
+            int stackBackSteps = 3;
+            NDLogWarning(stackBackSteps, messages);
+        }
+
+        /// <summary>
+        /// Logs a warning even in non-development builds.
+        /// </summary>
+        /// <param name="stackBackSteps">
+        /// Stack trace depth (default is 3).
+        /// </param>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void NDLogWarning(int stackBackSteps = 3, params string[] messages)
+        {
+            string debugText = NotDevDebugText(stackBackSteps, messages);
+            Debug.LogWarning(debugText);
+        }
+
+        /// <summary>
+        /// Logs an error even in non-development builds.
+        /// </summary>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void NDLogError(params string[] messages)
+        {
+            int stackBackSteps = 3;
+            NDLogError(stackBackSteps, messages);
+        }
+
+        /// <summary>
+        /// Logs an error even in non-development builds.
+        /// </summary>
+        /// <param name="stackBackSteps">
+        /// Stack trace depth (default is 3).
+        /// </param>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void NDLogError(int stackBackSteps = 3, params string[] messages)
+        {
+            string debugText = NotDevDebugText(stackBackSteps, messages);
+            Debug.LogError(debugText);
+        }
+
+        /// <summary>
+        /// Formats production log messages.
+        /// </summary>
+        /// <param name="stackBackSteps">
+        /// Stack trace depth (default is 1).
+        /// </param>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        /// <returns>
+        /// Formatted debug message.
+        /// </returns>
+        static string NotDevDebugText(int stackBackSteps = 1, params string[] messages)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            stringBuilder.AppendWithColor("NDLOG", "#83f");
+            stringBuilder.Append(" | ");
+
+#if !UNITY_WEBGL
+            StackFrame _stackFrame = new StackFrame(stackBackSteps, true);
+            System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
+
+            stringBuilder.AppendWithColor(_methodInfo.ReflectedType.FullName, GoodColors.Yellow);
+            stringBuilder.Append(" | ");
+            stringBuilder.AppendWithColor(_stackFrame.GetMethod().Name, GoodColors.Yellow);
+            stringBuilder.Append(" | ");
+#endif
+
+            foreach (string message in messages)
+                stringBuilder.Append(message);
+
+            return stringBuilder.ToString();
+        }
+
+        /// <summary>
+        /// Draws a vertical debug line from a world position in the Scene view.
+        /// </summary>
+        /// <param name="globalPosition">
+        /// World position to draw from.
+        /// </param>
+        /// <param name="lineColor">
+        /// Line color.
+        /// </param>
         public static void DebugPosition(Vector3 globalPosition, Color lineColor)
         {
             float lineSize = 5f;
@@ -156,6 +315,18 @@ namespace JovDK.Debugging
             UnityEngine.Debug.DrawLine(globalPosition, positionDelta, lineColor);
         }
 
+        /// <summary>
+        /// Draws a vertical debug line from a world position in the Scene view with duration.
+        /// </summary>
+        /// <param name="globalPosition">
+        /// World position to draw from.
+        /// </param>
+        /// <param name="lineColor">
+        /// Line color.
+        /// </param>
+        /// <param name="duration">
+        /// Time in seconds to show the line.
+        /// </param>
         public static void DebugPosition(Vector3 globalPosition, Color lineColor, float duration)
         {
             float lineSize = 5f;
@@ -165,6 +336,15 @@ namespace JovDK.Debugging
             UnityEngine.Debug.DrawLine(globalPosition, positionDelta, lineColor, duration);
         }
 
+        /// <summary>
+        /// Draws debug lines along a path of positions in the Scene view.
+        /// </summary>
+        /// <param name="pathPositionsList">
+        /// List of world positions.
+        /// </param>
+        /// <param name="lineColor">
+        /// Line color (default red).
+        /// </param>
         public static void DebugPath(
             List<Vector3> pathPositionsList,
             Color lineColor = default)
@@ -181,6 +361,18 @@ namespace JovDK.Debugging
             }
         }
 
+        /// <summary>
+        /// Draws debug lines along a path of positions in the Scene view with duration.
+        /// </summary>
+        /// <param name="pathPositionsList">
+        /// List of world positions.
+        /// </param>
+        /// <param name="duration">
+        /// Time in seconds to show each line.
+        /// </param>
+        /// <param name="lineColor">
+        /// Line color (default red).
+        /// </param>
         public static void DebugPath(
             List<Vector3> pathPositionsList,
             float duration,

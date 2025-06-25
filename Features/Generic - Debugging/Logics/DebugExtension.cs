@@ -37,7 +37,8 @@ namespace JovDK.Debugging
         static public void DevLog()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            DevLog(">".ToColor(GoodColors.Orange));
+            int stackBackSteps = 3;
+            DevLog(stackBackSteps, ">".ToColor(GoodColors.Orange));
 #endif
         }
 
@@ -67,7 +68,7 @@ namespace JovDK.Debugging
         static public void DevLog(int stackBackSteps, params string[] messages)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            string debugText = DevLogText(messages);
+            string debugText = DevLogText(stackBackSteps, messages);
             Debug.Log(debugText);
 #endif
         }
@@ -98,7 +99,7 @@ namespace JovDK.Debugging
         static public void DevLogWarning(int stackBackSteps, params string[] messages)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            string debugText = DevLogText(messages);
+            string debugText = DevLogText(stackBackSteps, messages);
             Debug.LogWarning(debugText);
 #endif
         }

@@ -160,18 +160,45 @@ namespace JovDK.Debugging
 #endif
 
 #if UNITY_EDITOR || (DEVELOPMENT_BUILD && !UNITY_WEBGL)
-            StackFrame _stackFrame = new StackFrame(stackBackSteps, true);
-            System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
+            System.Reflection.MethodBase _methodInfo = null;
+            StackFrame _stackFrame = null;
 
-            stringBuilder.AppendWithColor(_methodInfo.ReflectedType.FullName, GoodColors.Yellow);
-            stringBuilder.Append(" | ");
-            stringBuilder.AppendWithColor(_stackFrame.GetMethod().Name, GoodColors.Yellow);
-            stringBuilder.Append(" | ");
+            bool hasAlreadyDecreasedStackBackSteps = false;
+
+            while (_methodInfo == null && stackBackSteps >= 0)
+            {
+                if (hasAlreadyDecreasedStackBackSteps)
+                    Debug.Log("hasAlreadyDecreasedStackBackSteps = " + hasAlreadyDecreasedStackBackSteps + " | stackBackSteps = " + stackBackSteps);
+
+                _stackFrame = new StackFrame(stackBackSteps, true);
+                _methodInfo = _stackFrame.GetMethod();
+
+                stackBackSteps--;
+                hasAlreadyDecreasedStackBackSteps = true;
+            }
+
+            if (_methodInfo != null)
+            {
+                stringBuilder.AppendWithColor(_methodInfo.ReflectedType.FullName, GoodColors.Yellow);
+                stringBuilder.Append(" | ");
+            }
+
+            if (_stackFrame != null)
+            {
+                stringBuilder.AppendWithColor(_stackFrame.GetMethod().Name, GoodColors.Yellow);
+                stringBuilder.Append(" | ");
+            }
+
 #endif
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD 
             foreach (string message in messages)
-                stringBuilder.Append(message);
+            {
+                if (message != null)
+                    stringBuilder.Append(message);
+                else
+                    stringBuilder.Append("<null>");
+            }
 #endif
 
             return stringBuilder.ToString();

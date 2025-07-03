@@ -93,6 +93,17 @@ namespace JovDK.SafeActions
 
         }
 
+        public static void SetInverseActiveIfNotNull<T>(this T objectValue, bool debugIfNull = true) where T : Component
+        {
+            objectValue.DoIfNotNull(() => objectValue.gameObject.SetActive(!objectValue.gameObject.activeSelf), debugIfNull);
+        }
+
+        public static void SetInverseActiveIfNotNull(this GameObject objectValue, bool debugIfNull = true)
+        {
+
+            objectValue.DoIfNotNull(() => objectValue.SetActive(!objectValue.activeSelf), debugIfNull);
+
+        }
 
         public static bool TryGetComponent<T>(Component component, out T outValue) where T : Component
         {

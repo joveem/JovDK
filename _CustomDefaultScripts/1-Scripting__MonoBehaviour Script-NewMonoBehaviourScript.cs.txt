@@ -34,6 +34,7 @@ namespace PackageName.MajorContext.MinorContext
         // [Space(5), Header("[ State ]"), Space(10)]
 
         // [SerializeField] bool _state;
+        // public Action<bool> OnIdkCallback = null;
 
 
         // [Space(5), Header("[ Parts ]"), Space(10)]
@@ -93,9 +94,10 @@ namespace PackageName.MajorContext.MinorContext
         #endregion MonoBehaviour
 
         #region Callbacks
-        // void OnIdk()
+        // void OnIdk(bool value)
         // {
-        //     // DebugExtension.DevLog(">".ToColor(GoodColors.Orange));
+        //     // DebugExtension.DevLog();
+        //     OnIdkCallback?.?.Invoke(value);
         // }
         #endregion Callbacks
 
@@ -162,7 +164,7 @@ namespace PackageName.MajorContext.MinorContext
         #region Controller
         // void SetInitialState()
         // {
-        //     DebugExtension.DevLog(">".ToColor(GoodColors.Orange));
+        //     DebugExtension.DevLog();
         // }
         #endregion Controller
 

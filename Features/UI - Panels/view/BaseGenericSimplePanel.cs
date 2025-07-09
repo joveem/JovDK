@@ -14,6 +14,7 @@ using TMPro;
 
 // from company
 using JovDK.Debugging;
+using JovDK.Generic.UnityEngineExtensions;
 using JovDK.SafeActions;
 using JovDK.SerializingTools.Json;
 
@@ -23,7 +24,7 @@ using JovDK.SerializingTools.Json;
 
 namespace JovDK.UI.Generic
 {
-    public partial class BaseGenericSimplePanel : MonoBehaviour
+    public partial class BaseGenericSimplePanel : DisabledAwake_Monobehavior
     {
 
         // [Space(5), Header("[ Dependencies ]"), Space(10)]
@@ -47,7 +48,7 @@ namespace JovDK.UI.Generic
 
 
         #region MonoBehaviour
-        void Awake()
+        public override void DisabledAwake()
         {
             SetInitialState();
         }

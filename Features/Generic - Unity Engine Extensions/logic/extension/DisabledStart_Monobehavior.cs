@@ -1,0 +1,76 @@
+// system / unity
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.UI;
+using SystemRandom = System.Random;
+using UnityRandom = UnityEngine.Random;
+
+// third
+using DG.Tweening;
+using TMPro;
+
+// from company
+using JovDK.Debugging;
+using JovDK.SafeActions;
+using JovDK.SerializingTools.Json;
+
+// from project
+// ...
+
+
+namespace JovDK.Generic.UnityEngineExtensions
+{
+    public abstract partial class DisabledStart_Monobehavior : MonoBehaviour
+    {
+
+        // [Space(5), Header("[ Dependencies ]"), Space(10)]
+
+        // [SerializeField] bool _dependencies;
+
+
+        [Space(5), Header("[ State ]"), Space(10)]
+        DisabledDestroyRefresherHelper_Monobehavior _disabledDestroyRefresherHelper_Monobehavior = null;
+
+
+        // [Space(5), Header("[ Parts ]"), Space(10)]
+
+        // [SerializeField] bool _parts;
+
+
+        // [Space(5), Header("[ Configs ]"), Space(10)]
+
+        // [SerializeField] bool _configs;
+
+
+
+        #region MonoBehaviour
+        void Reset()
+        {
+            HandleValidation();
+        }
+
+        void OnValidate()
+        {
+            HandleValidation();
+        }
+
+        /// <summary>
+        /// An additional "Awake" function that triggers even if the Monobehavior is disabled!
+        /// </summary>
+        public virtual void DisabledStart() { }
+        #endregion MonoBehaviour
+
+        #region Controller
+        void HandleValidation()
+        {
+            if (_disabledDestroyRefresherHelper_Monobehavior == null)
+                _disabledDestroyRefresherHelper_Monobehavior = gameObject.AddComponent<DisabledDestroyRefresherHelper_Monobehavior>();
+
+            DisabledMonoBehaviourTriggersExtensionService.RefreshAllLists();
+        }
+        #endregion Controller
+    }
+}

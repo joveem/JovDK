@@ -35,6 +35,7 @@ namespace JovDK.UI.Generic
         [Space(5), Header("[ State ]"), Space(10)]
 
         protected bool _isShowingPanel = false;
+        Tween _curretBackgroundTween = null;
 
 
         [Space(5), Header("[ Parts ]"), Space(10)]
@@ -47,6 +48,7 @@ namespace JovDK.UI.Generic
         protected float _coverAnimationDuration = 0.35f;
 
 
+
         #region MonoBehaviour
         public override void DisabledAwake()
         {
@@ -57,7 +59,7 @@ namespace JovDK.UI.Generic
         #region Controller
         protected virtual void SetInitialState()
         {
-            DebugExtension.DevLog();
+            // DebugExtension.DevLog();
 
             if (_isShowingPanel)
                 ShowPanelInstantaneously();
@@ -65,46 +67,56 @@ namespace JovDK.UI.Generic
                 HidePanelInstantaneously();
         }
 
+        public virtual void SwitchPanelViewState()
+        {
+            // DebugExtension.DevLog();
+
+            if (_isShowingPanel)
+                HidePanel();
+            else
+                ShowPanel();
+        }
+
+        public virtual void SetPanelViewState(bool newShowValue)
+        {
+            // DebugExtension.DevLog("newShowValue = ", newShowValue.ToString());
+
+            if (newShowValue)
+                ShowPanel();
+            else
+                HidePanel();
+        }
+
+        public virtual void SetPanelViewStateInstantaneously(bool newShowValue)
+        {
+            // DebugExtension.DevLog("newShowValue = ", newShowValue.ToString());
+
+            if (newShowValue)
+                ShowPanelInstantaneously();
+            else
+                HidePanelInstantaneously();
+        }
+
         public virtual void ShowPanel()
         {
-            DebugExtension.DevLog();
+            // DebugExtension.DevLog();
 
             if (!_isShowingPanel)
             {
                 _isShowingPanel = true;
+                TryToKillBackgroundTween();
 
                 PlayShowPanelAnimation();
             }
         }
 
-        public virtual void HidePanel()
+        public void ShowPanelInstantaneously()
         {
-            DebugExtension.DevLog();
+            // DebugExtension.DevLog();
 
-            if (_isShowingPanel)
-            {
-                _isShowingPanel = false;
-
-                PlayHidePanelAnimation();
-            }
-        }
-        #endregion Controller
-
-        #region View
-        void PlayShowPanelAnimation()
-        {
-            DebugExtension.DevLog();
-
-            _fullContentCanvasGroup.DoIfNotNull(() =>
-            {
-                _fullContentCanvasGroup.blocksRaycasts = true;
-                _fullContentCanvasGroup.DOFade(1f, _coverAnimationDuration);
-            });
-        }
-
-        void ShowPanelInstantaneously()
-        {
-            DebugExtension.DevLog();
+            _isShowingPanel = true;
+            TryToKillBackgroundTween();
+            gameObject.SetActive(true);
 
             _fullContentCanvasGroup.DoIfNotNull(() =>
             {
@@ -113,26 +125,71 @@ namespace JovDK.UI.Generic
             });
         }
 
-        void PlayHidePanelAnimation()
+        public virtual void HidePanel()
         {
-            DebugExtension.DevLog();
+            // DebugExtension.DevLog();
 
-            _fullContentCanvasGroup.DoIfNotNull(() =>
+            if (_isShowingPanel)
             {
-                _fullContentCanvasGroup.blocksRaycasts = false;
-                _fullContentCanvasGroup.DOFade(0f, _coverAnimationDuration);
-            });
+                _isShowingPanel = false;
+                TryToKillBackgroundTween();
+
+                PlayHidePanelAnimation();
+            }
         }
 
-        void HidePanelInstantaneously()
+        public void HidePanelInstantaneously()
         {
-            DebugExtension.DevLog();
+            // DebugExtension.DevLog();
+
+            _isShowingPanel = false;
+            TryToKillBackgroundTween();
 
             _fullContentCanvasGroup.DoIfNotNull(() =>
             {
                 _fullContentCanvasGroup.blocksRaycasts = false;
                 _fullContentCanvasGroup.alpha = 0f;
             });
+
+            gameObject.SetActive(false);
+        }
+        #endregion Controller
+
+        #region View
+        protected void PlayShowPanelAnimation()
+        {
+            // DebugExtension.DevLog();
+
+            _fullContentCanvasGroup.DoIfNotNull(() =>
+            {
+                TryToKillBackgroundTween();
+
+                gameObject.SetActive(true);
+
+                _fullContentCanvasGroup.blocksRaycasts = true;
+                _curretBackgroundTween = _fullContentCanvasGroup.DOFade(1f, _coverAnimationDuration);
+            });
+        }
+
+        protected void PlayHidePanelAnimation()
+        {
+            // DebugExtension.DevLog();
+
+            _fullContentCanvasGroup.DoIfNotNull(() =>
+            {
+                TryToKillBackgroundTween();
+
+                _fullContentCanvasGroup.blocksRaycasts = false;
+                _curretBackgroundTween = _fullContentCanvasGroup.DOFade(0f, _coverAnimationDuration);
+
+                _curretBackgroundTween.onComplete = () => gameObject.SetActive(false);
+            });
+        }
+
+        protected void TryToKillBackgroundTween()
+        {
+            if (_curretBackgroundTween.IsActive())
+                _curretBackgroundTween.Kill();
         }
         #endregion View
     }

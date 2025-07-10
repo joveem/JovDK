@@ -49,12 +49,13 @@ namespace JovDK.Generic.UnityEngineExtensions
         #region MonoBehaviour
         void Reset()
         {
-            HandleValidation();
+            HandleRefresherHelperValidation();
+            HandleListValidation();
         }
 
         void OnValidate()
         {
-            HandleValidation();
+            HandleListValidation();
         }
 
         /// <summary>
@@ -64,11 +65,14 @@ namespace JovDK.Generic.UnityEngineExtensions
         #endregion MonoBehaviour
 
         #region Controller
-        void HandleValidation()
+        void HandleRefresherHelperValidation()
         {
             if (_disabledDestroyRefresherHelper_Monobehavior == null)
                 _disabledDestroyRefresherHelper_Monobehavior = gameObject.AddComponent<DisabledDestroyRefresherHelper_Monobehavior>();
+        }
 
+        void HandleListValidation()
+        {
             DisabledMonoBehaviourTriggersExtensionService.RefreshAllLists();
         }
         #endregion Controller

@@ -110,7 +110,7 @@ namespace JovDK.UI.Generic
             }
         }
 
-        public void ShowPanelInstantaneously()
+        public virtual void ShowPanelInstantaneously()
         {
             // DebugExtension.DevLog();
 
@@ -122,6 +122,10 @@ namespace JovDK.UI.Generic
             {
                 _fullContentCanvasGroup.blocksRaycasts = true;
                 _fullContentCanvasGroup.alpha = 1f;
+            },
+            () =>
+            {
+                Debug.LogWarning("_fullContentCanvasGroup is null! gameObject = ", gameObject);
             });
         }
 
@@ -138,17 +142,22 @@ namespace JovDK.UI.Generic
             }
         }
 
-        public void HidePanelInstantaneously()
+        public virtual void HidePanelInstantaneously()
         {
             // DebugExtension.DevLog();
 
             _isShowingPanel = false;
             TryToKillBackgroundTween();
 
-            _fullContentCanvasGroup.DoIfNotNull(() =>
+            _fullContentCanvasGroup.DoIfNotNull(
+            () =>
             {
                 _fullContentCanvasGroup.blocksRaycasts = false;
                 _fullContentCanvasGroup.alpha = 0f;
+            },
+            () =>
+            {
+                Debug.LogWarning("_fullContentCanvasGroup is null! gameObject = ", gameObject);
             });
 
             gameObject.SetActive(false);
@@ -156,7 +165,7 @@ namespace JovDK.UI.Generic
         #endregion Controller
 
         #region View
-        protected void PlayShowPanelAnimation()
+        protected virtual void PlayShowPanelAnimation()
         {
             // DebugExtension.DevLog();
 
@@ -171,7 +180,7 @@ namespace JovDK.UI.Generic
             });
         }
 
-        protected void PlayHidePanelAnimation()
+        protected virtual void PlayHidePanelAnimation()
         {
             // DebugExtension.DevLog();
 
@@ -186,7 +195,7 @@ namespace JovDK.UI.Generic
             });
         }
 
-        protected void TryToKillBackgroundTween()
+        protected virtual void TryToKillBackgroundTween()
         {
             if (_curretBackgroundTween.IsActive())
                 _curretBackgroundTween.Kill();

@@ -20,13 +20,14 @@ using JovDK.SerializingTools.Json;
 // ...
 
 
-namespace JovDK.UI.CountDown
+namespace JovDK.UI.Timers
 {
-    public partial class CountdownTextView : MonoBehaviour
+    public partial class CountdownRectView : MonoBehaviour
     {
         void SetInitialState()
         {
-            _text.DoIfNotNull(() => _initialColor = _text.color);
+            if (_setMaxSizeOnStart)
+                _rectTransform.DoIfNotNull(() => _maxRectSize = _rectTransform.sizeDelta.x);
         }
     }
 }

@@ -20,7 +20,7 @@ using JovDK.SerializingTools.Json;
 // ...
 
 
-namespace JovDK.UI.CountDown
+namespace JovDK.UI.Timers
 {
     public partial class CountdownRectView : MonoBehaviour
     {

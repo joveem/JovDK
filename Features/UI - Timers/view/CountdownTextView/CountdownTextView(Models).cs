@@ -20,14 +20,14 @@ using JovDK.SerializingTools.Json;
 // ...
 
 
-namespace JovDK.UI.CountDown
+namespace JovDK.UI.Timers
 {
-    public partial class CountdownRectView : MonoBehaviour
+    public enum TimeFraction
     {
-        void SetInitialState()
-        {
-            if (_setMaxSizeOnStart)
-                _rectTransform.DoIfNotNull(() => _maxRectSize = _rectTransform.sizeDelta.x);
-        }
+        UNDEFINED = -1,
+        // Second,
+        Minute,
+        Hour,
+        Day,
     }
 }

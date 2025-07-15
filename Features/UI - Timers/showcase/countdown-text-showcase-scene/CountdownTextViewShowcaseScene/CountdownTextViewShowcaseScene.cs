@@ -20,7 +20,7 @@ using JovDK.SerializingTools.Json;
 // ...
 
 
-namespace JovDK.UI.CountDown.Testing.Showcase
+namespace JovDK.UI.Timers.Testing.Showcase
 {
     public partial class CountdownTextViewShowcaseScene : MonoBehaviour
     {

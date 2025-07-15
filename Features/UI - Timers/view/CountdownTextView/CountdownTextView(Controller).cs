@@ -20,14 +20,13 @@ using JovDK.SerializingTools.Json;
 // ...
 
 
-namespace JovDK.UI.CountDown
+namespace JovDK.UI.Timers
 {
-    public enum TimeFraction
+    public partial class CountdownTextView : MonoBehaviour
     {
-        UNDEFINED = -1,
-        // Second,
-        Minute,
-        Hour,
-        Day,
+        void SetInitialState()
+        {
+            _text.DoIfNotNull(() => _initialColor = _text.color);
+        }
     }
 }

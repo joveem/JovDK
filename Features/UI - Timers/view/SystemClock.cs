@@ -23,7 +23,7 @@ using System.Text;
 // ...
 
 
-namespace JovDK.Generic.Clock
+namespace JovDK.UI.Timers
 {
     public partial class SystemClock : MonoBehaviour
     {

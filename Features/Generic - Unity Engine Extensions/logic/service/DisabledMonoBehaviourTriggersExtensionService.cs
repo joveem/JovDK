@@ -100,6 +100,7 @@ namespace JovDK.Generic.UnityEngineExtensions
         {
             // DebugExtension.DevLog();
 
+#if UNITY_EDITOR
             if (_instance == this)
                 RefreshAllLists();
             else
@@ -115,6 +116,7 @@ namespace JovDK.Generic.UnityEngineExtensions
 
                 UnityEditor.EditorApplication.delayCall += () => DestroyImmediate(gameObject);
             }
+#endif
         }
 
         public static void RefreshAllLists()

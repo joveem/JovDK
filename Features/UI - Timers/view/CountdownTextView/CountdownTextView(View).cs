@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
@@ -95,57 +96,146 @@ namespace JovDK.UI.Timers
             string positiveHexColor = null,
             string negativeHexColor = null)
         {
-            string value = "";
+            StringBuilder stringBuilder = new StringBuilder();
 
-            int firstNumber;
-            int secondNumber;
+            int numbersAmount = _timeFractionsAmount;
+
+            if (numbersAmount < 1)
+            {
+                numbersAmount = 1;
+                DebugExtension.DevLogWarning(
+                    "$> ".ToColor(GoodColors.Red),
+                    "_timeFractionsAmount = ", _timeFractionsAmount.ToString(), "\n",
+                    "_maxTimeFraction = ", _maxTimeFraction.ToString(), "\n",
+                    "");
+            }
+
+            TimeFraction minTimeFraction = _maxTimeFraction - (numbersAmount + 1);
+            List<int> numbers = new List<int>();
 
             switch (_maxTimeFraction)
             {
                 case TimeFraction.Day:
                     {
-                        firstNumber = duration.Days;
-                        secondNumber = duration.Hours;
+                        int daysSum = duration.Days;
+
+                        int finalValue = daysSum;
+                        numbers.Add(finalValue);
+
+                        if (numbersAmount >= 2)
+                            numbers.Add(duration.Hours);
+
+                        if (numbersAmount >= 3)
+                            numbers.Add(duration.Minutes);
+
+                        if (numbersAmount >= 4)
+                            numbers.Add(duration.Seconds);
+
+                        if (numbersAmount >= 5)
+                            numbers.Add(duration.Milliseconds);
                         break;
                     }
 
                 case TimeFraction.Hour:
                     {
-                        firstNumber = duration.Hours + (duration.Days * 24);
-                        secondNumber = duration.Minutes;
+                        int daysSum = duration.Days;
+                        int hoursSum = duration.Hours + (daysSum * 24);
+
+                        int finalValue = hoursSum;
+                        numbers.Add(finalValue);
+
+                        if (numbersAmount >= 2)
+                            numbers.Add(duration.Minutes);
+
+                        if (numbersAmount >= 3)
+                            numbers.Add(duration.Seconds);
+
+                        if (numbersAmount >= 4)
+                            numbers.Add(duration.Milliseconds);
                         break;
                     }
 
                 case TimeFraction.Minute:
                     {
-                        firstNumber = duration.Minutes + (duration.Hours * 60) + (duration.Days * 24 * 60);
-                        secondNumber = duration.Seconds;
+                        int daysSum = duration.Days;
+                        int hoursSum = duration.Hours + (daysSum * 24);
+                        int minutesSum = duration.Minutes + (hoursSum * 60);
+
+                        int finalValue = minutesSum;
+                        numbers.Add(finalValue);
+
+                        if (numbersAmount >= 2)
+                            numbers.Add(duration.Seconds);
+
+                        if (numbersAmount >= 3)
+                            numbers.Add(duration.Milliseconds);
+                        break;
+                    }
+
+                case TimeFraction.Second:
+                    {
+                        int daysSum = duration.Days;
+                        int hoursSum = duration.Hours + (daysSum * 24);
+                        int minutesSum = duration.Minutes + (hoursSum * 60);
+                        int secondsSum = duration.Seconds + (minutesSum * 60);
+
+                        int finalValue = secondsSum;
+                        numbers.Add(finalValue);
+
+                        if (numbersAmount >= 2)
+                            numbers.Add(duration.Milliseconds);
+                        break;
+                    }
+
+                case TimeFraction.Millisecond:
+                    {
+                        int daysSum = duration.Days;
+                        int hoursSum = duration.Hours + (daysSum * 24);
+                        int minutesSum = duration.Minutes + (hoursSum * 60);
+                        int secondsSum = duration.Seconds + (minutesSum * 60);
+                        int millisecondSum = duration.Milliseconds + (secondsSum * 1000);
+
+                        int finalValue = millisecondSum;
+                        numbers.Add(finalValue);
                         break;
                     }
 
                 default:
                     {
-                        string debugText =
-                            "$ > ".ToColor(GoodColors.Red) +
-                            "ERROR trying to GetDurationText!" + "\n" +
-                            "UNEXPECTED _maxTimeFraction!" + "\n" +
-                            "";
-                        DebugExtension.DevLog(debugText);
+                        DebugExtension.DevLog(
+                            "$ > ".ToColor(GoodColors.Red),
+                            "UNEXPECTED _maxTimeFraction!", "\n",
+                            "_maxTimeFraction = ", _maxTimeFraction.ToString(), "\n",
+                            "");
 
-                        firstNumber = duration.Minutes + (duration.Hours * 60) + (duration.Days * 24 * 60);
-                        secondNumber = duration.Seconds;
+                        int daysSum = duration.Days;
+                        int hoursSum = duration.Hours + (daysSum * 24);
+                        int minutesSum = duration.Minutes + (hoursSum * 60);
+
+                        int finalValue = minutesSum;
+                        numbers.Add(finalValue);
+                        numbers.Add(duration.Seconds);
 
                         break;
                     }
             }
 
-            string firstNumberText = Mathf.Abs(firstNumber).ToString("00");
-            string secondNumberText = Mathf.Abs(secondNumber).ToString("00");
+            for (int i = 0; i < numbers.Count; i++)
+            {
+                bool isLastNumber = i == numbers.Count - 1;
 
-            value = firstNumberText + _separatorCharacter + secondNumberText;
-            value = HandleTextContentColoring(value, isNegative, positiveHexColor, negativeHexColor);
+                int numberValue = numbers[i];
 
-            return value;
+                if (!isLastNumber || minTimeFraction != TimeFraction.Millisecond)
+                    stringBuilder.Append(numberValue.ToString("00"));
+                else
+                    stringBuilder.Append(numberValue.ToString("0000"));
+
+                if (!isLastNumber)
+                    stringBuilder.Append(_separatorCharacter);
+            }
+
+            return stringBuilder.ToString();
         }
 
         void HandleTextColoring(

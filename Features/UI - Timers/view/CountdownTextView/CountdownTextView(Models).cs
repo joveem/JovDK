@@ -25,7 +25,8 @@ namespace JovDK.UI.Timers
     public enum TimeFraction
     {
         UNDEFINED = -1,
-        // Second,
+        Millisecond,
+        Second,
         Minute,
         Hour,
         Day,

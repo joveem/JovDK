@@ -45,7 +45,7 @@ namespace JovDK.UI.Timers
         // [SerializeField] int _timeFractionAmount = 2; // TODO
         [SerializeField] char _separatorCharacter = ':';
         [SerializeField] TimeFraction _maxTimeFraction = TimeFraction.Minute;
-        // [SerializeField] TimeFraction _minTimeFraction = TimeFraction.Second; // TODO
+        [SerializeField] int _timeFractionsAmount = 2;
 
 
         // void Awake()

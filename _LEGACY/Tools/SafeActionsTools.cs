@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,118 +22,115 @@ namespace JovDK.SafeActions
 
     public static class SafeActionsTools
     {
-
-        public static void DoIfNull<T>(this T objectValue, Action action, bool debugIfNotNull = true)
+        public static void DoIfNull<T>(this T baseObjectValue, Action action, bool debugIfNotNull = true)
         {
-
-            if (objectValue == null || objectValue.Equals(null))
+            if (baseObjectValue is null || baseObjectValue == null)
                 action();
             else if (debugIfNotNull)
             {
+                StringBuilder stringBuilder = new StringBuilder();
 
-                string debugText =
-                    "<" + typeof(T) + ">" +
-                    nameof(objectValue) + (" IS " + "NOT".ToColor(GoodColors.Pink) + " NULL!").ToColor(GoodColors.Orange);
+                stringBuilder.Append("<");
+                stringBuilder.Append(typeof(T).Name);
+                stringBuilder.Append("> ");
+                stringBuilder.Append(nameof(baseObjectValue));
+                stringBuilder.Append(" is ");
+                stringBuilder.AppendWithColor("NOT", GoodColors.Pink);
+                stringBuilder.Append(" null!");
 
-                // DebugExtension.DevLogWarning(debugText, 4);
-                DebugExtension.DevLogWarning(4, debugText);
-
+                int stackBackSteps = 4;
+                DebugExtension.DevLogWarning(
+                    stackBackSteps,
+                    stringBuilder.ToString().ToColor(GoodColors.Orange));
             }
-
         }
 
-        public static void DoIfNull<T>(this T objectValue, Action action, Action ifNotNullaction)
+        public static void DoIfNull<T>(this T baseObjectValue, Action action, Action ifNotNullAction)
         {
-
-            if (objectValue == null || objectValue.Equals(null))
+            if (baseObjectValue is null || baseObjectValue == null)
                 action();
             else
-                ifNotNullaction();
-
+                ifNotNullAction();
         }
 
-        public static void DoIfNotNull<T>(this T objectValue, Action action, bool debugIfNull = true)
+        public static void DoIfNotNull<T>(this T baseObjectValue, Action action, bool debugIfNull = true)
         {
-
-            if (objectValue != null && !objectValue.Equals(null))
+            if (!(baseObjectValue is null) && baseObjectValue != null)
                 action();
             else if (debugIfNull)
-                // DebugExtension.DevLogWarning("<" + typeof(T) + ">" + (nameof(objectValue) + " IS NULL!").ToColor(GoodColors.Orange), 4);
-                DebugExtension.DevLogWarning(4, "<" + typeof(T) + ">" + (nameof(objectValue) + " IS NULL!").ToColor(GoodColors.Orange));
+            {
+                StringBuilder stringBuilder = new StringBuilder();
 
+                stringBuilder.Append("<");
+                stringBuilder.Append(typeof(T).Name);
+                stringBuilder.Append("> is null!");
+
+                int stackBackSteps = 4;
+                DebugExtension.DevLogWarning(
+                    stackBackSteps,
+                    stringBuilder.ToString().ToColor(GoodColors.Orange));
+            }
         }
 
-        public static void DoIfNotNull<T>(this T @object, Action action, Action ifNullAction)
+        public static void DoIfNotNull<T>(this T baseObjectValue, Action action, Action ifNullAction)
         {
-
-            if (@object != null && !@object.Equals(null))
+            if (!(baseObjectValue is null) && baseObjectValue != null)
                 action();
             else
                 ifNullAction();
-
         }
 
-        public static void SetActiveIfNotNull<T>(this T objectValue, bool setActive, bool debugIfNull = true) where T : Component
+        public static void SetActiveIfNotNull<T>(this T baseObjectValue, bool setActive, bool debugIfNull = true) where T : Component
         {
-
-            objectValue.DoIfNotNull(() => objectValue.gameObject.SetActive(setActive), debugIfNull);
-
+            baseObjectValue.DoIfNotNull(() => baseObjectValue.gameObject.SetActive(setActive), debugIfNull);
         }
 
-        public static void SetActiveIfNotNull(this GameObject objectValue, bool setActive, bool debugIfNull = true)
+        public static void SetActiveIfNotNull(this GameObject baseObjectValue, bool setActive, bool debugIfNull = true)
         {
-
-            objectValue.DoIfNotNull(() => objectValue.SetActive(setActive), debugIfNull);
-
+            baseObjectValue.DoIfNotNull(() => baseObjectValue.SetActive(setActive), debugIfNull);
         }
 
-        public static void SetActiveIfNotNull(this Transform objectValue, bool setActive, bool debugIfNull = true)
+        public static void SetActiveIfNotNull(this Transform baseObjectValue, bool setActive, bool debugIfNull = true)
         {
-
-            objectValue.DoIfNotNull(() => objectValue.gameObject.SetActive(setActive), debugIfNull);
-
+            baseObjectValue.DoIfNotNull(() => baseObjectValue.gameObject.SetActive(setActive), debugIfNull);
         }
 
-        public static void SetInverseActiveIfNotNull<T>(this T objectValue, bool debugIfNull = true) where T : Component
+        public static void SetInverseActiveIfNotNull<T>(this T baseObjectValue, bool debugIfNull = true) where T : Component
         {
-            objectValue.DoIfNotNull(() => objectValue.gameObject.SetActive(!objectValue.gameObject.activeSelf), debugIfNull);
+            baseObjectValue.DoIfNotNull(() => baseObjectValue.gameObject.SetActive(!baseObjectValue.gameObject.activeSelf), debugIfNull);
         }
 
-        public static void SetInverseActiveIfNotNull(this GameObject objectValue, bool debugIfNull = true)
+        public static void SetInverseActiveIfNotNull(this GameObject baseObjectValue, bool debugIfNull = true)
         {
-
-            objectValue.DoIfNotNull(() => objectValue.SetActive(!objectValue.activeSelf), debugIfNull);
-
+            baseObjectValue.DoIfNotNull(() => baseObjectValue.SetActive(!baseObjectValue.activeSelf), debugIfNull);
         }
 
         public static bool TryGetComponent<T>(Component component, out T outValue) where T : Component
         {
-
             outValue = null;
 
             try
             {
-
                 outValue = component.GetComponent<T>();
-
             }
-            catch (System.Exception)
+            catch (Exception)
             {
+                StringBuilder stringBuilder = new StringBuilder();
 
-                string debugText =
-                    "<" + typeof(T) + ">" +
-                    "object NOT FOUND!".ToColor(GoodColors.Orange);
+                stringBuilder.Append("<");
+                stringBuilder.Append(typeof(T).Name);
+                stringBuilder.Append("> object NOT FOUND!");
 
-                // DebugExtension.DevLogWarning(debugText, 4);
-                DebugExtension.DevLogWarning(4, debugText);
-
+                int stackBackSteps = 4;
+                DebugExtension.DevLogWarning(
+                    stackBackSteps,
+                    stringBuilder.ToString().ToColor(GoodColors.Orange));
             }
 
             if (outValue != null)
                 return true;
             else
                 return false;
-
         }
 
         public static bool TryFindGameObject<T>(out T outValue) where T : Component
@@ -145,7 +143,16 @@ namespace JovDK.SafeActions
             }
             catch (Exception)
             {
-                DebugExtension.DevLogWarning(4, ("<" + typeof(T) + "> object NOT FOUND!").ToColor(GoodColors.Orange));
+                StringBuilder stringBuilder = new StringBuilder();
+
+                stringBuilder.Append("<");
+                stringBuilder.Append(typeof(T).Name);
+                stringBuilder.Append("> object NOT FOUND!");
+
+                int stackBackSteps = 4;
+                DebugExtension.DevLogWarning(
+                    stackBackSteps,
+                    stringBuilder.ToString().ToColor(GoodColors.Orange));
             }
 
             if (outValue != null)
@@ -157,18 +164,14 @@ namespace JovDK.SafeActions
         #region Butons 
         public static void SetOnClickIfNotNull(this Button button, UnityEngine.Events.UnityAction action)
         {
-
             button.DoIfNotNull(() =>
                 action.DoIfNotNull(() =>
                     button.onClick.AddListener(action)));
-
         }
 
         public static void SetInteractableIfNotNull(this Button button, bool setInteractable)
         {
-
             button.DoIfNotNull(() => button.interactable = setInteractable);
-
         }
         #endregion
 

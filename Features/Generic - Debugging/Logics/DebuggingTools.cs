@@ -81,6 +81,16 @@ namespace JovDK.Debugging
                 baseStringBuilder.Append(baseText);
         }
 
+        public static void AppendType<T>(this StringBuilder baseStringBuilder, T baseObjectValue)
+        {
+            baseStringBuilder.Append(baseObjectValue.ToTypeText());
+        }
+
+        public static string ToTypeText<T>(this T baseObject)
+        {
+            return typeof(T).Name;
+        }
+
         public static string ToShortId(
             this string baseText,
             bool ignoreParentheses = false)

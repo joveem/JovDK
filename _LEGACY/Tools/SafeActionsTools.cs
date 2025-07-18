@@ -80,6 +80,68 @@ namespace JovDK.SafeActions
                 ifNullAction();
         }
 
+        public static void DoIfAllNotNull<T>(
+            this T[] baseObjectsValuesList, Action action, bool debugIfNull = true, bool detailedDebug = false)
+        {
+            bool hasNull = false;
+            StringBuilder stringBuilder = null;
+
+            foreach (T baseObjectValue in baseObjectsValuesList)
+            {
+                if (baseObjectValue is null || baseObjectValue == null)
+                {
+                    hasNull = true;
+
+                    if (stringBuilder is null)
+                    {
+                        stringBuilder = new StringBuilder();
+                        stringBuilder.Append("hasNull = ");
+                        stringBuilder.Append(hasNull.ToString());
+                    }
+
+                    if (!detailedDebug)
+                        break;
+                    else
+                    {
+                        stringBuilder.AppendLine();
+                        stringBuilder.Append("<");
+                        stringBuilder.AppendType(baseObjectValue);
+                        stringBuilder.Append("> is null!");
+                    }
+                }
+            }
+
+            if (!hasNull)
+                action();
+            else if (debugIfNull)
+            {
+                int stackBackSteps = 4;
+                DebugExtension.DevLogWarning(stackBackSteps, stringBuilder.ToString());
+            }
+        }
+
+        public static void DoIfAllNotNull<T>(
+            this T[] baseObjectsValuesList,
+            Action action,
+            Action ifHasAnyNullAction)
+        {
+            bool hasNull = false;
+
+            foreach (T baseObjectValue in baseObjectsValuesList)
+            {
+                if (baseObjectValue is null || baseObjectValue == null)
+                {
+                    hasNull = true;
+                    break;
+                }
+            }
+
+            if (!hasNull)
+                action();
+            else
+                ifHasAnyNullAction();
+        }
+
         public static void SetActiveIfNotNull<T>(this T baseObjectValue, bool setActive, bool debugIfNull = true) where T : Component
         {
             baseObjectValue.DoIfNotNull(() => baseObjectValue.gameObject.SetActive(setActive), debugIfNull);

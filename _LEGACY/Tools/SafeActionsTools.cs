@@ -55,7 +55,7 @@ namespace JovDK.SafeActions
 
         public static void DoIfNotNull<T>(this T baseObjectValue, Action action, bool debugIfNull = true)
         {
-            if (!(baseObjectValue is null) && baseObjectValue != null)
+            if (baseObjectValue is not null && baseObjectValue != null)
                 action();
             else if (debugIfNull)
             {
@@ -74,7 +74,7 @@ namespace JovDK.SafeActions
 
         public static void DoIfNotNull<T>(this T baseObjectValue, Action action, Action ifNullAction)
         {
-            if (!(baseObjectValue is null) && baseObjectValue != null)
+            if (baseObjectValue is not null && baseObjectValue != null)
                 action();
             else
                 ifNullAction();

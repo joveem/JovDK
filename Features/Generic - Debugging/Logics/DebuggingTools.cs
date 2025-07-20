@@ -81,6 +81,17 @@ namespace JovDK.Debugging
                 baseStringBuilder.Append(baseText);
         }
 
+        public static void AppendMultiples(this StringBuilder baseStringBuilder, params string[] textList)
+        {
+            foreach (var baseText in textList)
+            {
+                if (baseText is not null)
+                    baseStringBuilder.Append(baseText);
+                else
+                    baseStringBuilder.Append("<NULL>");
+            }
+        }
+
         public static void AppendType<T>(this StringBuilder baseStringBuilder, T baseObjectValue)
         {
             baseStringBuilder.Append(baseObjectValue.ToTypeText());

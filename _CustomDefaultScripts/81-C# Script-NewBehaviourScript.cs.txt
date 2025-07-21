@@ -10,6 +10,7 @@ using UnityRandom = UnityEngine.Random;
 
 // third
 using DG.Tweening;
+using R3;
 using TMPro;
 
 // from company
@@ -33,8 +34,11 @@ namespace PackageName.MajorContext.MinorContext
 
         // [Space(5), Header("[ State ]"), Space(10)]
 
-        // [SerializeField] bool _state;
-        // bool _isShowingPanel = false;
+        // [SerializeField] bool _state1;
+        // ReactiveProperty<bool> _state2 = new ReactiveProperty<bool>(false);
+        // public ReactiveProperty<bool> State { get => _state2; }
+        // Tween _curretBackgroundTween = null;
+        // public Func<bool> State3Getter = null;
         // public Action OnIdkCallback = null;
         // public Action<bool> OnIdkCallback = null;
 
@@ -46,13 +50,12 @@ namespace PackageName.MajorContext.MinorContext
         // [SerializeField] TextMeshProUGUI _mainText;
         // [SerializeField] Image _mainImage;
         // [SerializeField] Transform _mainContainer;
-        // [SerializeField] CanvasGroup _fullContentCanvasGroup;
 
 
         // [Space(5), Header("[ Configs ]"), Space(10)]
 
         // [SerializeField] bool _configs;
-        // float _coverAnimationDuration = 0.35f;
+
 
 
         #region MonoBehaviour
@@ -127,7 +130,7 @@ namespace PackageName.MajorContext.MinorContext
         // // inverse of UnsubscribeAllListenersOnDestroy
         // void SubscribeAllListenersOnStart()
         // {
-        //     // this scripts -> other script            
+        //     // this scripts -> other script
         //     // ! destroy
         //     // _randomDataBus.IdkProperty.AsObservable().TakeUntilDestroy(gameObject).Subscribe(OnIdkPropertyUpdate);
         // }
@@ -146,7 +149,7 @@ namespace PackageName.MajorContext.MinorContext
         // // inverse of UnsubscribeAllListenersOnDisable
         // void SubscribeAllListenersOnEnable()
         // {
-        //     // this scripts -> other script            
+        //     // this scripts -> other script
         //     // ! disable
         //     // _randomDataBus.IdkProperty.AsObservable().TakeUntilDisable(gameObject).Subscribe(OnIdkPropertyUpdate);
         // }
@@ -176,80 +179,15 @@ namespace PackageName.MajorContext.MinorContext
         // {
         //     DebugExtension.DevLog();
 
-        //     // if (_isShowingPanel)
-        //     //     ShowPanelInstantaneously();
-        //     // else
-        //     //     HidePanelInstantaneously();
-        // }
 
-        // public void ShowPanel()
-        // {
-        //     DebugExtension.DevLog();
-
-        //     if (!_isShowingPanel)
-        //     {
-        //         _isShowingPanel = true;
-
-        //         PlayShowPanelAnimation();
-        //     }
-        // }
-
-        // public void HidePanel()
-        // {
-        //     DebugExtension.DevLog();
-
-        //     if (_isShowingPanel)
-        //     {
-        //         _isShowingPanel = false;
-
-        //         PlayHidePanelAnimation();
-        //     }
         // }
         #endregion Controller
 
         #region View
-        // void PlayShowPanelAnimation()
+        // protected virtual void TryToKillBackgroundTween()
         // {
-        //     DebugExtension.DevLog();
-
-        //     _fullContentCanvasGroup.DoIfNotNull(() =>
-        //     {
-        //         _fullContentCanvasGroup.blocksRaycasts = true;
-        //         _fullContentCanvasGroup.DOFade(1f, _coverAnimationDuration);
-        //     });
-        // }
-
-        // void ShowPanelInstantaneously()
-        // {
-        //     DebugExtension.DevLog();
-
-        //     _fullContentCanvasGroup.DoIfNotNull(() =>
-        //     {
-        //         _fullContentCanvasGroup.blocksRaycasts = true;
-        //         _fullContentCanvasGroup.alpha = 1f;
-        //     });
-        // }
-
-        // void PlayHidePanelAnimation()
-        // {
-        //     DebugExtension.DevLog();
-
-        //     _fullContentCanvasGroup.DoIfNotNull(() =>
-        //     {
-        //         _fullContentCanvasGroup.blocksRaycasts = false;
-        //         _fullContentCanvasGroup.DOFade(0f, _coverAnimationDuration);
-        //     });
-        // }
-
-        // void HidePanelInstantaneously()
-        // {
-        //     DebugExtension.DevLog();
-
-        //     _fullContentCanvasGroup.DoIfNotNull(() =>
-        //     {
-        //         _fullContentCanvasGroup.blocksRaycasts = false;
-        //         _fullContentCanvasGroup.alpha = 0f;
-        //     });
+        //     if (_curretBackgroundTween.IsActive())
+        //         _curretBackgroundTween.Kill();
         // }
         #endregion View
     }

@@ -68,6 +68,20 @@ namespace JovDK.Generic.UnityEngineExtensions
         void HandleRefresherHelperValidation()
         {
             if (_disabledDestroyRefresherHelper_Monobehavior == null)
+            {
+                DisabledDestroyRefresherHelper_Monobehavior[] refresherHelpersList = gameObject.GetComponents<DisabledDestroyRefresherHelper_Monobehavior>();
+
+                if (refresherHelpersList.Length > 0)
+                    _disabledDestroyRefresherHelper_Monobehavior = refresherHelpersList[0];
+
+                for (int i = 1; i < refresherHelpersList.Length; i++)
+                {
+                    DisabledDestroyRefresherHelper_Monobehavior refresherHelper = refresherHelpersList[i];
+                    Destroy(refresherHelper);
+                }
+            }
+
+            if (_disabledDestroyRefresherHelper_Monobehavior == null)
                 _disabledDestroyRefresherHelper_Monobehavior = gameObject.AddComponent<DisabledDestroyRefresherHelper_Monobehavior>();
         }
 

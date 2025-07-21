@@ -49,12 +49,13 @@ namespace JovDK.Generic.UnityEngineExtensions
         #region MonoBehaviour
         void Reset()
         {
-            HandleValidation();
+            HandleRefresherHelperValidation();
+            HandleListValidation();
         }
 
         void OnValidate()
         {
-            HandleValidation();
+            HandleListValidation();
         }
 
         /// <summary>
@@ -64,11 +65,28 @@ namespace JovDK.Generic.UnityEngineExtensions
         #endregion MonoBehaviour
 
         #region Controller
-        void HandleValidation()
+        void HandleRefresherHelperValidation()
         {
             if (_disabledDestroyRefresherHelper_Monobehavior == null)
-                _disabledDestroyRefresherHelper_Monobehavior = gameObject.AddComponent<DisabledDestroyRefresherHelper_Monobehavior>();
+            {
+                DisabledDestroyRefresherHelper_Monobehavior[] refresherHelpersList = gameObject.GetComponents<DisabledDestroyRefresherHelper_Monobehavior>();
 
+                if (refresherHelpersList.Length > 0)
+                    _disabledDestroyRefresherHelper_Monobehavior = refresherHelpersList[0];
+
+                for (int i = 1; i < refresherHelpersList.Length; i++)
+                {
+                    DisabledDestroyRefresherHelper_Monobehavior refresherHelper = refresherHelpersList[i];
+                    Destroy(refresherHelper);
+                }
+            }
+
+            if (_disabledDestroyRefresherHelper_Monobehavior == null)
+                _disabledDestroyRefresherHelper_Monobehavior = gameObject.AddComponent<DisabledDestroyRefresherHelper_Monobehavior>();
+        }
+
+        void HandleListValidation()
+        {
             DisabledMonoBehaviourTriggersExtensionService.RefreshAllLists();
         }
         #endregion Controller

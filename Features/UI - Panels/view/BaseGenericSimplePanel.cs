@@ -37,6 +37,7 @@ namespace JovDK.UI.Generic
         protected bool _isShowingPanel = false;
         protected bool _hasShowAndHideTransitionEnd = true;
         Tween _curretBackgroundTween = null;
+        Tween _movingContentTween = null;
         // show/hide start callbacks
         List<Action> _onShowStartCallbackList = new List<Action>();
         List<Action> _onShowStartOnceCallbackList = new List<Action>();
@@ -47,16 +48,53 @@ namespace JovDK.UI.Generic
         List<Action> _onShowFinishOnceCallbackList = new List<Action>();
         List<Action> _onHideFinishCallbackList = new List<Action>();
         List<Action> _onHideFinishOnceCallbackList = new List<Action>();
+        bool _hasSettedInitialMovingContainerPosition = false;
+        Vector2 _initialMovingAnimationContainerPosition = default;
 
 
         [Space(5), Header("[ Parts ]"), Space(10)]
 
         [SerializeField] protected CanvasGroup _fullContentCanvasGroup;
+        [SerializeField] protected RectTransform _fullContentMovingAnimationContainer;
+        [SerializeField] protected RectTransform _overrideContentMovingAnimationSizeContainer;
 
 
         [Space(5), Header("[ Configs ]"), Space(10)]
 
-        protected float _coverAnimationDuration = 0.35f;
+        // protected float _coverAnimationDuration = 0.35f;
+        protected float _coverAnimationDuration = 0.6f;
+
+        public static TransitionOptions HorizontalNegativeTransition =
+            new TransitionOptions()
+            {
+                OverrideShowAnimation = AnimationType.SlideToOrFromRight,
+                OverrideHideAnimation = AnimationType.SlideToOrFromLeft,
+                OverrideSlideFactorType = SlideFactorType.MovingContainerSize,
+            };
+
+        public static TransitionOptions HorizontalPositiveTransition =
+            new TransitionOptions()
+            {
+                OverrideShowAnimation = AnimationType.SlideToOrFromLeft,
+                OverrideHideAnimation = AnimationType.SlideToOrFromRight,
+                OverrideSlideFactorType = SlideFactorType.MovingContainerSize,
+            };
+
+        public static TransitionOptions VerticalPositiveTransition =
+            new TransitionOptions()
+            {
+                OverrideShowAnimation = AnimationType.SlideToOrFromDown,
+                OverrideHideAnimation = AnimationType.SlideToOrFromUp,
+                OverrideSlideFactorType = SlideFactorType.MovingContainerSize,
+            };
+
+        public static TransitionOptions VerticalNegativeTransition =
+            new TransitionOptions()
+            {
+                OverrideShowAnimation = AnimationType.SlideToOrFromUp,
+                OverrideHideAnimation = AnimationType.SlideToOrFromDown,
+                OverrideSlideFactorType = SlideFactorType.MovingContainerSize,
+            };
 
 
 
@@ -65,12 +103,17 @@ namespace JovDK.UI.Generic
         {
             SetInitialState();
         }
+
+        void Start()
+        {
+            HandleMovingContainerPositionSetting();
+        }
         #endregion MonoBehaviour
 
         #region Callbacks - "Show/Hide
         void OnShowStart()
         {
-            DebugExtension.DevLog();
+            // DebugExtension.DevLog();
 
             foreach (var callback in _onShowStartCallbackList)
                 callback?.Invoke();
@@ -83,7 +126,7 @@ namespace JovDK.UI.Generic
 
         void OnHideStart()
         {
-            DebugExtension.DevLog();
+            // DebugExtension.DevLog();
 
             foreach (var callback in _onHideStartCallbackList)
                 callback?.Invoke();
@@ -96,7 +139,7 @@ namespace JovDK.UI.Generic
 
         void OnShowFinish()
         {
-            DebugExtension.DevLog();
+            // DebugExtension.DevLog();
 
             foreach (var callback in _onShowFinishCallbackList)
                 callback?.Invoke();
@@ -109,7 +152,7 @@ namespace JovDK.UI.Generic
 
         void OnHideFinish()
         {
-            DebugExtension.DevLog();
+            // DebugExtension.DevLog();
 
             foreach (var callback in _onHideFinishCallbackList)
                 callback?.Invoke();
@@ -256,8 +299,13 @@ namespace JovDK.UI.Generic
         {
             // DebugExtension.DevLog();
 
+            // HandleMovingContainerPositionSetting();
+
             if (_isShowingPanel)
+            {
                 ShowPanelInstantaneously();
+                HandleMovingContainerPositionSetting();
+            }
             else
                 HidePanelInstantaneously();
         }
@@ -292,7 +340,7 @@ namespace JovDK.UI.Generic
                 HidePanelInstantaneously();
         }
 
-        public virtual void ShowPanel()
+        public virtual void ShowPanel(TransitionOptions transitionOptions = null)
         {
             // DebugExtension.DevLog();
 
@@ -306,7 +354,7 @@ namespace JovDK.UI.Generic
                 if (!previousHasShowAndHideTransitionEndState)
                     OnHideFinish();
 
-                TryToKillBackgroundTween();
+                TryToKillAllPendingTweens();
 
                 Action onAnimationStart = () => OnShowStart();
                 Action onAnimationEnd = () =>
@@ -315,7 +363,7 @@ namespace JovDK.UI.Generic
                     OnShowFinish();
                 };
 
-                PlayShowPanelAnimation(onAnimationStart, onAnimationEnd);
+                PlayShowPanelAnimation(onAnimationStart, onAnimationEnd, transitionOptions);
             }
         }
 
@@ -334,7 +382,7 @@ namespace JovDK.UI.Generic
             if (previousIsShowingPanelState != _isShowingPanel)
                 OnShowStart();
 
-            TryToKillBackgroundTween();
+            TryToKillAllPendingTweens();
             gameObject.SetActive(true);
 
             _fullContentCanvasGroup.DoIfNotNull(() =>
@@ -351,7 +399,7 @@ namespace JovDK.UI.Generic
                 OnShowFinish();
         }
 
-        public virtual void HidePanel()
+        public virtual void HidePanel(TransitionOptions transitionOptions = null)
         {
             // DebugExtension.DevLog();
 
@@ -365,7 +413,7 @@ namespace JovDK.UI.Generic
                 if (!previousHasShowAndHideTransitionEndState)
                     OnShowFinish();
 
-                TryToKillBackgroundTween();
+                TryToKillAllPendingTweens();
 
                 Action onAnimationStart = () => OnHideStart();
                 Action onAnimationEnd = () =>
@@ -374,7 +422,7 @@ namespace JovDK.UI.Generic
                     OnHideFinish();
                 };
 
-                PlayHidePanelAnimation(onAnimationStart, onAnimationEnd);
+                PlayHidePanelAnimation(onAnimationStart, onAnimationEnd, transitionOptions);
             }
         }
 
@@ -393,7 +441,7 @@ namespace JovDK.UI.Generic
             if (previousIsShowingPanelState != _isShowingPanel)
                 OnHideStart();
 
-            TryToKillBackgroundTween();
+            TryToKillAllPendingTweens();
 
             _fullContentCanvasGroup.DoIfNotNull(
             () =>
@@ -416,13 +464,17 @@ namespace JovDK.UI.Generic
         #region View
         protected virtual void PlayShowPanelAnimation(
             Action onAnimationStartCallback = null,
-            Action onAnimationFinishCallback = null)
+            Action onAnimationFinishCallback = null,
+            TransitionOptions transitionOptions = null)
         {
             // DebugExtension.DevLog();
 
+            if (transitionOptions is null)
+                transitionOptions = new TransitionOptions();
+
             _fullContentCanvasGroup.DoIfNotNull(() =>
             {
-                TryToKillBackgroundTween();
+                TryToKillAllPendingTweens();
 
                 gameObject.SetActive(true);
                 _fullContentCanvasGroup.blocksRaycasts = true;
@@ -432,20 +484,174 @@ namespace JovDK.UI.Generic
 
                 TweenCallback onComplete = () => onAnimationFinishCallback?.Invoke();
 
-                _curretBackgroundTween = _fullContentCanvasGroup.DOFade(1f, _coverAnimationDuration);
+                _curretBackgroundTween =
+                    _fullContentCanvasGroup
+                        .DOFade(1f, _coverAnimationDuration)
+                        .SetEase(transitionOptions.ShowAnimationEase);
+
                 _curretBackgroundTween.onComplete = onComplete;
+
+                Vector2 movingAnimationDelta = Vector2.zero;
+
+                switch (transitionOptions.OverrideShowAnimation)
+                {
+                    case AnimationType.Default:
+                        break;
+
+                    case AnimationType.SlideToOrFromLeft:
+                    case AnimationType.SlideToOrFromRight:
+                    case AnimationType.SlideToOrFromDown:
+                    case AnimationType.SlideToOrFromUp:
+                        {
+                            switch (transitionOptions.OverrideSlideFactorType)
+                            {
+                                case SlideFactorType.Default:
+                                case SlideFactorType.ScreenSize:
+                                    {
+                                        switch (transitionOptions.OverrideShowAnimation)
+                                        {
+                                            case AnimationType.SlideToOrFromLeft:
+                                                movingAnimationDelta = new Vector2(Screen.width * -1f, 0);
+                                                break;
+
+                                            case AnimationType.SlideToOrFromRight:
+                                                movingAnimationDelta = new Vector2(Screen.width, 0);
+                                                break;
+
+                                            case AnimationType.SlideToOrFromDown:
+                                                movingAnimationDelta = new Vector2(0f, Screen.height * -1f);
+                                                break;
+
+                                            case AnimationType.SlideToOrFromUp:
+                                                movingAnimationDelta = new Vector2(0f, Screen.height);
+                                                break;
+                                        }
+
+                                        break;
+                                    }
+
+                                case SlideFactorType.MovingContainerSize:
+                                    {
+                                        RectTransform baseRectTransform = _fullContentMovingAnimationContainer;
+                                        _overrideContentMovingAnimationSizeContainer.DoIfNotNull(() => baseRectTransform = _overrideContentMovingAnimationSizeContainer, false);
+
+                                        baseRectTransform.DoIfNotNull(() =>
+                                        {
+                                            switch (transitionOptions.OverrideShowAnimation)
+                                            {
+                                                case AnimationType.SlideToOrFromLeft:
+                                                    movingAnimationDelta = new Vector2(baseRectTransform.rect.width * -1f, 0);
+                                                    break;
+
+                                                case AnimationType.SlideToOrFromRight:
+                                                    movingAnimationDelta = new Vector2(baseRectTransform.rect.width, 0);
+                                                    break;
+
+                                                case AnimationType.SlideToOrFromDown:
+                                                    movingAnimationDelta = new Vector2(0, baseRectTransform.rect.height * -1f);
+                                                    break;
+
+                                                case AnimationType.SlideToOrFromUp:
+                                                    movingAnimationDelta = new Vector2(0, baseRectTransform.rect.height);
+                                                    break;
+                                            }
+                                        },
+                                        () =>
+                                        {
+                                            Debug.LogWarning(
+                                                "$> ".ToColor(GoodColors.Red) +
+                                                "baseRectTransform is null!".ToColor(GoodColors.Pink) + " | " +
+                                                "gameObject.name = " + gameObject.name.SerializeObjectToJSON() + "\n" +
+                                                "",
+                                                gameObject);
+                                        });
+
+                                        break;
+                                    }
+
+                                default:
+                                    {
+                                        DebugExtension.DevLogWarning(
+                                            "$> ".ToColor(GoodColors.Red),
+                                            "Unexpected transitionOptions.OverrideSlideFactorType!".ToColor(GoodColors.Pink), " | ",
+                                            "transitionOptions.OverrideSlideFactorType = ",
+                                            transitionOptions.OverrideSlideFactorType.ToString(), "\n",
+                                            "");
+
+                                        break;
+                                    }
+                            }
+
+                            break;
+                        }
+
+                    default:
+                        {
+                            DebugExtension.DevLogWarning(
+                                "$> ".ToColor(GoodColors.Red),
+                                "Unexpected transitionOptions.OverrideShowAnimation!".ToColor(GoodColors.Pink), " | ",
+                                "transitionOptions.OverrideShowAnimation = ",
+                                transitionOptions.OverrideShowAnimation.ToString(), "\n",
+                                "");
+
+                            break;
+                        }
+                }
+
+                // TODO: REVIEW THIS! (ahjsidyhasd)
+                // switch (transitionOptions.OverrideShowAnimation)
+                // {
+                //     case AnimationType.SlideToOrFromLeft:
+                //     case AnimationType.SlideToOrFromRight:
+                //     case AnimationType.SlideToOrFromDown:
+                //     case AnimationType.SlideToOrFromUp:
+                //         {
+                //             _fullContentMovingAnimationContainer.DoIfNotNull(() =>
+                //             {
+                //                 Vector2 startPosition = _initialMovingAnimationContainerPosition + movingAnimationDelta;
+                //                 Vector2 finalPosition = _initialMovingAnimationContainerPosition;
+
+                //                 _fullContentMovingAnimationContainer.position = startPosition;
+                //                 _movingContentTween = _fullContentMovingAnimationContainer.DOMove(finalPosition, _coverAnimationDuration);
+                //             }, false);
+
+                //             break;
+                //         }
+                // }
+
+                if (!_hasSettedInitialMovingContainerPosition)
+                    HandleMovingContainerPositionSetting();
+
+                if (_hasSettedInitialMovingContainerPosition)
+                {
+                    _fullContentMovingAnimationContainer.DoIfNotNull(() =>
+                    {
+                        Vector2 startPosition = _initialMovingAnimationContainerPosition + movingAnimationDelta;
+                        Vector2 finalPosition = _initialMovingAnimationContainerPosition;
+
+                        _fullContentMovingAnimationContainer.position = startPosition;
+                        _movingContentTween =
+                            _fullContentMovingAnimationContainer
+                                .DOMove(finalPosition, _coverAnimationDuration)
+                                .SetEase(transitionOptions.ShowAnimationEase);
+                    }, false);
+                }
             });
         }
 
         protected virtual void PlayHidePanelAnimation(
             Action onAnimationStartCallback = null,
-            Action onAnimationFinishCallback = null)
+            Action onAnimationFinishCallback = null,
+            TransitionOptions transitionOptions = null)
         {
             // DebugExtension.DevLog();
 
+            if (transitionOptions is null)
+                transitionOptions = new TransitionOptions();
+
             _fullContentCanvasGroup.DoIfNotNull(() =>
             {
-                TryToKillBackgroundTween();
+                TryToKillAllPendingTweens();
 
                 _fullContentCanvasGroup.blocksRaycasts = false;
 
@@ -458,16 +664,221 @@ namespace JovDK.UI.Generic
                     onAnimationFinishCallback?.Invoke();
                 };
 
-                _curretBackgroundTween = _fullContentCanvasGroup.DOFade(0f, _coverAnimationDuration);
+                _curretBackgroundTween =
+                    _fullContentCanvasGroup
+                    .DOFade(0f, _coverAnimationDuration)
+                    .SetEase(transitionOptions.HideAnimationEase);
+
                 _curretBackgroundTween.onComplete = onComplete;
+
+                Vector2 movingAnimationDelta = Vector2.zero;
+
+                switch (transitionOptions.OverrideHideAnimation)
+                {
+                    case AnimationType.Default:
+                        break;
+
+                    case AnimationType.SlideToOrFromLeft:
+                    case AnimationType.SlideToOrFromRight:
+                    case AnimationType.SlideToOrFromDown:
+                    case AnimationType.SlideToOrFromUp:
+                        {
+                            switch (transitionOptions.OverrideSlideFactorType)
+                            {
+                                case SlideFactorType.Default:
+                                case SlideFactorType.ScreenSize:
+                                    {
+                                        switch (transitionOptions.OverrideHideAnimation)
+                                        {
+                                            case AnimationType.SlideToOrFromLeft:
+                                                movingAnimationDelta = new Vector2(Screen.width * -1f, 0);
+                                                break;
+
+                                            case AnimationType.SlideToOrFromRight:
+                                                movingAnimationDelta = new Vector2(Screen.width, 0);
+                                                break;
+
+                                            case AnimationType.SlideToOrFromDown:
+                                                movingAnimationDelta = new Vector2(0f, Screen.height * -1f);
+                                                break;
+
+                                            case AnimationType.SlideToOrFromUp:
+                                                movingAnimationDelta = new Vector2(0f, Screen.height);
+                                                break;
+                                        }
+
+                                        break;
+                                    }
+
+                                case SlideFactorType.MovingContainerSize:
+                                    {
+                                        RectTransform baseRectTransform = _fullContentMovingAnimationContainer;
+                                        _overrideContentMovingAnimationSizeContainer.DoIfNotNull(() => baseRectTransform = _overrideContentMovingAnimationSizeContainer, false);
+
+                                        baseRectTransform.DoIfNotNull(() =>
+                                        {
+                                            switch (transitionOptions.OverrideHideAnimation)
+                                            {
+                                                case AnimationType.SlideToOrFromLeft:
+                                                    movingAnimationDelta = new Vector2(baseRectTransform.rect.width * -1f, 0);
+                                                    break;
+
+                                                case AnimationType.SlideToOrFromRight:
+                                                    movingAnimationDelta = new Vector2(baseRectTransform.rect.width, 0);
+                                                    break;
+
+                                                case AnimationType.SlideToOrFromDown:
+                                                    movingAnimationDelta = new Vector2(0, baseRectTransform.rect.height * -1f);
+                                                    break;
+
+                                                case AnimationType.SlideToOrFromUp:
+                                                    movingAnimationDelta = new Vector2(0, baseRectTransform.rect.height);
+                                                    break;
+                                            }
+                                        },
+                                        () =>
+                                        {
+                                            Debug.LogWarning(
+                                                "$> ".ToColor(GoodColors.Red) +
+                                                "baseRectTransform is null!".ToColor(GoodColors.Pink) + " | " +
+                                                "gameObject.name = " + gameObject.name.SerializeObjectToJSON() + "\n" +
+                                                "",
+                                                gameObject);
+                                        });
+
+                                        break;
+                                    }
+
+                                default:
+                                    {
+                                        DebugExtension.DevLogWarning(
+                                            "$> ".ToColor(GoodColors.Red),
+                                            "Unexpected transitionOptions.OverrideSlideFactorType!".ToColor(GoodColors.Pink), " | ",
+                                            "transitionOptions.OverrideSlideFactorType = ",
+                                            transitionOptions.OverrideSlideFactorType.ToString(), "\n",
+                                            "");
+
+                                        break;
+                                    }
+                            }
+
+                            break;
+                        }
+
+                    default:
+                        {
+                            DebugExtension.DevLogWarning(
+                                "$> ".ToColor(GoodColors.Red),
+                                "Unexpected transitionOptions.OverrideHideAnimation!".ToColor(GoodColors.Pink), " | ",
+                                "transitionOptions.OverrideHideAnimation = ",
+                                transitionOptions.OverrideHideAnimation.ToString(), "\n",
+                                "");
+
+                            break;
+                        }
+                }
+
+                // TODO: REVIEW THIS! (ahjsidyhasd)
+                // switch (transitionOptions.OverrideHideAnimation)
+                // {
+                //     case AnimationType.SlideToOrFromLeft:
+                //     case AnimationType.SlideToOrFromRight:
+                //     case AnimationType.SlideToOrFromDown:
+                //     case AnimationType.SlideToOrFromUp:
+                //         {
+                //             _fullContentMovingAnimationContainer.DoIfNotNull(() =>
+                //             {
+                //                 Vector2 finalPosition = _initialMovingAnimationContainerPosition + movingAnimationDelta;
+                //                 _movingContentTween = _fullContentMovingAnimationContainer.DOMove(finalPosition, _coverAnimationDuration);
+                //             }, false);
+
+                //             break;
+                //         }
+                // }
+
+                if (!_hasSettedInitialMovingContainerPosition)
+                    HandleMovingContainerPositionSetting();
+
+                if (_hasSettedInitialMovingContainerPosition)
+                {
+                    _fullContentMovingAnimationContainer.DoIfNotNull(() =>
+                    {
+                        Vector2 finalPosition = _initialMovingAnimationContainerPosition + movingAnimationDelta;
+                        _movingContentTween =
+                            _fullContentMovingAnimationContainer
+                                .DOMove(finalPosition, _coverAnimationDuration)
+                                .SetEase(transitionOptions.HideAnimationEase);
+                    }, false);
+                }
             });
         }
 
-        protected virtual void TryToKillBackgroundTween()
+        protected virtual void TryToKillAllPendingTweens()
         {
             if (_curretBackgroundTween.IsActive())
                 _curretBackgroundTween.Kill();
+
+            if (_movingContentTween.IsActive())
+                _movingContentTween.Kill();
+        }
+
+
+        // void HandleInitialVideoYPositionFactorSetting()
+        void HandleMovingContainerPositionSetting()
+        {
+            // DebugExtension.DevLog();
+
+            if (!_hasSettedInitialMovingContainerPosition)
+            {
+                // Debug.Log(">>>".ToColor(GoodColors.Blue) + " gameObject.name = " + gameObject.name, gameObject);
+
+                _hasSettedInitialMovingContainerPosition = true;
+
+                _fullContentMovingAnimationContainer.DoIfNotNull(() =>
+                {
+                    _initialMovingAnimationContainerPosition = _fullContentMovingAnimationContainer.position;
+                }, false);
+            }
         }
         #endregion View
+    }
+
+    public class TransitionOptions
+    {
+        public Ease ShowAnimationEase = Ease.InOutBack;
+        public Ease HideAnimationEase = Ease.InOutBack;
+        public AnimationType OverrideShowAnimation = AnimationType.Default;
+        public AnimationType OverrideHideAnimation = AnimationType.Default;
+        public SlideFactorType OverrideSlideFactorType = SlideFactorType.Default;
+    }
+
+    public enum AnimationType
+    {
+        UNDEFINED = -1,
+        Default,
+        /// <summary>
+        /// Slide with a [-1, 0] vector scale
+        /// </summary>
+        SlideToOrFromLeft,
+        /// <summary>
+        /// Slide with a [1, 0] vector scale
+        /// </summary>
+        SlideToOrFromRight,
+        /// <summary>
+        /// Slide with a [0, -1] vector scale
+        /// </summary>
+        SlideToOrFromDown,
+        /// <summary>
+        /// Slide with a [0, 1] vector scale
+        /// </summary>
+        SlideToOrFromUp,
+    }
+
+    public enum SlideFactorType
+    {
+        UNDEFINED = -1,
+        Default,
+        ScreenSize,
+        MovingContainerSize,
     }
 }

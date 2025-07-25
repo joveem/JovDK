@@ -38,7 +38,7 @@ namespace JovDK.SafeActions
                 stringBuilder.AppendWithColor("NOT", GoodColors.Pink);
                 stringBuilder.Append(" null!");
 
-                int stackBackSteps = 4;
+                int stackBackSteps = 3;
                 DebugExtension.DevLogWarning(
                     stackBackSteps,
                     stringBuilder.ToString().ToColor(GoodColors.Orange));
@@ -65,7 +65,7 @@ namespace JovDK.SafeActions
                 stringBuilder.Append(typeof(T).Name);
                 stringBuilder.Append("> is null!");
 
-                int stackBackSteps = 4;
+                int stackBackSteps = 3;
                 DebugExtension.DevLogWarning(
                     stackBackSteps,
                     stringBuilder.ToString().ToColor(GoodColors.Orange));
@@ -115,7 +115,7 @@ namespace JovDK.SafeActions
                 action();
             else if (debugIfNull)
             {
-                int stackBackSteps = 4;
+                int stackBackSteps = 3;
                 DebugExtension.DevLogWarning(stackBackSteps, stringBuilder.ToString());
             }
         }
@@ -183,7 +183,7 @@ namespace JovDK.SafeActions
                 stringBuilder.Append(typeof(T).Name);
                 stringBuilder.Append("> object NOT FOUND!");
 
-                int stackBackSteps = 4;
+                int stackBackSteps = 3;
                 DebugExtension.DevLogWarning(
                     stackBackSteps,
                     stringBuilder.ToString().ToColor(GoodColors.Orange));
@@ -211,7 +211,7 @@ namespace JovDK.SafeActions
                 stringBuilder.Append(typeof(T).Name);
                 stringBuilder.Append("> object NOT FOUND!");
 
-                int stackBackSteps = 4;
+                int stackBackSteps = 3;
                 DebugExtension.DevLogWarning(
                     stackBackSteps,
                     stringBuilder.ToString().ToColor(GoodColors.Orange));

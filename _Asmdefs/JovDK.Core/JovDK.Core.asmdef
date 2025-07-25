@@ -1,6 +1,6 @@
 {
-    "name": "JovDK",
-    "rootNamespace": "JovDK",
+    "name": "JovDK.Core",
+    "rootNamespace": "JovDK.Core",
     "references": [
         "Unity.TextMeshPro",
         "com.Epic.OnlineServices",

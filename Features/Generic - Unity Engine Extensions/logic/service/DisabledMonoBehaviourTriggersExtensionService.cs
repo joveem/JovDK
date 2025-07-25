@@ -70,13 +70,43 @@ namespace JovDK.Generic.UnityEngineExtensions
         void Awake()
         {
             foreach (var component in _disabledAwakeComponentesList)
-                component.DoIfNotNull(() => component.DisabledAwake());
+            {
+                try
+                {
+                    component.DoIfNotNull(() => component.DisabledAwake());
+                }
+                catch (Exception exception)
+                {
+                    DebugExtension.DevLogError(
+                        "$$> ".ToColor(GoodColors.Red),
+                        "exception = ", "\n",
+                        exception.ToString(), "\n",
+                        "");
+
+                    // throw;
+                }
+            }
         }
 
         void Start()
         {
             foreach (var component in _disabledStartComponentesList)
-                component.DoIfNotNull(() => component.DisabledStart());
+            {
+                try
+                {
+                    component.DoIfNotNull(() => component.DisabledStart());
+                }
+                catch (Exception exception)
+                {
+                    DebugExtension.DevLogError(
+                        "$$> ".ToColor(GoodColors.Red),
+                        "exception = ", "\n",
+                        exception.ToString(), "\n",
+                        "");
+
+                    // throw;
+                }
+            }
         }
         #endregion MonoBehaviour
 

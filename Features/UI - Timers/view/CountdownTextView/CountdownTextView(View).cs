@@ -110,7 +110,7 @@ namespace JovDK.UI.Timers
                     "");
             }
 
-            TimeFraction minTimeFraction = _maxTimeFraction - (numbersAmount + 1);
+            TimeFraction minTimeFraction = _maxTimeFraction - numbersAmount + 1;
             List<int> numbers = new List<int>();
 
             switch (_maxTimeFraction)
@@ -219,6 +219,15 @@ namespace JovDK.UI.Timers
                         break;
                     }
             }
+
+            // DebugExtension.DevLog(
+            //     "> ", "\n",
+            //     "_maxTimeFraction = ", _maxTimeFraction.ToString(), "\n",
+            //     "minTimeFraction = ", minTimeFraction.ToString(), "\n",
+            //     "numbersAmount = ", numbersAmount.ToString(), "\n",
+            //     "_timeFractionsAmount = ", _timeFractionsAmount.ToString(), "\n",
+            //     "numbers = ", numbers.SerializeObjectToJSON(), "\n",
+            //     "");
 
             for (int i = 0; i < numbers.Count; i++)
             {

@@ -22,9 +22,24 @@ namespace JovDK.SafeActions
 
     public static class SafeActionsTools
     {
+
+        public static bool IsNull<T>(this T baseObjectValue)
+        {
+            bool value = true;
+
+            if (baseObjectValue is UnityEngine.Object basUnityObjectValue)
+                value = !basUnityObjectValue;
+            else
+                value = baseObjectValue is null || baseObjectValue == null;
+
+            return value;
+        }
+
         public static void DoIfNull<T>(this T baseObjectValue, Action action, bool debugIfNotNull = true)
         {
-            if (baseObjectValue is null || baseObjectValue == null)
+            bool isNull = baseObjectValue.IsNull();
+
+            if (isNull)
                 action();
             else if (debugIfNotNull)
             {
@@ -47,7 +62,9 @@ namespace JovDK.SafeActions
 
         public static void DoIfNull<T>(this T baseObjectValue, Action action, Action ifNotNullAction)
         {
-            if (baseObjectValue is null || baseObjectValue == null)
+            bool isNull = baseObjectValue.IsNull();
+
+            if (isNull)
                 action();
             else
                 ifNotNullAction();
@@ -55,8 +72,25 @@ namespace JovDK.SafeActions
 
         public static void DoIfNotNull<T>(this T baseObjectValue, Action action, bool debugIfNull = true)
         {
-            if (baseObjectValue is not null && baseObjectValue != null)
-                action();
+            bool isNull = baseObjectValue.IsNull();
+
+            if (!isNull)
+            {
+                try
+                {
+                    action();
+                }
+                catch (Exception exception)
+                {
+                    DebugExtension.DevLogError(
+                        "$$> ".ToColor(GoodColors.Red),
+                        "exception = ", "\n",
+                        exception.ToString(), "\n",
+                        "");
+
+                    // throw;
+                }
+            }
             else if (debugIfNull)
             {
                 StringBuilder stringBuilder = new StringBuilder();
@@ -74,7 +108,9 @@ namespace JovDK.SafeActions
 
         public static void DoIfNotNull<T>(this T baseObjectValue, Action action, Action ifNullAction)
         {
-            if (baseObjectValue is not null && baseObjectValue != null)
+            bool isNull = baseObjectValue.IsNull();
+
+            if (!isNull)
                 action();
             else
                 ifNullAction();
@@ -88,7 +124,9 @@ namespace JovDK.SafeActions
 
             foreach (T baseObjectValue in baseObjectsValuesList)
             {
-                if (baseObjectValue is null || baseObjectValue == null)
+                bool isNull = baseObjectValue.IsNull();
+
+                if (isNull)
                 {
                     hasNull = true;
 
@@ -129,7 +167,9 @@ namespace JovDK.SafeActions
 
             foreach (T baseObjectValue in baseObjectsValuesList)
             {
-                if (baseObjectValue is null || baseObjectValue == null)
+                bool isNull = baseObjectValue.IsNull();
+
+                if (isNull)
                 {
                     hasNull = true;
                     break;

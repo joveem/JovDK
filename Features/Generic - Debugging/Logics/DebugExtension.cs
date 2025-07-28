@@ -42,6 +42,14 @@ namespace JovDK.Debugging
 #endif
         }
 
+        static public void NotImplementedLogWarning()
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            int stackBackSteps = 3;
+            DevLogWarning(stackBackSteps, "[NOT IMPLEMENTED!]".ToColor(GoodColors.Red));
+#endif
+        }
+
         /// <summary>
         /// Logs a dev message in Unity Editor or Development builds.
         /// </summary>

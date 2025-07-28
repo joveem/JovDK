@@ -28,7 +28,8 @@ namespace JovDK.Services
             string title = null,
             string description = null,
             string positiveButtonText = null,
-            Action positiveCallback = null)
+            Action positiveCallback = null,
+            Action closeAction = null)
         {
             PopUp popUpInstance = Instantiate(_informationPopUpPrefab, _popUpContainer);
 
@@ -36,6 +37,7 @@ namespace JovDK.Services
             popUpInstance.SetButtonsText(positiveButtonText);
 
             positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback), false);
+            closeAction.DoIfNotNull(() => popUpInstance.SetCloseAction(closeAction), false);
 
             popUpInstance.HidePanelInstantaneously();
             popUpInstance.PlayShowAnimation();
@@ -49,7 +51,8 @@ namespace JovDK.Services
             string positiveButtonText = null,
             string negativeButtonText = null,
             Action positiveCallback = null,
-            Action negativeCallback = null)
+            Action negativeCallback = null,
+            Action closeAction = null)
         {
             PopUp popUpInstance = Instantiate(_confirmationPopUpPrefab, _popUpContainer);
 
@@ -58,6 +61,7 @@ namespace JovDK.Services
 
             positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback), false);
             negativeCallback.DoIfNotNull(() => popUpInstance.SetCancelAction(positiveCallback), false);
+            closeAction.DoIfNotNull(() => popUpInstance.SetCloseAction(closeAction), false);
 
             popUpInstance.HidePanelInstantaneously();
             popUpInstance.PlayShowAnimation();

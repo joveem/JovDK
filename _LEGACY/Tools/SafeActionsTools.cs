@@ -154,7 +154,7 @@ namespace JovDK.SafeActions
             else if (debugIfNull)
             {
                 int stackBackSteps = 3;
-                DebugExtension.DevLogWarning(stackBackSteps, stringBuilder.ToString());
+                DebugExtension.DevLogWarning(stackBackSteps, stringBuilder.ToString().ToColor(GoodColors.Orange));
             }
         }
 

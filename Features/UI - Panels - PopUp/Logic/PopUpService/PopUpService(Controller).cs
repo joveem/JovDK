@@ -60,7 +60,7 @@ namespace JovDK.Services
             popUpInstance.SetButtonsText(positiveButtonText, negativeButtonText);
 
             positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback), false);
-            negativeCallback.DoIfNotNull(() => popUpInstance.SetCancelAction(positiveCallback), false);
+            negativeCallback.DoIfNotNull(() => popUpInstance.SetCancelAction(negativeCallback), false);
             closeAction.DoIfNotNull(() => popUpInstance.SetCloseAction(closeAction), false);
 
             popUpInstance.HidePanelInstantaneously();

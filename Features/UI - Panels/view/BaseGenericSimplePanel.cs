@@ -49,7 +49,7 @@ namespace JovDK.UI.Generic
         List<Action> _onHideFinishCallbackList = new List<Action>();
         List<Action> _onHideFinishOnceCallbackList = new List<Action>();
         bool _hasSettedInitialMovingContainerPosition = false;
-        Vector2 _initialMovingAnimationContainerPosition = default;
+        Vector2 _initialMovingAnimationContainerLocalPosition = default;
 
 
         [Space(5), Header("[ Parts ]"), Space(10)]
@@ -61,40 +61,7 @@ namespace JovDK.UI.Generic
 
         [Space(5), Header("[ Configs ]"), Space(10)]
 
-        // protected float _coverAnimationDuration = 0.35f;
-        protected float _coverAnimationDuration = 0.6f;
-
-        public static TransitionOptions HorizontalNegativeTransition =
-            new TransitionOptions()
-            {
-                OverrideShowAnimation = AnimationType.SlideToOrFromRight,
-                OverrideHideAnimation = AnimationType.SlideToOrFromLeft,
-                OverrideSlideFactorType = SlideFactorType.MovingContainerSize,
-            };
-
-        public static TransitionOptions HorizontalPositiveTransition =
-            new TransitionOptions()
-            {
-                OverrideShowAnimation = AnimationType.SlideToOrFromLeft,
-                OverrideHideAnimation = AnimationType.SlideToOrFromRight,
-                OverrideSlideFactorType = SlideFactorType.MovingContainerSize,
-            };
-
-        public static TransitionOptions VerticalPositiveTransition =
-            new TransitionOptions()
-            {
-                OverrideShowAnimation = AnimationType.SlideToOrFromDown,
-                OverrideHideAnimation = AnimationType.SlideToOrFromUp,
-                OverrideSlideFactorType = SlideFactorType.MovingContainerSize,
-            };
-
-        public static TransitionOptions VerticalNegativeTransition =
-            new TransitionOptions()
-            {
-                OverrideShowAnimation = AnimationType.SlideToOrFromUp,
-                OverrideHideAnimation = AnimationType.SlideToOrFromDown,
-                OverrideSlideFactorType = SlideFactorType.MovingContainerSize,
-            };
+        protected float _animationDuration = 0.35f;
 
 
 
@@ -371,6 +338,7 @@ namespace JovDK.UI.Generic
         {
             // DebugExtension.DevLog();
 
+
             bool previousIsShowingPanelState = _isShowingPanel;
             bool previousHasShowAndHideTransitionEndState = _hasShowAndHideTransitionEnd;
             _isShowingPanel = true;
@@ -394,6 +362,14 @@ namespace JovDK.UI.Generic
             {
                 Debug.LogWarning("_fullContentCanvasGroup is null! gameObject = ", gameObject);
             });
+
+            HandleMovingContainerPositionSetting();
+
+            _fullContentMovingAnimationContainer.DoIfNotNull(() =>
+            {
+                if (_hasSettedInitialMovingContainerPosition)
+                    _fullContentMovingAnimationContainer.localPosition = _initialMovingAnimationContainerLocalPosition;
+            }, debugIfNull: false);
 
             if (previousIsShowingPanelState != _isShowingPanel)
                 OnShowFinish();
@@ -474,6 +450,11 @@ namespace JovDK.UI.Generic
 
             _fullContentCanvasGroup.DoIfNotNull(() =>
             {
+                float animationDuration = _animationDuration;
+
+                if (transitionOptions.AnimationDuration is not null)
+                    animationDuration = (float)transitionOptions.AnimationDuration;
+
                 TryToKillAllPendingTweens();
 
                 gameObject.SetActive(true);
@@ -484,9 +465,10 @@ namespace JovDK.UI.Generic
 
                 TweenCallback onComplete = () => onAnimationFinishCallback?.Invoke();
 
+                // _curretBackgroundTween = _fullContentCanvasGroup.DOFade(1f, animationDuration);
                 _curretBackgroundTween =
                     _fullContentCanvasGroup
-                        .DOFade(1f, _coverAnimationDuration)
+                        .DOFade(1f, animationDuration)
                         .SetEase(transitionOptions.ShowAnimationEase);
 
                 _curretBackgroundTween.onComplete = onComplete;
@@ -608,11 +590,11 @@ namespace JovDK.UI.Generic
                 //         {
                 //             _fullContentMovingAnimationContainer.DoIfNotNull(() =>
                 //             {
-                //                 Vector2 startPosition = _initialMovingAnimationContainerPosition + movingAnimationDelta;
-                //                 Vector2 finalPosition = _initialMovingAnimationContainerPosition;
+                //                 Vector2 startPosition = _initialMovingAnimationContainerLocalPosition + movingAnimationDelta;
+                //                 Vector2 finalPosition = _initialMovingAnimationContainerLocalPosition;
 
                 //                 _fullContentMovingAnimationContainer.position = startPosition;
-                //                 _movingContentTween = _fullContentMovingAnimationContainer.DOMove(finalPosition, _coverAnimationDuration);
+                //                 _movingContentTween = _fullContentMovingAnimationContainer.DOLocalMove(finalPosition, animationDuration);
                 //             }, false);
 
                 //             break;
@@ -626,14 +608,16 @@ namespace JovDK.UI.Generic
                 {
                     _fullContentMovingAnimationContainer.DoIfNotNull(() =>
                     {
-                        Vector2 startPosition = _initialMovingAnimationContainerPosition + movingAnimationDelta;
-                        Vector2 finalPosition = _initialMovingAnimationContainerPosition;
+                        Vector2 startPosition = _initialMovingAnimationContainerLocalPosition + movingAnimationDelta;
+                        Vector2 finalPosition = _initialMovingAnimationContainerLocalPosition;
 
-                        _fullContentMovingAnimationContainer.position = startPosition;
+                        // _fullContentMovingAnimationContainer.position = startPosition;
+                        _fullContentMovingAnimationContainer.localPosition = startPosition;
                         _movingContentTween =
                             _fullContentMovingAnimationContainer
-                                .DOMove(finalPosition, _coverAnimationDuration)
-                                .SetEase(transitionOptions.ShowAnimationEase);
+                                .DOLocalMove(finalPosition, animationDuration)
+                                // .SetEase(transitionOptions.ShowAnimationEase);
+                                .SetEase(transitionOptions.ShowSlideAnimationEase);
                     }, false);
                 }
             });
@@ -651,6 +635,11 @@ namespace JovDK.UI.Generic
 
             _fullContentCanvasGroup.DoIfNotNull(() =>
             {
+                float animationDuration = _animationDuration;
+
+                if (transitionOptions.AnimationDuration is not null)
+                    animationDuration = (float)transitionOptions.AnimationDuration;
+
                 TryToKillAllPendingTweens();
 
                 _fullContentCanvasGroup.blocksRaycasts = false;
@@ -664,9 +653,10 @@ namespace JovDK.UI.Generic
                     onAnimationFinishCallback?.Invoke();
                 };
 
+                // _curretBackgroundTween = _fullContentCanvasGroup.DOFade(0f, animationDuration);
                 _curretBackgroundTween =
                     _fullContentCanvasGroup
-                    .DOFade(0f, _coverAnimationDuration)
+                    .DOFade(0f, animationDuration)
                     .SetEase(transitionOptions.HideAnimationEase);
 
                 _curretBackgroundTween.onComplete = onComplete;
@@ -788,8 +778,8 @@ namespace JovDK.UI.Generic
                 //         {
                 //             _fullContentMovingAnimationContainer.DoIfNotNull(() =>
                 //             {
-                //                 Vector2 finalPosition = _initialMovingAnimationContainerPosition + movingAnimationDelta;
-                //                 _movingContentTween = _fullContentMovingAnimationContainer.DOMove(finalPosition, _coverAnimationDuration);
+                //                 Vector2 finalPosition = _initialMovingAnimationContainerLocalPosition + movingAnimationDelta;
+                //                 _movingContentTween = _fullContentMovingAnimationContainer.DOLocalMove(finalPosition, animationDuration);
                 //             }, false);
 
                 //             break;
@@ -803,11 +793,13 @@ namespace JovDK.UI.Generic
                 {
                     _fullContentMovingAnimationContainer.DoIfNotNull(() =>
                     {
-                        Vector2 finalPosition = _initialMovingAnimationContainerPosition + movingAnimationDelta;
+                        Vector2 finalPosition = _initialMovingAnimationContainerLocalPosition + movingAnimationDelta;
                         _movingContentTween =
                             _fullContentMovingAnimationContainer
-                                .DOMove(finalPosition, _coverAnimationDuration)
-                                .SetEase(transitionOptions.HideAnimationEase);
+                                // .DOLocalMove(finalPosition, animationDuration)
+                                .DOLocalMove(finalPosition, animationDuration)
+                                // .SetEase(transitionOptions.HideAnimationEase);
+                                .SetEase(transitionOptions.HideSlideAnimationEase);
                     }, false);
                 }
             });
@@ -828,6 +820,19 @@ namespace JovDK.UI.Generic
         {
             // DebugExtension.DevLog();
 
+            // DebugExtension.DevLog("_fullContentMovingAnimationContainer 01-01 = ", (_fullContentMovingAnimationContainer is not null).ToString());
+            // DebugExtension.DevLog("_fullContentMovingAnimationContainer 01-02 = ", (_fullContentMovingAnimationContainer != null).ToString());
+            // DebugExtension.DevLog("_fullContentMovingAnimationContainer 01-03 = ", ((_fullContentMovingAnimationContainer is not null && _fullContentMovingAnimationContainer != null)).ToString());
+
+            // _fullContentMovingAnimationContainer.DoIfNotNull(() =>
+            // {
+            //     DebugExtension.DevLog("_fullContentMovingAnimationContainer 01-01 = ", (_fullContentMovingAnimationContainer is not null).ToString());
+            //     DebugExtension.DevLog("_fullContentMovingAnimationContainer 01-02 = ", (_fullContentMovingAnimationContainer != null).ToString());
+            //     DebugExtension.DevLog("_fullContentMovingAnimationContainer 01-03 = ", ((_fullContentMovingAnimationContainer is not null && _fullContentMovingAnimationContainer != null)).ToString());
+
+            //     // _initialMovingAnimationContainerLocalPosition = _fullContentMovingAnimationContainer.position;
+            // });
+
             if (!_hasSettedInitialMovingContainerPosition)
             {
                 // Debug.Log(">>>".ToColor(GoodColors.Blue) + " gameObject.name = " + gameObject.name, gameObject);
@@ -836,7 +841,8 @@ namespace JovDK.UI.Generic
 
                 _fullContentMovingAnimationContainer.DoIfNotNull(() =>
                 {
-                    _initialMovingAnimationContainerPosition = _fullContentMovingAnimationContainer.position;
+                    // _initialMovingAnimationContainerLocalPosition = _fullContentMovingAnimationContainer.position;
+                    _initialMovingAnimationContainerLocalPosition = _fullContentMovingAnimationContainer.localPosition;
                 }, false);
             }
         }
@@ -845,8 +851,12 @@ namespace JovDK.UI.Generic
 
     public class TransitionOptions
     {
-        public Ease ShowAnimationEase = Ease.InOutBack;
-        public Ease HideAnimationEase = Ease.InOutBack;
+        public float? AnimationDuration = null;
+        public Ease ShowAnimationEase = Ease.Linear;
+        public Ease HideAnimationEase = Ease.Linear;
+        public Ease ShowSlideAnimationEase = Ease.InOutQuint;
+        public Ease HideSlideAnimationEase = Ease.InOutQuint;
+
         public AnimationType OverrideShowAnimation = AnimationType.Default;
         public AnimationType OverrideHideAnimation = AnimationType.Default;
         public SlideFactorType OverrideSlideFactorType = SlideFactorType.Default;

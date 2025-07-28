@@ -155,8 +155,8 @@ namespace JovDK.UI.ToastNotification
 
         void DestroyAllCurrentContent()
         {
-            foreach (Transform chield in _notifictionsContainer)
-                Destroy(chield.gameObject);
+            foreach (Transform child in _notifictionsContainer)
+                Destroy(child.gameObject);
         }
 
         public void _INTERNAL_AddNotification(

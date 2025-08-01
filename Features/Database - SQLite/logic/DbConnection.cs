@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 using JovDK.Debugging;
 using JovDK.SerializingTools.Json;
 
-
-
 // third
+using Cysharp.Threading.Tasks;
 using Mono.Data.Sqlite;
 
 // from company
@@ -27,12 +26,42 @@ namespace JovDK.Database.SQLite
 
         // state
         string _connectionString = "UNDEFINED";
+        public Action<Exception> OnThrowExceptionCallback = null;
+        public Action OnStartLoadingCallback = null;
+        public Action OnFinishLoadingCallback = null;
+        Action<Exception> _currentOnThrowExceptionOnceCallback = null;
+
+
 
         public DbConnection(string connectionString)
         {
             _connectionString = connectionString;
         }
 
+
+        #region Callbacks
+        void OnStartLoading()
+        {
+            // DebugExtension.DevLog(">".ToColor(GoodColors.Pink));
+
+            OnStartLoadingCallback?.Invoke();
+        }
+
+        void OnFinishLoading()
+        {
+            // DebugExtension.DevLog(">".ToColor(GoodColors.Pink));
+
+            OnFinishLoadingCallback?.Invoke();
+        }
+
+        void OnThrowException(Exception exception)
+        {
+            DebugExtension.DevLog(">".ToColor(GoodColors.Pink));
+
+            OnThrowExceptionCallback?.Invoke(exception);
+            _currentOnThrowExceptionOnceCallback?.Invoke(exception);
+        }
+        #endregion Callbacks
 
         #region Controller
         public static DbConnection With(string connectionString)
@@ -43,12 +72,24 @@ namespace JovDK.Database.SQLite
         #endregion Controller
 
         #region Controller - CRUD
-        public async Task Upsert<T>(T obj)
+        public async Task Upsert<T>(T obj, Action<Exception> onThrowExceptionOnceCallback = null)
         {
+            if (onThrowExceptionOnceCallback is not null)
+                _currentOnThrowExceptionOnceCallback += onThrowExceptionOnceCallback;
+
             Type type = typeof(T);
             SqliteTableAttribute tableAttr = type.GetCustomAttribute<SqliteTableAttribute>();
             if (tableAttr == null)
-                throw new Exception($"Class '{type.Name}' is missing [SqliteTable] attribute.");
+            {
+                Exception exception = new Exception($"Class '{type.Name}' is missing [SqliteTable] attribute.");
+
+                OnThrowException(exception);
+
+                if (onThrowExceptionOnceCallback is not null)
+                    _currentOnThrowExceptionOnceCallback -= onThrowExceptionOnceCallback;
+
+                throw exception;
+            }
 
             string tableName = tableAttr.TableName;
 
@@ -115,7 +156,16 @@ namespace JovDK.Database.SQLite
             }
 
             if (columnNames.Count == 0 || string.IsNullOrEmpty(primaryKeyColumn))
-                throw new Exception($"No valid columns or primary key found in type '{type.Name}'");
+            {
+                Exception exception = new Exception($"No valid columns or primary key found in type '{type.Name}'");
+
+                OnThrowException(exception);
+
+                if (onThrowExceptionOnceCallback is not null)
+                    _currentOnThrowExceptionOnceCallback -= onThrowExceptionOnceCallback;
+
+                throw exception;
+            }
 
             List<string> updateClauseParts = new List<string>();
             foreach (string column in columnNames)
@@ -138,6 +188,21 @@ namespace JovDK.Database.SQLite
                     foreach (KeyValuePair<string, object> kvp in parameters)
                         command.Parameters.AddWithValue(kvp.Key, kvp.Value);
 
+                    OnStartLoading();
+
+#if UNITY_EDITOR
+                    // ! DEBUG ONLY!!!!
+                    // ! DEBUG ONLY!!!!
+                    // ! DEBUG ONLY!!!!
+                    // float delaySeconds = 2f;
+                    // await Task.Delay((int)(delaySeconds * 1000));
+                    // ! DEBUG ONLY!!!!
+                    // ! DEBUG ONLY!!!!
+                    // ! DEBUG ONLY!!!!
+#endif
+
+                    await UniTask.SwitchToThreadPool();
+
                     try
                     {
                         // DebugExtension.DevLog("> query = ", query.SerializeObjectToJSON());
@@ -145,25 +210,51 @@ namespace JovDK.Database.SQLite
                     }
                     catch (Exception exception)
                     {
+
                         DebugExtension.DevLogError(
                             "$$$> ".ToColor(GoodColors.Red),
                             "exception = ", "\n", exception.ToString());
 
                         // throw;
+                        await UniTask.SwitchToMainThread();
+                        OnThrowException(exception);
                     }
+
+                    await UniTask.SwitchToMainThread();
+                    OnFinishLoading();
                 }
             }
+
+            if (onThrowExceptionOnceCallback is not null)
+                _currentOnThrowExceptionOnceCallback -= onThrowExceptionOnceCallback;
         }
 
-        public async Task UpsertAll<T>(List<T> baseList)
+        public async Task UpsertAll<T>(List<T> baseList, Action<Exception> onThrowExceptionOnceCallback = null)
         {
+            if (onThrowExceptionOnceCallback is not null)
+                _currentOnThrowExceptionOnceCallback += onThrowExceptionOnceCallback;
+
             if (baseList == null || baseList.Count == 0)
+            {
+                if (onThrowExceptionOnceCallback is not null)
+                    _currentOnThrowExceptionOnceCallback -= onThrowExceptionOnceCallback;
+
                 return;
+            }
 
             Type type = typeof(T);
             SqliteTableAttribute tableAttr = type.GetCustomAttribute<SqliteTableAttribute>();
             if (tableAttr == null)
-                throw new Exception($"Class '{type.Name}' is missing [SqliteTable] attribute.");
+            {
+                Exception exception = new Exception($"Class '{type.Name}' is missing [SqliteTable] attribute.");
+
+                OnThrowException(exception);
+
+                if (onThrowExceptionOnceCallback is not null)
+                    _currentOnThrowExceptionOnceCallback -= onThrowExceptionOnceCallback;
+
+                throw exception;
+            }
 
             string tableName = tableAttr.TableName;
 
@@ -210,10 +301,28 @@ namespace JovDK.Database.SQLite
             }
 
             if (columnNames.Count == 0)
-                throw new Exception($"No mapped columns found in type '{type.Name}'.");
+            {
+                Exception exception = new Exception($"No mapped columns found in type '{type.Name}'.");
+
+                OnThrowException(exception);
+
+                if (onThrowExceptionOnceCallback is not null)
+                    _currentOnThrowExceptionOnceCallback -= onThrowExceptionOnceCallback;
+
+                throw exception;
+            }
 
             if (primaryKeyColumn == null)
-                throw new Exception($"No primary key defined in type '{type.Name}'.");
+            {
+                Exception exception = new Exception($"No primary key defined in type '{type.Name}'.");
+
+                OnThrowException(exception);
+
+                if (onThrowExceptionOnceCallback is not null)
+                    _currentOnThrowExceptionOnceCallback -= onThrowExceptionOnceCallback;
+
+                throw exception;
+            }
 
             List<string> setClauses = new List<string>();
             foreach (string col in columnNames)
@@ -231,76 +340,112 @@ namespace JovDK.Database.SQLite
             {
                 await connection.OpenAsync();
 
-                using (SqliteTransaction transaction = connection.BeginTransaction())
-                using (SqliteCommand command = new SqliteCommand(query, connection, transaction))
+                await UniTask.SwitchToMainThread();
+                OnStartLoading();
+                await UniTask.SwitchToThreadPool();
+
+                try
                 {
-                    foreach (T obj in baseList)
+                    using (SqliteTransaction transaction = connection.BeginTransaction())
+                    using (SqliteCommand command = new SqliteCommand(query, connection, transaction))
                     {
-                        command.Parameters.Clear();
-
-                        foreach (KeyValuePair<string, FieldInfo> pair in fieldMap)
+                        foreach (T obj in baseList)
                         {
-                            string column = pair.Key;
-                            FieldInfo field = pair.Value;
+                            command.Parameters.Clear();
 
-                            SqliteDateTimeDualAttribute dualAttr = field.GetCustomAttribute<SqliteDateTimeDualAttribute>();
-                            if (dualAttr != null)
+                            foreach (KeyValuePair<string, FieldInfo> pair in fieldMap)
                             {
-                                DateTime dateTimeValue = (DateTime)field.GetValue(obj);
-                                string utcString = dateTimeValue.ToUniversalTime().ToString("o");
-                                long epoch = new DateTimeOffset(dateTimeValue.ToUniversalTime()).ToUnixTimeSeconds();
+                                string column = pair.Key;
+                                FieldInfo field = pair.Value;
 
-                                command.Parameters.AddWithValue("@" + dualAttr.ColumnUtcText, utcString);
-                                command.Parameters.AddWithValue("@" + dualAttr.ColumnEpoch, epoch);
-                                continue;
+                                SqliteDateTimeDualAttribute dualAttr = field.GetCustomAttribute<SqliteDateTimeDualAttribute>();
+                                if (dualAttr != null)
+                                {
+                                    DateTime dateTimeValue = (DateTime)field.GetValue(obj);
+                                    string utcString = dateTimeValue.ToUniversalTime().ToString("o");
+                                    long epoch = new DateTimeOffset(dateTimeValue.ToUniversalTime()).ToUnixTimeSeconds();
+
+                                    command.Parameters.AddWithValue("@" + dualAttr.ColumnUtcText, utcString);
+                                    command.Parameters.AddWithValue("@" + dualAttr.ColumnEpoch, epoch);
+                                    continue;
+                                }
+
+                                object value = field.GetValue(obj) ?? DBNull.Value;
+
+                                if (value is Guid guidValue)
+                                    value = guidValue.ToString();
+
+                                command.Parameters.AddWithValue("@" + column, value);
                             }
 
-                            object value = field.GetValue(obj) ?? DBNull.Value;
+                            foreach (KeyValuePair<string, MethodInfo> pair in computedMap)
+                            {
+                                string column = pair.Key;
+                                MethodInfo method = pair.Value;
 
-                            if (value is Guid guidValue)
-                                value = guidValue.ToString();
+                                object value = method.Invoke(obj, null) ?? DBNull.Value;
 
-                            command.Parameters.AddWithValue("@" + column, value);
-                        }
+                                if (value is Guid guidValue)
+                                    value = guidValue.ToString();
 
-                        foreach (KeyValuePair<string, MethodInfo> pair in computedMap)
-                        {
-                            string column = pair.Key;
-                            MethodInfo method = pair.Value;
+                                command.Parameters.AddWithValue("@" + column, value);
+                            }
 
-                            object value = method.Invoke(obj, null) ?? DBNull.Value;
+#if UNITY_EDITOR
+                            // ! DEBUG ONLY!!!!
+                            // ! DEBUG ONLY!!!!
+                            // ! DEBUG ONLY!!!!
+                            // float delaySeconds = 2f;
+                            // await Task.Delay((int)(delaySeconds * 1000));
+                            // ! DEBUG ONLY!!!!
+                            // ! DEBUG ONLY!!!!
+                            // ! DEBUG ONLY!!!!
+#endif
 
-                            if (value is Guid guidValue)
-                                value = guidValue.ToString();
-
-                            command.Parameters.AddWithValue("@" + column, value);
-                        }
-
-                        try
-                        {
                             // DebugExtension.DevLog("> query = ", query.SerializeObjectToJSON());
                             await command.ExecuteNonQueryAsync();
                         }
-                        catch (Exception exception)
-                        {
-                            DebugExtension.DevLogError(
-                                "$$$> ".ToColor(GoodColors.Red),
-                                "exception = ", "\n", exception.ToString());
-                        }
-                    }
 
-                    transaction.Commit();
+                        transaction.Commit();
+                    }
                 }
+                catch (Exception exception)
+                {
+                    DebugExtension.DevLogError(
+                        "$$$> ".ToColor(GoodColors.Red),
+                        "exception = ", "\n", exception.ToString());
+
+                    await UniTask.SwitchToMainThread();
+                    OnThrowException(exception);
+                }
+
+                await UniTask.SwitchToMainThread();
+                OnFinishLoading();
             }
+
+            if (onThrowExceptionOnceCallback is not null)
+                _currentOnThrowExceptionOnceCallback -= onThrowExceptionOnceCallback;
         }
 
 
-        public async Task<T> Get<T>(object primaryKeyValue) where T : new()
+        public async Task<T> Get<T>(object primaryKeyValue, Action<Exception> onThrowExceptionOnceCallback = null) where T : new()
         {
+            if (onThrowExceptionOnceCallback is not null)
+                _currentOnThrowExceptionOnceCallback += onThrowExceptionOnceCallback;
+
             Type type = typeof(T);
             SqliteTableAttribute tableAttr = type.GetCustomAttribute<SqliteTableAttribute>();
             if (tableAttr == null)
-                throw new Exception($"Class '{type.Name}' is missing [SqliteTable] attribute.");
+            {
+                Exception exception = new Exception($"Class '{type.Name}' is missing [SqliteTable] attribute.");
+
+                OnThrowException(exception);
+
+                if (onThrowExceptionOnceCallback is not null)
+                    _currentOnThrowExceptionOnceCallback -= onThrowExceptionOnceCallback;
+
+                throw exception;
+            }
 
             string tableName = tableAttr.TableName;
 
@@ -320,13 +465,37 @@ namespace JovDK.Database.SQLite
             }
 
             if (primaryKeyColumn == null)
-                throw new Exception($"No primary key column found in '{type.Name}'.");
+            {
+                Exception exception = new Exception($"No primary key column found in '{type.Name}'.");
+
+                OnThrowException(exception);
+
+                if (onThrowExceptionOnceCallback is not null)
+                    _currentOnThrowExceptionOnceCallback -= onThrowExceptionOnceCallback;
+
+                throw exception;
+            }
 
             string query = $"SELECT * FROM {tableName} WHERE \"{primaryKeyColumn}\" = @pk LIMIT 1;";
 
             using (SqliteConnection connection = new SqliteConnection(_connectionString))
             {
                 await connection.OpenAsync();
+
+                OnStartLoading();
+
+#if UNITY_EDITOR
+                // ! DEBUG ONLY!!!!
+                // ! DEBUG ONLY!!!!
+                // ! DEBUG ONLY!!!!
+                // float delaySeconds = 2f;
+                // await Task.Delay((int)(delaySeconds * 1000));
+                // ! DEBUG ONLY!!!!
+                // ! DEBUG ONLY!!!!
+                // ! DEBUG ONLY!!!!
+#endif
+
+                await UniTask.SwitchToThreadPool();
 
                 using (SqliteCommand command = new SqliteCommand(query, connection))
                 {
@@ -343,9 +512,16 @@ namespace JovDK.Database.SQLite
                             {
                                 T item = new T();
                                 PopulateObjectFromReader(reader, item);
+
+                                if (onThrowExceptionOnceCallback is not null)
+                                    _currentOnThrowExceptionOnceCallback -= onThrowExceptionOnceCallback;
+
+                                await UniTask.SwitchToMainThread();
+                                OnFinishLoading();
                                 return item;
                             }
                         }
+
                     }
                     catch (Exception exception)
                     {
@@ -354,21 +530,44 @@ namespace JovDK.Database.SQLite
                             "exception = ", "\n", exception.ToString());
 
                         // throw;
+                        await UniTask.SwitchToMainThread();
+                        OnThrowException(exception);
                     }
+
                 }
+
+                await UniTask.SwitchToMainThread();
+                OnFinishLoading();
             }
+
+            if (onThrowExceptionOnceCallback is not null)
+                _currentOnThrowExceptionOnceCallback -= onThrowExceptionOnceCallback;
 
             return default;
         }
 
-        public async Task<List<T>> GetAll<T>(string overrideWhereStatment = null) where T : new()
+        public async Task<List<T>> GetAll<T>(
+            string overrideWhereStatment = null,
+            Action<Exception> onThrowExceptionOnceCallback = null) where T : new()
         {
             List<T> result = new List<T>();
+
+            if (onThrowExceptionOnceCallback is not null)
+                _currentOnThrowExceptionOnceCallback += onThrowExceptionOnceCallback;
 
             Type type = typeof(T);
             SqliteTableAttribute tableAttr = type.GetCustomAttribute<SqliteTableAttribute>();
             if (tableAttr == null)
-                throw new Exception($"Class '{type.Name}' is missing [SqliteTable] attribute.");
+            {
+                Exception exception = new Exception($"Class '{type.Name}' is missing [SqliteTable] attribute.");
+
+                OnThrowException(exception);
+
+                if (onThrowExceptionOnceCallback is not null)
+                    _currentOnThrowExceptionOnceCallback -= onThrowExceptionOnceCallback;
+
+                throw exception;
+            }
 
             string tableName = tableAttr.TableName;
 
@@ -382,6 +581,21 @@ namespace JovDK.Database.SQLite
             using (SqliteConnection connection = new SqliteConnection(_connectionString))
             {
                 await connection.OpenAsync();
+
+                OnStartLoading();
+
+#if UNITY_EDITOR
+                // ! DEBUG ONLY!!!!
+                // ! DEBUG ONLY!!!!
+                // ! DEBUG ONLY!!!!
+                // float delaySeconds = 2f;
+                // await Task.Delay((int)(delaySeconds * 1000));
+                // ! DEBUG ONLY!!!!
+                // ! DEBUG ONLY!!!!
+                // ! DEBUG ONLY!!!!
+#endif
+
+                await UniTask.SwitchToThreadPool();
 
                 try
                 {
@@ -405,13 +619,21 @@ namespace JovDK.Database.SQLite
                         "exception = ", "\n", exception.ToString());
 
                     // throw;
+                    await UniTask.SwitchToMainThread();
+                    OnThrowException(exception);
                 }
+
+                await UniTask.SwitchToMainThread();
+                OnFinishLoading();
             }
+
+            if (onThrowExceptionOnceCallback is not null)
+                _currentOnThrowExceptionOnceCallback -= onThrowExceptionOnceCallback;
 
             return result;
         }
 
-        private void PopulateObjectFromReader<T>(DbDataReader reader, T obj)
+        void PopulateObjectFromReader<T>(DbDataReader reader, T obj)
         {
             Type type = typeof(T);
             FieldInfo[] fields = type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
@@ -458,6 +680,7 @@ namespace JovDK.Database.SQLite
                             "exception = ", "\n", exception.ToString());
 
                         // throw;
+                        OnThrowException(exception);
                     }
                 }
             }

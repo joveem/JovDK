@@ -149,7 +149,7 @@ namespace JovDK.UI.ToastNotification
         #region Controller
         void SetInitialState()
         {
-            // DebugExtension.DevLog(">".ToColor(GoodColors.Orange));
+            // DebugExtension.DefaultGenericLog();
             DestroyAllCurrentContent();
         }
 

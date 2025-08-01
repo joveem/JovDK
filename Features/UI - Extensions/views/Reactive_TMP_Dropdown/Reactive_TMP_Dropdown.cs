@@ -147,7 +147,7 @@ namespace JovDK.UI.Extensions.Reactive
 
         void OnCurrentValueUpdate(T value)
         {
-            // DebugExtension.DevLog("#> ".ToColor(GoodColors.Pink) + "value = " + value.ToString());
+            // DebugExtension.DefaultSubscriptionLog("value = " + value.ToString());
 
             bool isAlreadyRegistered = _currentPossibleOptionsByValue.ContainsKey(value);
 
@@ -173,7 +173,7 @@ namespace JovDK.UI.Extensions.Reactive
 
         void OnDropdownValueChanged(int index)
         {
-            // DebugExtension.DevLog("#> ".ToColor(GoodColors.Pink) + "index = " + index.ToString());
+            // DebugExtension.DefaultSubscriptionLog("index = " + index.ToString());
 
             if (index < _currentPossibleOptionsList.Count)
             {

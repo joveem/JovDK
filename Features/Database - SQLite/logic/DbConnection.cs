@@ -42,21 +42,21 @@ namespace JovDK.Database.SQLite
         #region Callbacks
         void OnStartLoading()
         {
-            // DebugExtension.DevLog(">".ToColor(GoodColors.Pink));
+            // DebugExtension.DefaultCallbackLog();
 
             OnStartLoadingCallback?.Invoke();
         }
 
         void OnFinishLoading()
         {
-            // DebugExtension.DevLog(">".ToColor(GoodColors.Pink));
+            // DebugExtension.DefaultCallbackLog();
 
             OnFinishLoadingCallback?.Invoke();
         }
 
         void OnThrowException(Exception exception)
         {
-            DebugExtension.DevLog(">".ToColor(GoodColors.Pink));
+            DebugExtension.DefaultCallbackLog();
 
             OnThrowExceptionCallback?.Invoke(exception);
             _currentOnThrowExceptionOnceCallback?.Invoke(exception);

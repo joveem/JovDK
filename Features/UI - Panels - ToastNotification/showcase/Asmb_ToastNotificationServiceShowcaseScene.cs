@@ -94,7 +94,7 @@ namespace PackageName.MajorContext.MinorContext
         #region Callbacks
         // void OnIdk()
         // {
-        //        // DebugExtension.DevLog(">".ToColor(GoodColors.Orange));
+        //        // DebugExtension.DefaultGenericLog();
         // }
         #endregion Callbacks
 
@@ -240,7 +240,7 @@ namespace PackageName.MajorContext.MinorContext
         #region Controller
         // void SetInitialState()
         // {
-        //     // DebugExtension.DevLog(">".ToColor(GoodColors.Orange));
+        //     // DebugExtension.DefaultGenericLog();
         // }
         #endregion Controller
 

@@ -126,7 +126,7 @@ namespace JovDK.UI.ToastNotification
 
         void MainButton()
         {
-            // DebugExtension.DevLog("#>".ToColor(GoodColors.Orange));
+            // DebugExtension.DefaultButtonLog();
 
             if (_isShowing && _onContentClickCallback != null)
             {
@@ -137,7 +137,7 @@ namespace JovDK.UI.ToastNotification
 
         void CloseButton()
         {
-            // DebugExtension.DevLog("#>".ToColor(GoodColors.Orange));
+            // DebugExtension.DefaultButtonLog();
 
             if (_isShowing)
             {
@@ -233,7 +233,7 @@ namespace JovDK.UI.ToastNotification
 
         public void SetBackgroundColor(Color color)
         {
-            // DebugExtension.DevLog(">".ToColor(GoodColors.Orange));
+            // DebugExtension.DefaultGenericLog();
 
             _backgroundImage.DoIfNotNull(() =>
             {

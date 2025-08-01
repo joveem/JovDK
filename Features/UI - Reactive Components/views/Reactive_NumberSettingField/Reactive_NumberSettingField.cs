@@ -94,7 +94,7 @@ namespace JovDK.UI.Reactive
         #region Callbacks
         // void OnIdk()
         // {
-        //        // DebugExtension.DevLog(">".ToColor(GoodColors.Orange));
+        //        // DebugExtension.DefaultGenericLog();
         // }
         #endregion Callbacks
 
@@ -107,7 +107,7 @@ namespace JovDK.UI.Reactive
 
         void MinusButton()
         {
-            // DebugExtension.DevLog("#>".ToColor(GoodColors.Orange));
+            // DebugExtension.DefaultButtonLog();
 
             double currentValue = Convert.ToDouble(CurrentValue.Value);
 
@@ -119,7 +119,7 @@ namespace JovDK.UI.Reactive
 
         void PlusButton()
         {
-            // DebugExtension.DevLog("#>".ToColor(GoodColors.Orange));
+            // DebugExtension.DefaultButtonLog();
 
             double currentValue = Convert.ToDouble(CurrentValue.Value);
             currentValue += 1;
@@ -167,7 +167,7 @@ namespace JovDK.UI.Reactive
 
         void OnCurrentValueUpdate(T value)
         {
-            // DebugExtension.DevLog("#> ".ToColor(GoodColors.Pink) + "value = " + value.ToString());
+            // DebugExtension.DefaultSubscriptionLog("value = " + value.ToString());
 
             double currentValue = Convert.ToDouble(value);
 
@@ -185,7 +185,7 @@ namespace JovDK.UI.Reactive
         #region Controller
         // void SetInitialState()
         // {
-        //     // DebugExtension.DevLog(">".ToColor(GoodColors.Orange));
+        //     // DebugExtension.DefaultGenericLog();
         // }
         #endregion Controller
 

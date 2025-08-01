@@ -76,7 +76,7 @@ namespace JovDK.UI.Timers
         #region Controller
         void SetInitialState()
         {
-            // DebugExtension.DevLog(">".ToColor(GoodColors.Orange));
+            // DebugExtension.DefaultGenericLog();
 
             _clockUpdateRemainingGap = _clockUpdateGapInSeconds;
             ApplyCurrentTimeText();

@@ -29,15 +29,27 @@ namespace JovDK.Services
             string description = null,
             string positiveButtonText = null,
             Action positiveCallback = null,
-            Action closeAction = null)
+            Action negativeCallback = null,
+            Action closeCallback = null)
         {
             PopUp popUpInstance = Instantiate(_informationPopUpPrefab, _popUpContainer);
 
             popUpInstance.SetTexts(title, description);
             popUpInstance.SetButtonsText(positiveButtonText);
 
-            positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback), false);
-            closeAction.DoIfNotNull(() => popUpInstance.SetCloseAction(closeAction), false);
+            Action positiveCallback2 = () =>
+            {
+                GlobalPositiveActionCallback?.Invoke();
+                positiveCallback?.Invoke();
+            };
+            Action closeCallback2 = () =>
+            {
+                GlobalCloseActionCallback?.Invoke();
+                closeCallback?.Invoke();
+            };
+
+            popUpInstance.SetConfirmationAction(positiveCallback2);
+            popUpInstance.SetCloseAction(closeCallback2);
 
             popUpInstance.HidePanelInstantaneously();
             popUpInstance.PlayShowAnimation();
@@ -52,16 +64,32 @@ namespace JovDK.Services
             string negativeButtonText = null,
             Action positiveCallback = null,
             Action negativeCallback = null,
-            Action closeAction = null)
+            Action closeCallback = null)
         {
             PopUp popUpInstance = Instantiate(_confirmationPopUpPrefab, _popUpContainer);
 
             popUpInstance.SetTexts(title, description);
             popUpInstance.SetButtonsText(positiveButtonText, negativeButtonText);
 
-            positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback), false);
-            negativeCallback.DoIfNotNull(() => popUpInstance.SetCancelAction(negativeCallback), false);
-            closeAction.DoIfNotNull(() => popUpInstance.SetCloseAction(closeAction), false);
+            Action positiveCallback2 = () =>
+            {
+                GlobalPositiveActionCallback?.Invoke();
+                positiveCallback?.Invoke();
+            };
+            Action negativeCallback2 = () =>
+            {
+                GlobalNegativeActionCallback?.Invoke();
+                negativeCallback?.Invoke();
+            };
+            Action closeCallback2 = () =>
+            {
+                GlobalCloseActionCallback?.Invoke();
+                closeCallback?.Invoke();
+            };
+
+            popUpInstance.SetConfirmationAction(positiveCallback2);
+            popUpInstance.SetCancelAction(negativeCallback2);
+            popUpInstance.SetCloseAction(closeCallback2);
 
             popUpInstance.HidePanelInstantaneously();
             popUpInstance.PlayShowAnimation();

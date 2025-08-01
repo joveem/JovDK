@@ -2,7 +2,8 @@
     "name": "JovDK.Database.SQLite",
     "rootNamespace": "JovDK.Database.SQLite",
     "references": [
-        "JovDK.Core"
+        "JovDK.Core",
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

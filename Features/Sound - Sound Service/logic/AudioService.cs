@@ -50,6 +50,17 @@ namespace JovDK.Audio.Service
 
         [SerializeField] List<AudioConfig> _audiosList = new List<AudioConfig>();
 
+        /// <summary>
+        /// If true, changes made in _audiosList values
+        /// on inspector will be effective even in the
+        /// Editor play mode
+        /// </summary>
+#if UNITY_EDITOR
+        bool _DEBUG_isOnDebugDynamicMode = false;
+        // bool _DEBUG_isOnDebugDynamicMode = true;
+#else
+        bool _DEBUG_isOnDebugDynamicMode = false;
+#endif
 
 
         #region MonoBehaviour
@@ -115,6 +126,35 @@ namespace JovDK.Audio.Service
             });
         }
 
+        bool IsAudioRegistered(string audioId, out AudioConfig foundAudioConfig)
+        {
+            bool value = false;
+
+            foundAudioConfig = null;
+
+            if (!_DEBUG_isOnDebugDynamicMode)
+            {
+                value = _currentAudiosById.ContainsKey(audioId);
+
+                if (value)
+                    foundAudioConfig = _currentAudiosById[audioId];
+            }
+            else
+            {
+                foreach (AudioConfig audioConfig in _audiosList)
+                {
+                    if (audioConfig is not null && audioConfig.Id == audioId)
+                    {
+                        value = true;
+                        foundAudioConfig = audioConfig;
+                        break;
+                    }
+                }
+            }
+
+            return value;
+        }
+
         public AudioTaskResult _INTERNAL_PlaySfx(
             string sfxId,
             float pitchMultiplier = 1f,
@@ -124,12 +164,10 @@ namespace JovDK.Audio.Service
             AudioTaskResult result = new AudioTaskResult();
             result.Success = false;
 
-            bool isAlreadyRegistered = _currentAudiosById.ContainsKey(sfxId);
+            bool isAlreadyRegistered = IsAudioRegistered(sfxId, out AudioConfig audioConfig);
 
             if (isAlreadyRegistered)
             {
-                AudioConfig audioConfig = _currentAudiosById[sfxId];
-
                 int randomIndex = 0;
                 int variationsAmount = audioConfig.AudioClipsVariationsList.Length;
 
@@ -158,10 +196,9 @@ namespace JovDK.Audio.Service
                 AudioSource audioSourceToPlay = audioConfig.AudioSourceIntances[randomIndex];
                 audioSourceToPlay.DoIfNotNull(() =>
                 {
-                    float defaultPitch = audioConfig.PitchFactor;
-
                     // TODO: REVIEW THIS!
-                    audioSourceToPlay.pitch = defaultPitch * pitchMultiplier;
+                    audioSourceToPlay.pitch = audioConfig.PitchFactor * pitchMultiplier;
+                    audioSourceToPlay.volume = audioConfig.VolumeFactor;
                     audioSourceToPlay.Play();
 
                     result.Success = true;
@@ -185,20 +222,17 @@ namespace JovDK.Audio.Service
             AudioTaskResult result = new AudioTaskResult();
             result.Success = false;
 
-            bool isAlreadyRegistered = _currentAudiosById.ContainsKey(sfxId);
+            bool isAlreadyRegistered = IsAudioRegistered(sfxId, out AudioConfig audioConfig);
 
             if (isAlreadyRegistered)
             {
-                AudioConfig audioConfig = _currentAudiosById[sfxId];
-
                 foreach (AudioSource audioSourceToPlay in audioConfig.AudioSourceIntances)
                 {
                     audioSourceToPlay.DoIfNotNull(() =>
                     {
-                        float defaultPitch = audioConfig.PitchFactor;
-
                         // TODO: REVIEW THIS!
-                        audioSourceToPlay.pitch = defaultPitch * pitchMultiplier;
+                        audioSourceToPlay.pitch = audioConfig.PitchFactor * pitchMultiplier;
+                        audioSourceToPlay.volume = audioConfig.VolumeFactor;
                         audioSourceToPlay.Stop();
 
                         result.Success = true;
@@ -225,12 +259,10 @@ namespace JovDK.Audio.Service
             AudioTaskResult result = new AudioTaskResult();
             result.Success = false;
 
-            bool isAlreadyRegistered = _currentAudiosById.ContainsKey(sfxId);
+            bool isAlreadyRegistered = IsAudioRegistered(sfxId, out AudioConfig audioConfig);
 
             if (isAlreadyRegistered)
             {
-                AudioConfig audioConfig = _currentAudiosById[sfxId];
-
                 int randomIndex = 0;
                 int variationsAmount = audioConfig.AudioClipsVariationsList.Length;
 
@@ -259,10 +291,9 @@ namespace JovDK.Audio.Service
                 AudioSource audioSourceToPlay = audioConfig.AudioSourceIntances[randomIndex];
                 audioSourceToPlay.DoIfNotNull(() =>
                 {
-                    float defaultPitch = audioConfig.PitchFactor;
-
                     // TODO: REVIEW THIS!
-                    audioSourceToPlay.pitch = defaultPitch * pitchMultiplier;
+                    audioSourceToPlay.pitch = audioConfig.PitchFactor * pitchMultiplier;
+                    audioSourceToPlay.volume = audioConfig.VolumeFactor;
                     audioSourceToPlay.PlayOneShot(audioSourceToPlay.clip);
 
                     result.Success = true;
@@ -317,6 +348,8 @@ namespace JovDK.Audio.Service
             int? ignoreRandomIndex = null,
             int? forceRandomIndex = null)
         {
+            // DebugExtension.DevLog("sfxId = ", sfxId.SerializeObjectToJSON());
+
             AudioTaskResult result = new AudioTaskResult();
             result.Success = false;
 

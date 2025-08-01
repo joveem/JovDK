@@ -3,11 +3,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using Debug = UnityEngine.Debug;
+using UnityObject = UnityEngine.Object;
 
 // third
 // ...
@@ -34,19 +36,96 @@ namespace JovDK.Debugging
             Debug.LogException(new Exception(message));
         }
 
-        static public void DevLog()
-        {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            int stackBackSteps = 3;
-            DevLog(stackBackSteps, ">".ToColor(GoodColors.Orange));
-#endif
-        }
 
         static public void NotImplementedLogWarning()
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            int stackBackSteps = 3;
+            int stackBackSteps = 1;
             DevLogWarning(stackBackSteps, "[NOT IMPLEMENTED!]".ToColor(GoodColors.Red));
+#endif
+        }
+
+        static public void DefaultGenericLog(params string[] messages)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            int stackBackSteps = 1;
+            string logPrefix = ">".ToColor(GoodColors.Orange);
+
+            if (messages is not null)
+            {
+                List<string> messages2 = new List<string>();
+
+                messages2.Add(logPrefix);
+                messages2.Add(" ");
+                messages2.AddRange(messages);
+
+                DevLog(stackBackSteps, context: null, messages2.ToArray());
+            }
+            else
+                DevLog(stackBackSteps, context: null, logPrefix);
+#endif
+        }
+
+        static public void DefaultButtonLog(params string[] messages)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            int stackBackSteps = 1;
+            string logPrefix = "#>".ToColor(GoodColors.Blue);
+
+            if (messages is not null)
+            {
+                List<string> messages2 = new List<string>();
+
+                messages2.Add(logPrefix);
+                messages2.Add(" ");
+                messages2.AddRange(messages);
+
+                DevLog(stackBackSteps, context: null, messages2.ToArray());
+            }
+            else
+                DevLog(stackBackSteps, context: null, logPrefix);
+#endif
+        }
+
+        static public void DefaultCallbackLog(params string[] messages)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            int stackBackSteps = 1;
+            string logPrefix = ">".ToColor(GoodColors.Pink);
+
+            if (messages is not null)
+            {
+                List<string> messages2 = new List<string>();
+
+                messages2.Add(logPrefix);
+                messages2.Add(" ");
+                messages2.AddRange(messages);
+
+                DevLog(stackBackSteps, context: null, messages2.ToArray());
+            }
+            else
+                DevLog(stackBackSteps, context: null, logPrefix);
+#endif
+        }
+
+        static public void DefaultSubscriptionLog(params string[] messages)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            int stackBackSteps = 1;
+            string logPrefix = "#>".ToColor(GoodColors.Pink);
+
+            if (messages is not null)
+            {
+                List<string> messages2 = new List<string>();
+
+                messages2.Add(logPrefix);
+                messages2.Add(" ");
+                messages2.AddRange(messages);
+
+                DevLog(stackBackSteps, context: null, messages2.ToArray());
+            }
+            else
+                DevLog(stackBackSteps, context: null, logPrefix);
 #endif
         }
 
@@ -59,8 +138,8 @@ namespace JovDK.Debugging
         static public void DevLog(params string[] messages)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            int stackBackSteps = 3;
-            DevLog(stackBackSteps, messages);
+            int stackBackSteps = 1;
+            DevLog(stackBackSteps, context: null, messages);
 #endif
         }
 
@@ -68,16 +147,65 @@ namespace JovDK.Debugging
         /// Logs a dev message in Unity Editor or Development builds.
         /// </summary>
         /// <param name="stackBackSteps">
-        /// Stack trace depth (default is 3).
+        /// Cumullative stack trace depth.
         /// </param>
         /// <param name="messages">
         /// Messages to log (concatenated without spacing).
         /// </param>
-        static public void DevLog(int stackBackSteps, params string[] messages)
+        static public void DevLog(
+            int stackBackSteps,
+            params string[] messages)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            stackBackSteps++;
+            DevLog(stackBackSteps, context: null, messages);
+#endif
+        }
+
+        /// <summary>
+        /// Logs a dev message in Unity Editor or Development builds.
+        /// </summary>
+        /// <param name="context">
+        /// Optional UnityEngine.Object used to associate the warning in the Console.
+        /// </param>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void DevLog(
+            UnityObject context = null,
+            params string[] messages)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            int stackBackSteps = 1;
+            DevLog(stackBackSteps, context, messages);
+#endif
+        }
+
+        /// <summary>
+        /// Logs a dev message in Unity Editor or Development builds.
+        /// </summary>
+        /// <param name="stackBackSteps">
+        /// Cumullative stack trace depth.
+        /// <param name="context">
+        /// Optional UnityEngine.Object used to associate the warning in the Console.
+        /// </param>
+        /// </param>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void DevLog(
+            int stackBackSteps,
+            UnityObject context = null,
+            params string[] messages)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            stackBackSteps++;
             string debugText = DevLogText(stackBackSteps, messages);
-            Debug.Log(debugText);
+
+            if (context is null || context == null)
+                Debug.Log(debugText);
+            else
+                Debug.Log(debugText, context);
 #endif
         }
 
@@ -90,8 +218,8 @@ namespace JovDK.Debugging
         static public void DevLogWarning(params string[] messages)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            int stackBackSteps = 3;
-            DevLogWarning(stackBackSteps, messages);
+            int stackBackSteps = 1;
+            DevLogWarning(stackBackSteps, context: null, messages);
 #endif
         }
 
@@ -99,16 +227,66 @@ namespace JovDK.Debugging
         /// Logs a warning in Unity Editor or Development builds.
         /// </summary>
         /// <param name="stackBackSteps">
-        /// Stack trace depth (default is 3).
+        /// Cumullative stack trace depth.
         /// </param>
         /// <param name="messages">
         /// Messages to log (concatenated without spacing).
         /// </param>
-        static public void DevLogWarning(int stackBackSteps, params string[] messages)
+        static public void DevLogWarning(
+            int stackBackSteps,
+            params string[] messages)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            stackBackSteps++;
+            DevLogWarning(stackBackSteps, context: null, messages);
+#endif
+        }
+
+        /// <summary>
+        /// Logs a warning in Unity Editor or Development builds.
+        /// </summary>
+        /// </param>
+        /// <param name="context">
+        /// Optional UnityEngine.Object used to associate the warning in the Console.
+        /// </param>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void DevLogWarning(
+            UnityObject context = null,
+            params string[] messages)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            int stackBackSteps = 1;
+            DevLogWarning(stackBackSteps, context, messages);
+#endif
+        }
+
+        /// <summary>
+        /// Logs a warning in Unity Editor or Development builds.
+        /// </summary>
+        /// <param name="stackBackSteps">
+        /// Cumullative stack trace depth.
+        /// </param>
+        /// <param name="context">
+        /// Optional UnityEngine.Object used to associate the warning in the Console.
+        /// </param>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void DevLogWarning(
+            int stackBackSteps,
+            UnityObject context = null,
+            params string[] messages)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            stackBackSteps++;
             string debugText = DevLogText(stackBackSteps, messages);
-            Debug.LogWarning(debugText);
+
+            if (context is null || context == null)
+                Debug.LogWarning(debugText);
+            else
+                Debug.LogWarning(debugText, context);
 #endif
         }
 
@@ -121,8 +299,8 @@ namespace JovDK.Debugging
         static public void DevLogError(params string[] messages)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            int stackBackSteps = 3;
-            DevLogError(stackBackSteps, messages);
+            int stackBackSteps = 1;
+            DevLogError(stackBackSteps, context: null, messages);
 #endif
         }
 
@@ -130,16 +308,64 @@ namespace JovDK.Debugging
         /// Logs an error in Unity Editor or Development builds.
         /// </summary>
         /// <param name="stackBackSteps">
-        /// Stack trace depth (default is 3).
+        /// Cumullative stack trace depth.
         /// </param>
         /// <param name="messages">
         /// Messages to log (concatenated without spacing).
         /// </param>
-        static public void DevLogError(int stackBackSteps, params string[] messages)
+        static public void DevLogError(
+            int stackBackSteps,
+            params string[] messages)
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            stackBackSteps++;
+            DevLogError(stackBackSteps, context: null, messages);
+#endif
+        }
+
+        /// <summary>
+        /// Logs an error in Unity Editor or Development builds.
+        /// </summary>
+        /// <param name="context">
+        /// Optional UnityEngine.Object used to associate the warning in the Console.
+        /// </param>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void DevLogError(
+            UnityObject context = null,
+            params string[] messages)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            int stackBackSteps = 1;
+            DevLogError(stackBackSteps, context: null, messages);
+#endif
+        }
+        /// <summary>
+        /// Logs an error in Unity Editor or Development builds.
+        /// </summary>
+        /// <param name="stackBackSteps">
+        /// Cumullative stack trace depth.
+        /// </param>
+        /// <param name="context">
+        /// Optional UnityEngine.Object used to associate the warning in the Console.
+        /// </param>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        static public void DevLogError(
+            int stackBackSteps,
+            UnityObject context = null,
+            params string[] messages)
+        {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            stackBackSteps++;
             string debugText = DevLogText(stackBackSteps, messages);
-            Debug.LogError(debugText);
+
+            if (context is null || context == null)
+                Debug.LogError(debugText);
+            else
+                Debug.LogError(debugText, context);
 #endif
         }
 
@@ -158,11 +384,21 @@ namespace JovDK.Debugging
             return DevLogText(stackBackSteps, messages);
         }
 
-        static string DevLogText(int stackBackSteps = 1, params string[] messages)
+        /// <summary>
+        /// Formats dev log messages.
+        /// </summary>
+        /// <param name="messages">
+        /// Messages to log (concatenated without spacing).
+        /// </param>
+        /// <returns>
+        /// Formatted debug message.
+        /// </returns>
+        static string DevLogText(int stackBackSteps = 0, params string[] messages)
         {
             StringBuilder stringBuilder = new StringBuilder();
+            stackBackSteps++;
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             stringBuilder.AppendWithColor("DEVLOG", GoodColors.Pink);
             stringBuilder.Append(" | ");
 #endif
@@ -214,7 +450,8 @@ namespace JovDK.Debugging
 
         static public void NDLog()
         {
-            NDLog(4, ">".ToColor(GoodColors.Orange));
+            int stackBackSteps = 1;
+            NDLog(stackBackSteps, ">".ToColor(GoodColors.Orange));
         }
 
         /// <summary>
@@ -225,7 +462,7 @@ namespace JovDK.Debugging
         /// </param>
         static public void NDLog(params string[] messages)
         {
-            int stackBackSteps = 3;
+            int stackBackSteps = 1;
             NDLog(stackBackSteps, messages);
         }
 
@@ -233,13 +470,14 @@ namespace JovDK.Debugging
         /// Logs a message even in non-development builds.
         /// </summary>
         /// <param name="stackBackSteps">
-        /// Stack trace depth (default is 3).
+        /// Cumullative stack trace depth.
         /// </param>
         /// <param name="messages">
         /// Messages to log (concatenated without spacing).
         /// </param>
-        static public void NDLog(int stackBackSteps = 3, params string[] messages)
+        static public void NDLog(int stackBackSteps, params string[] messages)
         {
+            stackBackSteps++;
             string debugText = NotDevDebugText(stackBackSteps, messages);
             Debug.Log(debugText);
         }
@@ -252,7 +490,7 @@ namespace JovDK.Debugging
         /// </param>
         static public void NDLogWarning(params string[] messages)
         {
-            int stackBackSteps = 3;
+            int stackBackSteps = 1;
             NDLogWarning(stackBackSteps, messages);
         }
 
@@ -260,13 +498,14 @@ namespace JovDK.Debugging
         /// Logs a warning even in non-development builds.
         /// </summary>
         /// <param name="stackBackSteps">
-        /// Stack trace depth (default is 3).
+        /// Cumullative stack trace depth.
         /// </param>
         /// <param name="messages">
         /// Messages to log (concatenated without spacing).
         /// </param>
-        static public void NDLogWarning(int stackBackSteps = 3, params string[] messages)
+        static public void NDLogWarning(int stackBackSteps, params string[] messages)
         {
+            stackBackSteps++;
             string debugText = NotDevDebugText(stackBackSteps, messages);
             Debug.LogWarning(debugText);
         }
@@ -279,7 +518,7 @@ namespace JovDK.Debugging
         /// </param>
         static public void NDLogError(params string[] messages)
         {
-            int stackBackSteps = 3;
+            int stackBackSteps = 1;
             NDLogError(stackBackSteps, messages);
         }
 
@@ -287,13 +526,14 @@ namespace JovDK.Debugging
         /// Logs an error even in non-development builds.
         /// </summary>
         /// <param name="stackBackSteps">
-        /// Stack trace depth (default is 3).
+        /// Cumullative stack trace depth.
         /// </param>
         /// <param name="messages">
         /// Messages to log (concatenated without spacing).
         /// </param>
-        static public void NDLogError(int stackBackSteps = 3, params string[] messages)
+        static public void NDLogError(int stackBackSteps, params string[] messages)
         {
+            stackBackSteps++;
             string debugText = NotDevDebugText(stackBackSteps, messages);
             Debug.LogError(debugText);
         }
@@ -310,9 +550,10 @@ namespace JovDK.Debugging
         /// <returns>
         /// Formatted debug message.
         /// </returns>
-        static string NotDevDebugText(int stackBackSteps = 1, params string[] messages)
+        static string NotDevDebugText(int stackBackSteps = 0, params string[] messages)
         {
             StringBuilder stringBuilder = new StringBuilder();
+            stackBackSteps++;
 
             stringBuilder.AppendWithColor("NDLOG", "#83f");
             stringBuilder.Append(" | ");

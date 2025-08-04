@@ -166,7 +166,7 @@ namespace PackageName.MajorContext.MinorContext
 
         // void OnIdkPropertyUpdate(int newValue)
         // {
-        //     // DebugExtension.DefaultSubscriptionLog("#> ".ToColor(GoodColors.Pink));
+        //     // DebugExtension.DefaultSubscriptionLog();
         //     // DebugExtension.DefaultSubscriptionLog(
         //     //     "newValue = ", newValue.SerializeObjectToJSON(), "\n",
         //     //     "");

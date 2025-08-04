@@ -28,6 +28,7 @@ namespace JovDK.Audio.Service
     public class AudioConfig
     {
         public string Id = "UNDEFINED";
+        public string CategoryId = AudioCategoriesKeys.GamePlaySfx;
         public AudioClip[] AudioClipsVariationsList;
         public float VolumeFactor = 1f;
         public float PitchFactor = 1f;
@@ -35,10 +36,34 @@ namespace JovDK.Audio.Service
         [HideInInspector] public AudioSource[] AudioSourceIntances;
     }
 
+    public class AudioTaskOptions
+    {
+        public float PitchMultiplier = 1f;
+        public float? OverrideVolumeMultiplier = null;
+        public int? IgnoreRandomIndex = null;
+        public int? ForceRandomIndex = null;
+    }
+
     public class AudioTaskResult
     {
         public bool Success = false;
         public float AudioMaxDuration = -1f;
         public int RandomVariationIndex = -1;
+        AudioSource _audioSourceResult = null;
+        public float DefaultAudioVolumeFactor = 1f;
+        public AudioSource AudioSourceResult { get { return _audioSourceResult; } }
+
+        public void SetAudioSourceResult(AudioSource audioSource)
+        {
+            _audioSourceResult = audioSource;
+        }
+    }
+
+    public static class AudioCategoriesKeys
+    {
+        public const string MenuUiSfx = "menu-ui-sfx-01";
+        public const string MenuVideoAudio = "menu-video-audio-01";
+        public const string GamePlaySfx = "gameplay-sfx-01";
+        public const string GamePlayMusic = "gameplay-music-01";
     }
 }

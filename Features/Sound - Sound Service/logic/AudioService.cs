@@ -11,6 +11,7 @@ using UnityRandom = UnityEngine.Random;
 
 // third
 using DG.Tweening;
+using R3;
 using TMPro;
 
 // from company
@@ -34,8 +35,11 @@ namespace JovDK.Audio.Service
 
         [Space(5), Header("[ State ]"), Space(10)]
 
-        // [SerializeField] bool _state;
         Dictionary<string, AudioConfig> _currentAudiosById = new Dictionary<string, AudioConfig>();
+        ReactiveProperty<Dictionary<string, float>> _volumeByCategoryId = new ReactiveProperty<Dictionary<string, float>>(new Dictionary<string, float>());
+        public ReactiveProperty<Dictionary<string, float>> VolumeByCategoryId { get { return _volumeByCategoryId; } }
+        ReactiveProperty<Dictionary<string, bool>> _muteByCategoryId = new ReactiveProperty<Dictionary<string, bool>>(new Dictionary<string, bool>());
+        public ReactiveProperty<Dictionary<string, bool>> MuteByCategoryId { get { return _muteByCategoryId; } }
 
 
         // [Space(5), Header("[ Parts ]"), Space(10)]
@@ -94,7 +98,7 @@ namespace JovDK.Audio.Service
                                 {
                                     AudioSource audioSourceIntance = gameObject.AddComponent<AudioSource>();
                                     audioSourceIntance.clip = audioClipVariation;
-                                    audioSourceIntance.volume = audioConfig.VolumeFactor;
+                                    audioSourceIntance.volume = audioConfig.VolumeFactor * GetGategoryVolumeFactor(audioConfig.CategoryId);
                                     audioSourceIntance.pitch = audioConfig.PitchFactor;
                                     audioSourceIntance.spatialBlend = audioConfig.Is2D ? 0f : 1f;
 
@@ -155,14 +159,101 @@ namespace JovDK.Audio.Service
             return value;
         }
 
+        public void SetGategoryVolumeFactor(string categoryId, float volumeFactor)
+        {
+            // DebugExtension.DefaultGenericLog(
+            //     "categoryId = ", categoryId.SerializeObjectToJSON(), "\n",
+            //     "volumeFactor = ", volumeFactor.ToString(), "\n",
+            //     "");
+
+            _volumeByCategoryId.Value[categoryId] = volumeFactor;
+            _volumeByCategoryId.ForceNotify();
+        }
+
+        public float GetGategoryVolumeFactor(string categoryId)
+        {
+            float value = 1f;
+
+            bool isAlreadyRegistered = _volumeByCategoryId.Value.ContainsKey(categoryId);
+
+            if (isAlreadyRegistered)
+                value = _volumeByCategoryId.Value[categoryId];
+            else
+            {
+#if UNITY_EDITOR
+                // DebugExtension.DevLogWarning(
+                //     "$> ".ToColor(GoodColors.Red),
+                //     "categoryId was not found!".ToColor(GoodColors.Pink), "\n",
+                //     "categoryId = ", categoryId.SerializeObjectToJSON(), "\n",
+                //     "");
+#endif
+            }
+
+            if (GetGategoryMute(categoryId))
+                value = 0f;
+
+            return value;
+        }
+
+        public void SetGategoryMute(string categoryId, bool isMuted)
+        {
+            DebugExtension.DefaultGenericLog(
+                "categoryId = ", categoryId.SerializeObjectToJSON(), "\n",
+                "isMuted = ", isMuted.ToString(), "\n",
+                "");
+
+            _muteByCategoryId.Value[categoryId] = isMuted;
+            _muteByCategoryId.ForceNotify();
+        }
+
+        public bool GetGategoryMute(string categoryId)
+        {
+            bool value = false;
+
+            bool isAlreadyRegistered = _muteByCategoryId.Value.ContainsKey(categoryId);
+
+            if (isAlreadyRegistered)
+                value = _muteByCategoryId.Value[categoryId];
+            else
+            {
+#if UNITY_EDITOR
+                // DebugExtension.DevLogWarning(
+                //     "$> ".ToColor(GoodColors.Red),
+                //     "categoryId was not found!".ToColor(GoodColors.Pink), "\n",
+                //     "categoryId = ", categoryId.SerializeObjectToJSON(), "\n",
+                //     "");
+#endif
+            }
+
+            return value;
+        }
+
         public AudioTaskResult _INTERNAL_PlaySfx(
             string sfxId,
             float pitchMultiplier = 1f,
             int? ignoreRandomIndex = null,
             int? forceRandomIndex = null)
         {
+            AudioTaskOptions audioTaskOptions = new AudioTaskOptions()
+            {
+                PitchMultiplier = pitchMultiplier,
+                IgnoreRandomIndex = ignoreRandomIndex,
+                ForceRandomIndex = forceRandomIndex,
+            };
+
+            return _INTERNAL_PlaySfx(sfxId, audioTaskOptions);
+        }
+
+        public AudioTaskResult _INTERNAL_PlaySfx(
+            string sfxId,
+            AudioTaskOptions audioTaskOptions)
+        {
             AudioTaskResult result = new AudioTaskResult();
             result.Success = false;
+
+            float pitchMultiplier = audioTaskOptions.PitchMultiplier;
+            int? ignoreRandomIndex = audioTaskOptions.IgnoreRandomIndex;
+            int? forceRandomIndex = audioTaskOptions.ForceRandomIndex;
 
             bool isAlreadyRegistered = IsAudioRegistered(sfxId, out AudioConfig audioConfig);
 
@@ -196,9 +287,19 @@ namespace JovDK.Audio.Service
                 AudioSource audioSourceToPlay = audioConfig.AudioSourceIntances[randomIndex];
                 audioSourceToPlay.DoIfNotNull(() =>
                 {
+                    result.SetAudioSourceResult(audioSourceToPlay);
+                    result.DefaultAudioVolumeFactor = audioConfig.VolumeFactor;
+
+                    float finalVolumeFactor =
+                        audioTaskOptions.OverrideVolumeMultiplier == null
+                        ?
+                        GetGategoryVolumeFactor(audioConfig.CategoryId)
+                        :
+                        (float)audioTaskOptions.OverrideVolumeMultiplier;
+
                     // TODO: REVIEW THIS!
                     audioSourceToPlay.pitch = audioConfig.PitchFactor * pitchMultiplier;
-                    audioSourceToPlay.volume = audioConfig.VolumeFactor;
+                    audioSourceToPlay.volume = audioConfig.VolumeFactor * finalVolumeFactor;
                     audioSourceToPlay.Play();
 
                     result.Success = true;
@@ -230,9 +331,12 @@ namespace JovDK.Audio.Service
                 {
                     audioSourceToPlay.DoIfNotNull(() =>
                     {
+                        result.SetAudioSourceResult(audioSourceToPlay);
+                        result.DefaultAudioVolumeFactor = audioConfig.VolumeFactor;
+
                         // TODO: REVIEW THIS!
                         audioSourceToPlay.pitch = audioConfig.PitchFactor * pitchMultiplier;
-                        audioSourceToPlay.volume = audioConfig.VolumeFactor;
+                        audioSourceToPlay.volume = audioConfig.VolumeFactor * GetGategoryVolumeFactor(audioConfig.CategoryId);
                         audioSourceToPlay.Stop();
 
                         result.Success = true;
@@ -256,6 +360,24 @@ namespace JovDK.Audio.Service
             int? ignoreRandomIndex = null,
             int? forceRandomIndex = null)
         {
+            AudioTaskOptions audioTaskOptions = new AudioTaskOptions()
+            {
+                PitchMultiplier = pitchMultiplier,
+                IgnoreRandomIndex = ignoreRandomIndex,
+                ForceRandomIndex = forceRandomIndex,
+            };
+
+            return _INTERNAL_PlayOneShotSfx(sfxId, audioTaskOptions);
+        }
+
+        public AudioTaskResult _INTERNAL_PlayOneShotSfx(
+            string sfxId,
+            AudioTaskOptions audioTaskOptions)
+        {
+            float pitchMultiplier = audioTaskOptions.PitchMultiplier;
+            int? ignoreRandomIndex = audioTaskOptions.IgnoreRandomIndex;
+            int? forceRandomIndex = audioTaskOptions.ForceRandomIndex;
+
             AudioTaskResult result = new AudioTaskResult();
             result.Success = false;
 
@@ -288,16 +410,26 @@ namespace JovDK.Audio.Service
                         randomIndex = (int)forceRandomIndex;
                 }
 
-                AudioSource audioSourceToPlay = audioConfig.AudioSourceIntances[randomIndex];
-                audioSourceToPlay.DoIfNotNull(() =>
+                AudioSource baseAudioSource = audioConfig.AudioSourceIntances[randomIndex];
+                baseAudioSource.DoIfNotNull(() =>
                 {
+                    result.SetAudioSourceResult(baseAudioSource);
+                    result.DefaultAudioVolumeFactor = audioConfig.VolumeFactor;
+
+                    float finalVolumeFactor =
+                        audioTaskOptions.OverrideVolumeMultiplier == null
+                        ?
+                        GetGategoryVolumeFactor(audioConfig.CategoryId)
+                        :
+                        (float)audioTaskOptions.OverrideVolumeMultiplier;
+
                     // TODO: REVIEW THIS!
-                    audioSourceToPlay.pitch = audioConfig.PitchFactor * pitchMultiplier;
-                    audioSourceToPlay.volume = audioConfig.VolumeFactor;
-                    audioSourceToPlay.PlayOneShot(audioSourceToPlay.clip);
+                    baseAudioSource.pitch = audioConfig.PitchFactor * pitchMultiplier;
+                    baseAudioSource.volume = audioConfig.VolumeFactor * finalVolumeFactor;
+                    baseAudioSource.PlayOneShot(baseAudioSource.clip);
 
                     result.Success = true;
-                    result.AudioMaxDuration = audioSourceToPlay.clip.length;
+                    result.AudioMaxDuration = baseAudioSource.clip.length;
                     result.RandomVariationIndex = randomIndex;
                 });
             }
@@ -323,10 +455,25 @@ namespace JovDK.Audio.Service
             int? ignoreRandomIndex = null,
             int? forceRandomIndex = null)
         {
+            AudioTaskOptions audioTaskOptions = new AudioTaskOptions()
+            {
+                PitchMultiplier = pitchMultiplier,
+                IgnoreRandomIndex = ignoreRandomIndex,
+                ForceRandomIndex = forceRandomIndex,
+            };
+
+            return PlaySfx(baseAudioService, sfxId, audioTaskOptions);
+        }
+
+        public static AudioTaskResult PlaySfx(
+            this AudioService baseAudioService,
+            string sfxId,
+            AudioTaskOptions audioTaskOptions)
+        {
             AudioTaskResult result = new AudioTaskResult();
             result.Success = false;
 
-            baseAudioService.DoIfNotNull(() => result = baseAudioService._INTERNAL_PlaySfx(sfxId, pitchMultiplier));
+            baseAudioService.DoIfNotNull(() => result = baseAudioService._INTERNAL_PlaySfx(sfxId, audioTaskOptions));
 
             return result;
         }
@@ -350,10 +497,27 @@ namespace JovDK.Audio.Service
         {
             // DebugExtension.DevLog("sfxId = ", sfxId.SerializeObjectToJSON());
 
+            AudioTaskOptions audioTaskOptions = new AudioTaskOptions()
+            {
+                PitchMultiplier = pitchMultiplier,
+                IgnoreRandomIndex = ignoreRandomIndex,
+                ForceRandomIndex = forceRandomIndex,
+            };
+
+            return PlayOneShotSfx(baseAudioService, sfxId, audioTaskOptions);
+        }
+
+        public static AudioTaskResult PlayOneShotSfx(
+            this AudioService baseAudioService,
+            string sfxId,
+            AudioTaskOptions audioTaskOptions)
+        {
+            // DebugExtension.DevLog("sfxId = ", sfxId.SerializeObjectToJSON());
+
             AudioTaskResult result = new AudioTaskResult();
             result.Success = false;
 
-            baseAudioService.DoIfNotNull(() => result = baseAudioService._INTERNAL_PlayOneShotSfx(sfxId, pitchMultiplier));
+            baseAudioService.DoIfNotNull(() => result = baseAudioService._INTERNAL_PlayOneShotSfx(sfxId, audioTaskOptions));
 
             return result;
         }

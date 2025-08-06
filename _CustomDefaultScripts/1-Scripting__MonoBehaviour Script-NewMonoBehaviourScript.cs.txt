@@ -36,11 +36,17 @@ namespace PackageName.MajorContext.MinorContext
 
         // [SerializeField] bool _state1;
         // ReactiveProperty<bool> _state2 = new ReactiveProperty<bool>(false);
-        // public ReactiveProperty<bool> State { get => _state2; }
+        // public ReactiveProperty<bool> State => _state2;
         // Tween _curretBackgroundTween = null;
         // public Func<bool> State3Getter = null;
         // public Action OnIdkCallback = null;
         // public Action<bool> OnIdkCallback = null;
+        // List<ISubscription> _onStartSubscriptions = new List<ISubscription>();
+        // List<ISubscription> _externalOnStartSubscriptions = new List<ISubscription>();
+        // public List<ISubscription> ExternalOnStartSubscriptions => _externalOnStartSubscriptions;
+        // List<ISubscription> _onEnableSubscriptions = new List<ISubscription>();
+        // List<ISubscription> _externalOnEnableSubscriptions = new List<ISubscription>();
+        // public List<ISubscription> ExternalOnEnableSubscriptions => _externalOnEnableSubscriptions;
 
 
         // [Space(5), Header("[ Parts ]"), Space(10)]
@@ -130,46 +136,62 @@ namespace PackageName.MajorContext.MinorContext
         // // inverse of UnsubscribeAllListenersOnDestroy
         // void SubscribeAllListenersOnStart()
         // {
-        //     // this scripts -> other script
-        //     // ! destroy
-        //     // _randomDataBus.IdkProperty.AsObservable().TakeUntilDestroy(gameObject).Subscribe(OnIdkPropertyUpdate);
+        //     // ! REVIEW THIS
+        //     // ! start / destroy
+
+        //     // _randomDataBus.DoIfNotNull(() =>
+        //     // {
+        //     //     // this scripts -> other script
+        //     //     // _randomDataBus.IdkProperty.AsObservable().TakeUntilDestroy(gameObject).Subscribe(OnIdkPropertyUpdate);
+        //     //     _onStartSubscriptions.Register(
+        //     //         () => _randomDataBus.OnRandonActionCallback += OnRandonAction,
+        //     //         () => _randomDataBus.OnRandonActionCallback += OnRandonAction);
+        //     //     _onStartSubscriptions.RegisterFrom(_randomDataBus.RandonProperty, OnRandonPropertyUpdate);
+        //     // });
         // }
 
         // // awake/start <-> DESTROY
         // // inverse of SubscribeAllListenersOnStart
         // void UnsubscribeAllListenersOnDestroy()
         // {
-        //     // this scripts -> other script
-        //     // ! destroy
         //     // ! REVIEW THIS
-        //     // IdkProperty <- OnIdkPropertyUpdate is unsubscribed on destroy automatically
+        //     // ! start / destroy
+
+        //     // // this scripts -> other script
+        //     // _onStartSubscriptions.UnsubscribeAllAndClear();
+        //     // // this scripts -> external
+        //     // _externalOnStartSubscriptions.UnsubscribeAllAndClear();
         // }
 
         // // ENABLE <-> disable
         // // inverse of UnsubscribeAllListenersOnDisable
         // void SubscribeAllListenersOnEnable()
         // {
-        //     // this scripts -> other script
-        //     // ! disable
-        //     // _randomDataBus.IdkProperty.AsObservable().TakeUntilDisable(gameObject).Subscribe(OnIdkPropertyUpdate);
+        //     // ! REVIEW THIS
+        //     // ! enable / disable
+
+        //     // _randomDataBus.DoIfNotNull(() =>
+        //     // {
+        //     //     // this scripts -> other script
+        //     //     // _randomDataBus.IdkProperty.AsObservable().TakeUntilDestroy(gameObject).Subscribe(OnIdkPropertyUpdate);
+        //     //     _onEnableSubscriptions.Register(
+        //     //         () => _randomDataBus.OnRandonActionCallback += OnRandonAction,
+        //     //         () => _randomDataBus.OnRandonActionCallback += OnRandonAction);
+        //     //     _onEnableSubscriptions.RegisterFrom(_randomDataBus.RandonProperty, OnRandonPropertyUpdate);
+        //     // });
         // }
 
         // // enable <-> DISABLE
         // // inverse of SubscribeAllListenersOnEnable
         // void UnsubscribeAllListenersOnDisable()
         // {
-        //     // this scripts -> other script
-        //     // ! disable
         //     // ! REVIEW THIS
-        //     // IdkProperty <- OnIdkPropertyUpdate is unsubscribed on disable automatically
-        // }
+        //     // ! enable / disable
 
-        // void OnIdkPropertyUpdate(int newValue)
-        // {
-        //     // DebugExtension.DefaultSubscriptionLog();
-        //     // DebugExtension.DefaultSubscriptionLog(
-        //     //     "newValue = ", newValue.SerializeObjectToJSON(), "\n",
-        //     //     "");
+        //     // // this scripts -> other script
+        //     // _onEnableSubscriptions.UnsubscribeAllAndClear();
+        //     // // this scripts -> external
+        //     // _externalOnEnableSubscriptions.UnsubscribeAllAndClear();
         // }
         #endregion Subscriptions
 

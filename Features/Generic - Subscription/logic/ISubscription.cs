@@ -60,6 +60,35 @@ namespace JovDK.Core.Subscription
             // baseSubscriptionsList.Add(subscription);
         }
 
+        public delegate T2 ConvertionGetter<T1, T2>(T1 value);
+        public delegate T DefaultValueGetter<T>();
+
+        public static ReactiveProperty<T2> RegisterFromConvertion<T1, T2>(
+            this List<ISubscription> baseSubscriptionsList,
+            ReactiveProperty<T1> reactiveProperty,
+            ConvertionGetter<T1, T2> convertionGetter,
+            DefaultValueGetter<T2> defaultValueGetter = null)
+        {
+            ReactiveProperty<T2> t2 = new ReactiveProperty<T2>(default);
+
+            Action<T1> callback = (t1Value) =>
+            {
+                T2 t2Value = default;
+
+                if (defaultValueGetter is not null)
+                    t2Value = defaultValueGetter();
+
+                if (t1Value is not null && t1Value != null)
+                    t2Value = convertionGetter(t1Value);
+
+                t2.Value = t2Value;
+            };
+
+            baseSubscriptionsList.RegisterFrom(reactiveProperty, callback);
+
+            return t2;
+        }
+
         public static void RegisterFromInputFieldValue(
             this List<ISubscription> baseSubscriptionsList,
             TMP_InputField inputField,

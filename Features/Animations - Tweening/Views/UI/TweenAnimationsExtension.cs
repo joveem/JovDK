@@ -114,7 +114,10 @@ namespace JovDK.Animations.Tweening
             });
         }
 
-        public static void TryToPlayDefaultShowAnimation(this Transform baseTransform, Ease? overrideEase = null)
+        public static void TryToPlayDefaultShowAnimation(
+            this Transform baseTransform,
+            Ease? overrideEase = null,
+            Action onCompleteCallback = null)
         {
             baseTransform.DoIfNotNull(() =>
             {
@@ -122,11 +125,20 @@ namespace JovDK.Animations.Tweening
                 baseTransform.DOKill();
                 baseTransform.gameObject.SetActive(true);
                 // play animation
-                baseTransform.DOScale(1, _animationsDuration).SetEase(overrideEase == null ? _openAnimationEase : (Ease)overrideEase);
+                Tween tween = baseTransform.DOScale(1, _animationsDuration).SetEase(overrideEase == null ? _openAnimationEase : (Ease)overrideEase);
+
+                tween.onComplete += () =>
+                {
+                    // baseTransform.gameObject.SetActive(false);
+                    onCompleteCallback?.Invoke();
+                };
             });
         }
 
-        public static void TryToPlayDefaultHideAnimation(this Transform baseTransform, Ease? overrideEase = null)
+        public static void TryToPlayDefaultHideAnimation(
+            this Transform baseTransform,
+            Ease? overrideEase = null,
+            Action onCompleteCallback = null)
         {
             baseTransform.DoIfNotNull(() =>
             {
@@ -137,7 +149,11 @@ namespace JovDK.Animations.Tweening
                     // play animation
                     Tween tween = baseTransform.DOScale(0, _animationsDuration).SetEase(overrideEase == null ? _closeAnimationEase : (Ease)overrideEase);
                     // disable object after animation end
-                    tween.onComplete += () => baseTransform.gameObject.SetActive(false);
+                    tween.onComplete += () =>
+                    {
+                        baseTransform.gameObject.SetActive(false);
+                        onCompleteCallback?.Invoke();
+                    };
                 }
             });
         }

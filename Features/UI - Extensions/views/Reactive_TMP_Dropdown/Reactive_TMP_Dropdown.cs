@@ -149,6 +149,20 @@ namespace JovDK.UI.Extensions.Reactive
         {
             // DebugExtension.DefaultSubscriptionLog("value = " + value.ToString());
 
+            // if (_currentPossibleOptionsByValue == null || _currentPossibleOptionsByValue.Count == 0)
+            if (_currentPossibleOptionsByValue is null || _currentPossibleOptionsByValue == null || _currentPossibleOptionsByValue.Equals(default) || value is null)
+            {
+                DebugExtension.DevLogWarning(
+                    "$> ".ToColor(GoodColors.Red) +
+                    "_currentPossibleOptionsByValue or value is null or default!" + "\n" +
+                    "_currentPossibleOptionsByValue = " + _currentPossibleOptionsByValue.SerializeObjectToJSON(true) + "\n" +
+                    "value = " + value.SerializeObjectToJSON(true) + "\n" +
+                    "_previousValue = " + _previousValue.SerializeObjectToJSON(true) + "\n" +
+                    "");
+
+                return;
+            }
+
             bool isAlreadyRegistered = _currentPossibleOptionsByValue.ContainsKey(value);
 
             if (isAlreadyRegistered)

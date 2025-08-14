@@ -35,6 +35,7 @@ namespace JovDK.UI.Generic
         [Space(5), Header("[ State ]"), Space(10)]
 
         protected bool _isShowingPanel = false;
+        public bool IsShowingPanel => _isShowingPanel;
         protected bool _hasShowAndHideTransitionEnd = true;
         Tween _curretBackgroundTween = null;
         Tween _movingContentTween = null;

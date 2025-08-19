@@ -39,6 +39,21 @@ namespace JovDK.Animations.Tweening
         public static void TryToApplyViewState(
             this Component baseComponent,
             bool hasToShow,
+            Ease? overrideShowEase = null,
+            Ease? overrideHideEase = null)
+        {
+            baseComponent.DoIfNotNull(() =>
+            {
+                baseComponent.transform.TryToApplyViewState(
+                    hasToShow,
+                    overrideShowEase,
+                    overrideHideEase);
+            });
+        }
+
+        public static void TryToApplyViewState(
+            this Component baseComponent,
+            bool hasToShow,
             bool applyInstantaneously,
             Ease? overrideShowEase = null,
             Ease? overrideHideEase = null)

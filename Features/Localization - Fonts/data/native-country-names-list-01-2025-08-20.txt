@@ -1,0 +1,247 @@
+### START ###
+Brasil
+Portugal
+United States
+Canada
+United Kingdom
+Australia
+México
+Espanya
+Italia
+भारत
+Argentina
+Estado Plurinacional de Bolivia
+Chile
+Colombia
+Ecuador
+Guyana
+Paraguay
+Perú
+Suriname
+Uruguay
+República Bolivariana de Venezuela
+Falkland Islands / Islas Malvinas
+Österreich
+Belgique
+България
+Hrvatska
+Κύπρος / Kıbrıs
+Česká republika
+Danmark
+Eesti
+Suomi
+France
+Deutschland
+Ελλάδα
+Magyarország
+Éire
+Latvija
+Lietuva
+Lëtzebuerg
+Malta
+Nederland
+Polska
+România
+Slovensko
+Slovenija
+Sverige
+Ascension Island
+Andorra
+الإمارات العربية المتحدة
+افغانستان
+Antigua and Barbuda
+Anguilla
+American Samoa
+Barbados
+Bermuda
+The Bahamas
+Dominica
+República Dominicana
+Grenada
+Guam
+Jamaica
+Saint Kitts and Nevis
+Cayman Islands
+Saint Lucia
+Northern Mariana Islands
+Montserrat
+Puerto Rico
+Sint Maarten
+Turks and Caicos Islands
+Trinidad & Tobago
+Saint Vincent and the Grenadines
+British Virgin Islands
+U.S. Virgin Islands
+Shqipëri
+Հայաստան
+Angola
+Cocos (Keeling) Islands
+Christmas Island
+Aruba
+Åland
+Azərbaycan
+Bosna i Hercegovina
+বাংলাদেশ
+Burkina Faso
+البحرين
+Burundi
+Bénin
+Guadeloupe
+Saint-Barthélemy
+Saint-Martin
+Brunei
+Curaçao
+Caribisch Nederland
+འབྲུག་ཡུལ་ / Bhutan
+Botswana
+Беларусь
+Belize
+République démocratique du Congo
+République centrafricaine
+République du Congo
+Svizra
+Côte d’Ivoire
+Cook Islands
+Cameroun
+རྒྱ་ནག
+Costa Rica
+Cuba
+Cabo Verde
+Djibouti
+الجزائر
+مصر
+المغرب
+الصحراء الغربية / Western Sahara
+ኤርትራ
+ኢትዮጵያ
+Fiji
+Federated States of Micronesia
+Føroyar
+Gabon
+Guernsey
+Isle of Man
+Jersey
+საქართველო
+Guyane
+Ghana
+Gibraltar
+Kalaallit Nunaat
+The Gambia
+Guinée
+Guinea Ecuatorial
+Guatemala
+Guiné-Bissau
+中国香港特别行政区
+Honduras
+Haïti
+Indonesia
+ישראל
+British Indian Ocean Territory
+العراق
+ایران
+Ísland
+Città del Vaticano
+الأردن
+日本
+Kenya
+Кыргызстан
+កម្ពុជា
+Kiribati
+Komori / Comores
+조선민주주의인민공화국
+대한민국
+الكويت
+Россия
+Қазақстан
+ປະເທດລາວ
+لبنان
+Liechtenstein
+ශ්‍රී ලංකාව
+Liberia
+Lesotho
+ليبيا
+Monaco
+Republica Moldova
+Црна Гора
+Madagasikara / Madagascar
+Marshall Islands
+Македонија
+Mali
+မြန်မာ
+Монгол
+中国澳门特别行政区
+Martinique
+موريتانيا / Mauritanie
+Mauritius / Maurice
+ދިވެހި / Maldives
+Malawi
+Malaysia
+Moçambique
+Namibia
+Nouvelle-Calédonie
+Niger
+Norfolk Island
+Najeriya
+Nicaragua
+Norge
+Svalbard og Jan Mayen
+नेपाल
+Nauru
+Niue
+New Zealand
+عُمان
+Panamá
+Polynésie française
+Papua Niugini / Papua New Guinea
+Pilipinas
+پاکستان
+Saint-Pierre-et-Miquelon
+دولة فلسطين / State of Palestine
+Belau / Palau
+قطر
+La Réunion
+Mayotte
+Србија
+Rwanda
+المملكة العربية السعودية
+Solomon Islands
+Sesel / Seychelles
+السودان / Sudan
+新加坡
+Saint Helena, Ascension and Tristan da Cunha
+Tristan da Cunha
+Sierra Leone
+San Marino
+Sénégal
+Soomaaliya
+South Sudan
+São Tomé e Príncipe
+El Salvador
+سوريا
+Eswatini
+Tchad
+Togo
+ไทย
+Тоҷикистон
+Tokelau
+Timor-Leste
+Türkmenistan
+تونس
+Tonga
+Türkiye
+Tuvalu
+台湾
+Tanzania
+Україна
+Uganda
+Oʻzbekiston
+Việt Nam
+Vanuatu
+Wallis-et-Futuna
+Sāmoa
+Kosovë
+اليمن
+South Africa
+Zambia
+Zimbabwe
+### END ###

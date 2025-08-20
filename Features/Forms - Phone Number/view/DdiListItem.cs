@@ -45,6 +45,13 @@ namespace JovDK.Forms.PhoneNumber
         bool _hasLoadedFlag = false;
         bool _isLoadingFlag = false;
         bool _isFirstLoading = true;
+        bool _hasReachedStartBeginning = false;
+        bool _hasReachedStartEnd = false;
+        // name font loading
+        bool _hasLoadedName = false;
+        bool _isLoadingName = false;
+        string _loadingCountryNameIsoCode = null;
+        Coroutine _loadCountryNameCoroutine = null;
         // public Action OnIdkCallback = null;
         // public Action<bool> OnIdkCallback = null;
         // List<ISubscription> _onStartSubscriptions = new List<ISubscription>();
@@ -53,6 +60,7 @@ namespace JovDK.Forms.PhoneNumber
         // List<ISubscription> _onEnableSubscriptions = new List<ISubscription>();
         // List<ISubscription> _externalOnEnableSubscriptions = new List<ISubscription>();
         // public List<ISubscription> ExternalOnEnableSubscriptions => _externalOnEnableSubscriptions;
+        // callbacks
         public Action<string> OnClickCallback = null;
 
         [Space(5), Header("[ Parts ]"), Space(10)]
@@ -91,9 +99,16 @@ namespace JovDK.Forms.PhoneNumber
 
         void Start()
         {
+            _hasReachedStartBeginning = true;
+
             // // TODO: review this!
             // SubscribeAllListenersOnStart();
             SetupButtons();
+
+            HandleCountryFlagLoading();
+            RefreshViewState(instantaneously: true);
+
+            _hasReachedStartEnd = true;
         }
 
         // void FixedUpdate()
@@ -147,8 +162,11 @@ namespace JovDK.Forms.PhoneNumber
         {
             _countryIsoCode = isoCode;
 
-            HandleCountryFlagLoading();
-            RefreshViewState();
+            if (_hasReachedStartEnd)
+            {
+                HandleCountryFlagLoading();
+                RefreshViewState();
+            }
         }
 
         void HandleCountryFlagLoading()
@@ -212,11 +230,36 @@ namespace JovDK.Forms.PhoneNumber
 
         void RefreshTextsValues()
         {
-            string countryNameValue = CountryNamesUtils.GetCountryNameByIsoCode(_countryIsoCode, debugIfNull: !_isFirstLoading);
             string ddiTextValue = PhoneNumberFormsUtils.GetDdiTextByIsoCode(_countryIsoCode);
-
-            _countryNameText.SetTextIfNotNull(countryNameValue);
             _ddiText.SetTextIfNotNull(ddiTextValue);
+
+            HandleCountryNameTextLoading();
+        }
+
+        void HandleCountryNameTextLoading()
+        {
+            if (!_hasLoadedName && !_isLoadingName)
+                _countryNameText.SetTextIfNotNull("...");
+
+            if (_countryIsoCode != null && _countryIsoCode != _loadingCountryNameIsoCode)
+            {
+                _isLoadingName = true;
+                _loadingCountryNameIsoCode = _countryIsoCode;
+
+                if (_loadCountryNameCoroutine != null)
+                    StopCoroutine(_loadCountryNameCoroutine);
+
+                _loadCountryNameCoroutine = StartCoroutine(LoadCountryNameCoroutine());
+            }
+        }
+
+        IEnumerator LoadCountryNameCoroutine()
+        {
+            yield return null;
+
+            string countryNameValue = CountryNamesUtils.GetCountryNameByIsoCode(_countryIsoCode, debugIfNull: !_isFirstLoading);
+            _countryNameText.SetTextIfNotNull(countryNameValue);
+            _hasLoadedName = true;
         }
         #endregion View
     }

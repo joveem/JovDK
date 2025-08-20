@@ -297,12 +297,23 @@ namespace JovDK.Forms.PhoneNumber
                 HashSet<string> supportedRegions = PhoneNumberUtil.GetInstance().GetSupportedRegions();
                 sortedRegions.UnionWith(supportedRegions);
 
+                // StringBuilder allCountriesNames = new StringBuilder();
+
                 foreach (var regionIso in sortedRegions)
                 {
-                    var ddiListItem = Instantiate(_ddiListItemPrefab, baseContainer);
-                    ddiListItem.SetCountryIsoCode(regionIso);
-                    ddiListItem.OnClickCallback = OnItemClick;
+                    DdiListItem instance = Instantiate(_ddiListItemPrefab, baseContainer);
+                    instance.SetCountryIsoCode(regionIso);
+                    instance.OnClickCallback = OnItemClick;
+
+                    // allCountriesNames.AppendLine(CountryNamesUtils.GetCountryNameByIsoCode(regionIso));
                 }
+
+                // DebugExtension.DevLog(
+                //     "allCountriesNames = ", "\n",
+                //     "### START ###", "\n",
+                //     allCountriesNames.ToString(),
+                //     "### END ###", "\n",
+                //     "");
 
                 ResetScrollPosition();
             });

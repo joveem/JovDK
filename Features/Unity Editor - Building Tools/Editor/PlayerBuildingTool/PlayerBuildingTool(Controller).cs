@@ -78,6 +78,7 @@ namespace JovDK.Unity.Editor.Build
             // PlayerSettings.Android.keyaliasPass = _keystoreAliasPassword;
 
             // PlayerSettings.Android.bundleVersionCode = _currentBuildBundleCode;
+            string previousBundleVersion = PlayerSettings.bundleVersion;
             PlayerSettings.bundleVersion = _appVersion.ToString();
 
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
@@ -137,6 +138,7 @@ namespace JovDK.Unity.Editor.Build
                     }
             }
 
+            PlayerSettings.bundleVersion = previousBundleVersion;
             OnFinish?.Invoke();
         }
 

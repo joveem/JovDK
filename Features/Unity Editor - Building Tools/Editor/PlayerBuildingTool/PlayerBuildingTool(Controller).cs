@@ -86,11 +86,56 @@ namespace JovDK.Unity.Editor.Build
             DateTime buildEnd = DateTime.UtcNow;
             TimeSpan buildDuration = buildEnd.Subtract(buildStart);
 
-            if (summary.result == BuildResult.Succeeded)
-                DebugExtension.DevLog("[ PC ] ".ToColor(GoodColors.Green) + "Build succeeded! (duration = " + buildDuration.ToString() + ")  ~" + summary.totalSize / 7943573 + " MB (" + summary.totalSize + " bytes)");
+            switch (summary.result)
+            {
+                case BuildResult.Succeeded:
+                    {
+                        DebugExtension.DevLog(
+                            "[ PC ] ".ToColor(GoodColors.Green),
+                            "Build succeeded! ",
+                            "(v", _appVersion.ToString(), " | duration = ", buildDuration.ToString(), ")  ",
+                            "~", (summary.totalSize / 7943573).ToString(), "MB ",
+                            "(", summary.totalSize.ToString(), " bytes)", "\n",
+                            "");
 
-            if (summary.result == BuildResult.Failed)
-                DebugExtension.DevLogError("[ PC ] ".ToColor(GoodColors.Red) + "Build failed (duration = " + buildDuration.ToString() + ")");
+                        break;
+                    }
+
+                case BuildResult.Failed:
+                    {
+                        DebugExtension.DevLogError(
+                            "[ PC ] ".ToColor(GoodColors.Red),
+                            "Build failed ",
+                            "(duration = ", buildDuration.ToString(), ")", "\n",
+                            "");
+
+                        break;
+                    }
+
+                case BuildResult.Cancelled:
+                    {
+                        DebugExtension.DevLogError(
+                            "[ PC ] ".ToColor(GoodColors.Red),
+                            "Build cancelled ",
+                            "(duration = ", buildDuration.ToString(), ")", "\n",
+                            "");
+
+                        break;
+                    }
+
+                default:
+                    {
+                        DebugExtension.DevLogWarning(
+                            "$$> ".ToColor(GoodColors.Red),
+                            "[ PC ] ".ToColor(GoodColors.Orange),
+                            "Unexpected build result!", " ",
+                            "(summary.result = ", summary.result.ToString(), " | ",
+                            "duration = ", buildDuration.ToString(), ")", "\n",
+                            "");
+
+                        break;
+                    }
+            }
 
             OnFinish?.Invoke();
         }

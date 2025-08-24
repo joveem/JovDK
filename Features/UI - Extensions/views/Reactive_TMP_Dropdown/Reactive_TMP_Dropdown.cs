@@ -15,6 +15,7 @@ using R3.Collections;
 using TMPro;
 
 // from company
+using JovDK.Core.Subscription;
 using JovDK.Debugging;
 using JovDK.SafeActions;
 using JovDK.SerializingTools.Json;
@@ -40,6 +41,8 @@ namespace JovDK.UI.Extensions.Reactive
 
         List<ReactiveOptionData<T>> _currentPossibleOptionsList = new List<ReactiveOptionData<T>>();
         Dictionary<T, ReactiveOptionData<T>> _currentPossibleOptionsByValue = new Dictionary<T, ReactiveOptionData<T>>();
+        // subscriptions
+        List<ISubscription> _onStartSubscriptions = new List<ISubscription>();
 
 
         [Space(5), Header("[ Parts ]"), Space(10)]
@@ -109,7 +112,7 @@ namespace JovDK.UI.Extensions.Reactive
         void SubscribeAllListenersOnStart()
         {
             // reactive Dropdown -> reactive value
-            CurrentValue.TakeUntil(this.destroyCancellationToken).Subscribe(OnCurrentValueUpdate);
+            _onStartSubscriptions.RegisterFrom(CurrentValue, OnCurrentValueUpdate);
 
             // reactive Dropdown -> Dropdown
             BaseDropdown.DoIfNotNull(() => BaseDropdown.onValueChanged.AddListener(OnDropdownValueChanged));
@@ -119,9 +122,8 @@ namespace JovDK.UI.Extensions.Reactive
         // inverse of SubscribeAllListenersOnStart
         void UnsubscribeAllListenersOnDestroy()
         {
-            // this scripts -> other script
             // reactive Dropdown -> reactive value            
-            // CurrentValue <- OnCurrentValueUpdate is auto unsubscribed on destroy
+            _onStartSubscriptions.UnsubscribeAllAndClear();
 
             // reactive Dropdown -> Dropdown
             BaseDropdown.DoIfNotNull(() => BaseDropdown.onValueChanged.RemoveListener(OnDropdownValueChanged));

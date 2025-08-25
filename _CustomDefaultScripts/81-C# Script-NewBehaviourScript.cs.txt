@@ -38,9 +38,12 @@ namespace PackageName.MajorContext.MinorContext
         // ReactiveProperty<bool> _state2 = new ReactiveProperty<bool>(false);
         // public ReactiveProperty<bool> State => _state2;
         // Tween _curretBackgroundTween = null;
+        // // getters
         // public Func<bool> State3Getter = null;
+        // // callbacks
         // public Action OnIdkCallback = null;
         // public Action<bool> OnIdkCallback = null;
+        // // subscriptions
         // List<ISubscription> _onStartSubscriptions = new List<ISubscription>();
         // List<ISubscription> _externalOnStartSubscriptions = new List<ISubscription>();
         // public List<ISubscription> ExternalOnStartSubscriptions => _externalOnStartSubscriptions;

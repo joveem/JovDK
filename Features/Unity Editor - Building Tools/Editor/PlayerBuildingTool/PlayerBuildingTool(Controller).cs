@@ -54,7 +54,7 @@ namespace JovDK.Unity.Editor.Build
             string buildFolderVersion = _fileVersion.Major.ToString("0000") + "_" + _fileVersion.Minor.ToString("0000");
             string buildFileName = _fileAppName + "_" + buildFolderVersion + "_pc" + (_isDevelopmentBuild ? "_DEV" : "") +
                 // ! TODO: REVIEW THIS!
-                "-settings-40-FPS-8-port" +
+                "-settings" +
                 "/" + PlayerSettings.productName + ".exe";
             string buildFilePath = GetBuildFolderPatch() + "/" + buildFileName;
 

@@ -33,7 +33,7 @@ namespace JovDK.Control.Touch
 
         [Space(5), Header("[ State ]"), Space(10)]
 
-        Vector3 _stickInitialPosition;
+        Vector3 _localStickInitialPosition;
         float _stickHeight = 100f;
         float _canvasHeight = 1080f;
 

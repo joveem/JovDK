@@ -37,7 +37,7 @@ namespace JovDK.Control.Touch
 
         void ApplyInitialStickPosition()
         {
-            _stickBaseImage.rectTransform.position = _stickInitialPosition;
+            _stickBaseImage.rectTransform.localPosition = Vector3.zero;
             _stickCenterImage.rectTransform.localPosition = Vector3.zero;
         }
     }

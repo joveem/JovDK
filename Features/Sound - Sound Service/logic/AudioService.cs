@@ -254,6 +254,7 @@ namespace JovDK.Audio.Service
             float pitchMultiplier = audioTaskOptions.PitchMultiplier;
             int? ignoreRandomIndex = audioTaskOptions.IgnoreRandomIndex;
             int? forceRandomIndex = audioTaskOptions.ForceRandomIndex;
+            bool loop = audioTaskOptions.Loop;
 
             bool isAlreadyRegistered = IsAudioRegistered(sfxId, out AudioConfig audioConfig);
 
@@ -300,6 +301,7 @@ namespace JovDK.Audio.Service
                     // TODO: REVIEW THIS!
                     audioSourceToPlay.pitch = audioConfig.PitchFactor * pitchMultiplier;
                     audioSourceToPlay.volume = audioConfig.VolumeFactor * finalVolumeFactor;
+                    audioSourceToPlay.loop = loop;
                     audioSourceToPlay.Play();
 
                     result.Success = true;
@@ -375,6 +377,7 @@ namespace JovDK.Audio.Service
             AudioTaskOptions audioTaskOptions)
         {
             float pitchMultiplier = audioTaskOptions.PitchMultiplier;
+            bool loop = audioTaskOptions.Loop;
             int? ignoreRandomIndex = audioTaskOptions.IgnoreRandomIndex;
             int? forceRandomIndex = audioTaskOptions.ForceRandomIndex;
 
@@ -426,6 +429,7 @@ namespace JovDK.Audio.Service
                     // TODO: REVIEW THIS!
                     baseAudioSource.pitch = audioConfig.PitchFactor * pitchMultiplier;
                     baseAudioSource.volume = audioConfig.VolumeFactor * finalVolumeFactor;
+                    baseAudioSource.loop = loop;
                     baseAudioSource.PlayOneShot(baseAudioSource.clip);
 
                     result.Success = true;

@@ -52,7 +52,10 @@ namespace JovDK.Unity.Editor.Build
 
             // handle folder/file naming
             string buildFolderVersion = _fileVersion.Major.ToString("0000") + "_" + _fileVersion.Minor.ToString("0000");
-            string buildFileName = _fileAppName + "_" + buildFolderVersion + "_pc" + (_isDevelopmentBuild ? "_DEV" : "") + "/" + PlayerSettings.productName + ".exe";
+            string buildFileName = _fileAppName + "_" + buildFolderVersion + "_pc" + (_isDevelopmentBuild ? "_DEV" : "") +
+                // ! TODO: REVIEW THIS!
+                "-settings" +
+                "/" + PlayerSettings.productName + ".exe";
             string buildFilePath = GetBuildFolderPatch() + "/" + buildFileName;
 
             // handle scenes listing

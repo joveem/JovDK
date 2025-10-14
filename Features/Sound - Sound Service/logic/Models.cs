@@ -39,6 +39,7 @@ namespace JovDK.Audio.Service
     public class AudioTaskOptions
     {
         public float PitchMultiplier = 1f;
+        public bool Loop = false;
         public float? OverrideVolumeMultiplier = null;
         public int? IgnoreRandomIndex = null;
         public int? ForceRandomIndex = null;

@@ -7,6 +7,7 @@ using UnityEngine;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
+using Newtonsoft.Json.Converters;
 
 namespace JovDK.SerializingTools.Json
 {
@@ -46,6 +47,41 @@ namespace JovDK.SerializingTools.Json
 
             return value;
 
+        }
+
+        public static string SerializeToJson_DEBUG(this object genericObject)
+        {
+            string value = "";
+
+            try
+            {
+                Formatting formatting = Formatting.Indented;
+                JsonSerializerSettings jsonSerializerSettings =
+                    new JsonSerializerSettings()
+                    {
+                        ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                        Converters = new List<JsonConverter>()
+                        {
+                            // enums-as-text forcing
+                            new StringEnumConverter()
+                        }
+                    };
+
+                value = JsonConvert.SerializeObject(
+                    genericObject,
+                    formatting,
+                    jsonSerializerSettings);
+            }
+            catch (System.Exception _error)
+            {
+
+                UnityEngine.Debug.LogError("001 | error: " + _error);
+                value = "ERROR";
+                //throw;
+
+            }
+
+            return value;
         }
 
         public static T DeserializeJsonToObject<T>(this string _text)

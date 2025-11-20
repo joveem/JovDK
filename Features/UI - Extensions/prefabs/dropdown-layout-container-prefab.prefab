@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 956245553841337314}
   - component: {fileID: 4470259451730089869}
   - component: {fileID: 6157655255559460603}
+  - component: {fileID: 4477069288453362693}
   m_Layer: 5
   m_Name: title
   m_TagString: Untagged
@@ -136,6 +137,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4477069288453362693
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 17592374676219049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e114b30109f33274fa3ede660535af4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JovDK.Core::MultiLanguageText
+  _baseTextMeshProUGUI: {fileID: 6157655255559460603}
+  _termKey: dropdown-layout-container-prefab.dropdown-layout-container-prefab.title
 --- !u!1 &918239891855616309
 GameObject:
   m_ObjectHideFlags: 0
@@ -147,6 +162,7 @@ GameObject:
   - component: {fileID: 2748869609579051515}
   - component: {fileID: 8746715631529718174}
   - component: {fileID: 5841731534818789529}
+  - component: {fileID: 1902701517787143828}
   m_Layer: 5
   m_Name: value-title-text
   m_TagString: Untagged
@@ -272,6 +288,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1902701517787143828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 918239891855616309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e114b30109f33274fa3ede660535af4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JovDK.Core::MultiLanguageText
+  _baseTextMeshProUGUI: {fileID: 5841731534818789529}
+  _termKey: dropdown-layout-container-prefab.dropdown-layout-container-prefab.dropdown.value-title-text
 --- !u!1 &1183995362769989576
 GameObject:
   m_ObjectHideFlags: 0
@@ -743,6 +773,7 @@ GameObject:
   - component: {fileID: 4720301992837586051}
   - component: {fileID: 6929759362718271773}
   - component: {fileID: 504620155117015612}
+  - component: {fileID: 2497410575073664771}
   m_Layer: 5
   m_Name: Item Label
   m_TagString: Untagged
@@ -868,6 +899,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2497410575073664771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3399829746156480194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e114b30109f33274fa3ede660535af4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JovDK.Core::MultiLanguageText
+  _baseTextMeshProUGUI: {fileID: 504620155117015612}
+  _termKey: dropdown-layout-container-prefab.dropdown-layout-container-prefab.dropdown.template-keep-it-disabled.viewport.content-container.item-toggle.item-label
 --- !u!1 &5385592230023031122
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,58 +10,61 @@ using JovDK.LEGACY.Localization;
 using JovDK.SafeActions;
 
 
-public class MultiLanguageText : MonoBehaviour
+namespace JovDK.LEGACY.Localization
 {
-
-    // [Space(5), Header("[ Dependencies ]"), Space(10)]
-
-    // [SerializeField] bool _dependencies;
-
-
-    // [Space(5), Header("[ State ]"), Space(10)]
-
-    // [SerializeField] bool _state;
-
-
-    [Space(5), Header("[ Parts ]"), Space(10)]
-
-    [SerializeField] TextMeshProUGUI _baseTextMeshProUGUI;
-
-
-    [Space(5), Header("[ Configs ]"), Space(10)]
-
-    [SerializeField] string _termKey = UndefinedIdContent;
-    const string UndefinedIdContent = "UNDEFINED";
-
-
-
-    #region MonoBehaviour
-    void Awake()
+    public class MultiLanguageText : MonoBehaviour
     {
-        SetInitialState();
-    }
-    #endregion MonoBehaviour
 
-    #region Controller
-    void SetInitialState()
-    {
-        // DebugExtension.DevLog();
+        // [Space(5), Header("[ Dependencies ]"), Space(10)]
 
-        ApplyText();
-    }
+        // [SerializeField] bool _dependencies;
 
-    public void ApplyText()
-    {
-        if (_termKey == UndefinedIdContent)
+
+        // [Space(5), Header("[ State ]"), Space(10)]
+
+        // [SerializeField] bool _state;
+
+
+        [Space(5), Header("[ Parts ]"), Space(10)]
+
+        [SerializeField] TextMeshProUGUI _baseTextMeshProUGUI;
+
+
+        [Space(5), Header("[ Configs ]"), Space(10)]
+
+        [SerializeField] string _termKey = UndefinedIdContent;
+        const string UndefinedIdContent = "UNDEFINED";
+
+
+
+        #region MonoBehaviour
+        void Awake()
         {
-            DebugExtension.DevLogWarning("$$> ".ToColor(GoodColors.Orange), "Undefined _textKey on object \"", gameObject.name, "\"!");
-            return;
+            SetInitialState();
+        }
+        #endregion MonoBehaviour
+
+        #region Controller
+        void SetInitialState()
+        {
+            // DebugExtension.DevLog();
+
+            ApplyText();
         }
 
-        _baseTextMeshProUGUI.DoIfNotNull(() =>
+        public void ApplyText()
         {
-            _baseTextMeshProUGUI.text = LocalizationService.GetTextById(_termKey);
-        });
+            if (_termKey == UndefinedIdContent)
+            {
+                DebugExtension.DevLogWarning("$$> ".ToColor(GoodColors.Orange), "Undefined _textKey on object \"", gameObject.name, "\"!");
+                return;
+            }
+
+            _baseTextMeshProUGUI.DoIfNotNull(() =>
+            {
+                _baseTextMeshProUGUI.text = LocalizationService.GetTextById(_termKey);
+            });
+        }
+        #endregion Controller
     }
-    #endregion Controller
 }

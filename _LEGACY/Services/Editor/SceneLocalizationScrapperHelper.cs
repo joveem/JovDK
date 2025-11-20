@@ -18,11 +18,55 @@ namespace JovDK.LEGACY.Localization.Editor
     /// </summary>
     internal static class SceneLocalizationScrapperHelper
     {
-        const string MenuItemPath = "Tools/JovDK/Localization/Populate MultiLanguage Texts";
+        const string MenuItemPath = "JovDK/Tools/Localization/Populate MultiLanguage Texts";
+        const string MenuItemPathAllowInstances = "JovDK/Tools/Localization/Populate MultiLanguage Texts (Allow Prefab Instances)";
+        const string MenuItemPathValidateDuplicates = "JovDK/Tools/Localization/Validate Duplicated Keys";
+        const string MenuItemPathValidateMissingKeys = "JovDK/Tools/Localization/Validate Missing Keys Across Languages";
         const string TermsAssetPath = "Assets/_Game/Features/Localization - Terms/Resources/localization-terms-content-by-language-id/pt-br/localization-terms.txt";
+        const string TermsDirectoryPath = "Assets/_Game/Features/Localization - Terms/Resources/localization-terms-content-by-language-id";
 
         [MenuItem(MenuItemPath)]
         static void PopulateLocalizationData()
+        {
+            RunPopulationRoutine(allowPrefabInstancesInScene: false, appendNewTermsOnly: false);
+        }
+
+        [MenuItem(MenuItemPathAllowInstances)]
+        static void PopulateLocalizationDataAllowingInstances()
+        {
+            RunPopulationRoutine(allowPrefabInstancesInScene: true, appendNewTermsOnly: true);
+        }
+
+        [MenuItem(MenuItemPathValidateDuplicates)]
+        static void ValidateDuplicatedKeys()
+        {
+            Dictionary<string, List<string>> duplicatesByFile = CollectDuplicatedKeysByFile();
+
+            if (duplicatesByFile.Count == 0)
+            {
+                Debug.Log("SceneLocalizationScrapperHelper: no duplicated localization keys were found.");
+                return;
+            }
+
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("SceneLocalizationScrapperHelper: duplicated localization keys found:");
+
+            foreach (KeyValuePair<string, List<string>> entry in duplicatesByFile)
+            {
+                string keysText = string.Join(", ", entry.Value.Distinct(StringComparer.Ordinal));
+                builder.AppendLine($"{entry.Key} ({keysText})");
+            }
+
+            Debug.LogWarning(builder.ToString());
+        }
+
+        [MenuItem(MenuItemPathValidateMissingKeys)]
+        static void ValidateMissingKeysAcrossFiles()
+        {
+            CompareLocalizationKeysAcrossFiles();
+        }
+
+        static void RunPopulationRoutine(bool allowPrefabInstancesInScene, bool appendNewTermsOnly)
         {
             Scene activeScene = SceneManager.GetActiveScene();
 
@@ -34,11 +78,11 @@ namespace JovDK.LEGACY.Localization.Editor
 
             Dictionary<string, string> newTerms = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-            int sceneUpdates = ProcessScene(activeScene, newTerms);
+            int sceneUpdates = ProcessScene(activeScene, newTerms, allowPrefabInstancesInScene);
             int prefabUpdates = ProcessPrefabs(newTerms);
 
             if (newTerms.Count > 0)
-                MergeTermsIntoFile(newTerms);
+                MergeTermsIntoFile(newTerms, appendNewTermsOnly);
 
             StringBuilder summary = new StringBuilder();
             summary.Append("SceneLocalizationScrapperHelper finished. ");
@@ -50,7 +94,7 @@ namespace JovDK.LEGACY.Localization.Editor
             Debug.Log(summary.ToString());
         }
 
-        static int ProcessScene(Scene scene, Dictionary<string, string> gatheredTerms)
+        static int ProcessScene(Scene scene, Dictionary<string, string> gatheredTerms, bool allowPrefabInstances)
         {
             int updates = 0;
             string scenePrefix = Sanitize(scene.name);
@@ -66,7 +110,7 @@ namespace JovDK.LEGACY.Localization.Editor
                 {
                     GameObject go = textComponent.gameObject;
 
-                    if (IsPartOfPrefabInstance(go))
+                    if (!allowPrefabInstances && IsPartOfPrefabInstance(go))
                         continue;
 
                     if (textComponent.GetComponent<MultiLanguageText>() != null)
@@ -245,14 +289,19 @@ namespace JovDK.LEGACY.Localization.Editor
             return normalized.Trim();
         }
 
-        static void MergeTermsIntoFile(Dictionary<string, string> newTerms)
+        static void MergeTermsIntoFile(Dictionary<string, string> newTerms, bool appendOnly)
         {
             Dictionary<string, string> existingTerms = LoadExistingTerms();
 
-            foreach (KeyValuePair<string, string> entry in newTerms)
-                existingTerms[entry.Key] = entry.Value;
+            if (appendOnly)
+                AppendTerms(existingTerms, newTerms);
+            else
+            {
+                foreach (KeyValuePair<string, string> entry in newTerms)
+                    existingTerms[entry.Key] = entry.Value;
 
-            WriteTerms(existingTerms);
+                WriteTerms(existingTerms);
+            }
         }
 
         static Dictionary<string, string> LoadExistingTerms()
@@ -289,6 +338,40 @@ namespace JovDK.LEGACY.Localization.Editor
             return terms;
         }
 
+        static void AppendTerms(Dictionary<string, string> existingTerms, Dictionary<string, string> newTerms)
+        {
+            string absolutePath = GetAbsoluteTermsPath();
+            Directory.CreateDirectory(Path.GetDirectoryName(absolutePath));
+
+            HashSet<string> existingKeys = new HashSet<string>(existingTerms.Keys, StringComparer.OrdinalIgnoreCase);
+
+            StringBuilder builder = new StringBuilder();
+            bool fileExists = File.Exists(absolutePath);
+
+            foreach (KeyValuePair<string, string> entry in newTerms)
+            {
+                if (!existingKeys.Contains(entry.Key))
+                    existingKeys.Add(entry.Key);
+                else
+                    continue;
+
+                if (builder.Length > 0 || fileExists)
+                    builder.Append('\n');
+
+                builder.Append(entry.Key);
+                builder.Append('=');
+                builder.Append(entry.Value ?? string.Empty);
+
+                fileExists = true;
+            }
+
+            if (builder.Length > 0)
+            {
+                File.AppendAllText(absolutePath, builder.ToString(), Encoding.UTF8);
+                AssetDatabase.ImportAsset(TermsAssetPath);
+            }
+        }
+
         static void WriteTerms(Dictionary<string, string> terms)
         {
             string absolutePath = GetAbsoluteTermsPath();
@@ -316,9 +399,196 @@ namespace JovDK.LEGACY.Localization.Editor
 
         static string GetAbsoluteTermsPath()
         {
-            string projectRoot = Path.GetDirectoryName(Application.dataPath);
+            string projectRoot = GetProjectRootPath();
 
             return Path.GetFullPath(Path.Combine(projectRoot ?? string.Empty, TermsAssetPath));
+        }
+
+        static string GetProjectRootPath()
+        {
+            return Path.GetDirectoryName(Application.dataPath);
+        }
+
+        static string GetAbsoluteTermsDirectoryPath()
+        {
+            string projectRoot = GetProjectRootPath();
+
+            return Path.GetFullPath(Path.Combine(projectRoot ?? string.Empty, TermsDirectoryPath));
+        }
+
+        static Dictionary<string, List<string>> CollectDuplicatedKeysByFile()
+        {
+            Dictionary<string, List<string>> duplicatesByFile = new Dictionary<string, List<string>>();
+            string directoryAbsolutePath = GetAbsoluteTermsDirectoryPath();
+
+            if (!Directory.Exists(directoryAbsolutePath))
+            {
+                Debug.LogWarning($"SceneLocalizationScrapperHelper: directory not found \"{directoryAbsolutePath}\".");
+                return duplicatesByFile;
+            }
+
+            string[] termFiles = Directory.GetFiles(directoryAbsolutePath, "localization-terms.txt", SearchOption.AllDirectories);
+            string projectRoot = GetProjectRootPath() ?? string.Empty;
+
+            foreach (string filePath in termFiles)
+            {
+                Dictionary<string, int> occurrencesByKey = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+                List<string> duplicatedKeys = new List<string>();
+                HashSet<string> duplicatesLookup = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                string[] lines = File.ReadAllLines(filePath);
+
+                foreach (string rawLine in lines)
+                {
+                    string line = rawLine.Trim();
+
+                    if (string.IsNullOrEmpty(line) || line.StartsWith("#", StringComparison.Ordinal))
+                        continue;
+
+                    int separatorIndex = line.IndexOf('=');
+
+                    if (separatorIndex < 0)
+                        continue;
+
+                    string key = line.Substring(0, separatorIndex).Trim();
+
+                    if (string.IsNullOrEmpty(key))
+                        continue;
+
+                    if (!occurrencesByKey.TryAdd(key, 1))
+                    {
+                        occurrencesByKey[key]++;
+
+                        if (duplicatesLookup.Add(key))
+                            duplicatedKeys.Add(key);
+                    }
+                }
+
+                if (duplicatedKeys.Count > 0)
+                {
+                    string relativePath = filePath;
+
+                    if (!string.IsNullOrEmpty(projectRoot) &&
+                        filePath.StartsWith(projectRoot, StringComparison.OrdinalIgnoreCase))
+                    {
+                        relativePath = filePath.Substring(projectRoot.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                    }
+
+                    duplicatesByFile[relativePath] = duplicatedKeys;
+                }
+            }
+
+            return duplicatesByFile;
+        }
+
+        static Dictionary<string, HashSet<string>> ReadLocalizationKeysByFile()
+        {
+            Dictionary<string, HashSet<string>> keysByFile = new Dictionary<string, HashSet<string>>();
+            string directoryAbsolutePath = GetAbsoluteTermsDirectoryPath();
+
+            if (!Directory.Exists(directoryAbsolutePath))
+            {
+                Debug.LogWarning($"SceneLocalizationScrapperHelper: directory not found \"{directoryAbsolutePath}\".");
+                return keysByFile;
+            }
+
+            string[] termFiles = Directory.GetFiles(directoryAbsolutePath, "localization-terms.txt", SearchOption.AllDirectories);
+            string projectRoot = GetProjectRootPath() ?? string.Empty;
+
+            foreach (string filePath in termFiles)
+            {
+                HashSet<string> keys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                string[] lines = File.ReadAllLines(filePath);
+
+                foreach (string rawLine in lines)
+                {
+                    string line = rawLine.Trim();
+
+                    if (string.IsNullOrEmpty(line) || line.StartsWith("#", StringComparison.Ordinal))
+                        continue;
+
+                    int separatorIndex = line.IndexOf('=');
+
+                    if (separatorIndex < 0)
+                        continue;
+
+                    string key = line.Substring(0, separatorIndex).Trim();
+
+                    if (string.IsNullOrEmpty(key))
+                        continue;
+
+                    keys.Add(key);
+                }
+
+                string relativePath = filePath;
+
+                if (!string.IsNullOrEmpty(projectRoot) &&
+                    filePath.StartsWith(projectRoot, StringComparison.OrdinalIgnoreCase))
+                {
+                    relativePath = filePath.Substring(projectRoot.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                }
+
+                keysByFile[relativePath] = keys;
+            }
+
+            return keysByFile;
+        }
+
+        static void CompareLocalizationKeysAcrossFiles()
+        {
+            Dictionary<string, HashSet<string>> keysByFile = ReadLocalizationKeysByFile();
+            int filesCount = keysByFile.Count;
+
+            if (filesCount == 0)
+            {
+                Debug.LogWarning("SceneLocalizationScrapperHelper: no localization files were found.");
+                return;
+            }
+
+            Dictionary<string, int> keyOccurrences = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (HashSet<string> keys in keysByFile.Values)
+            {
+                foreach (string key in keys)
+                {
+                    if (!keyOccurrences.TryAdd(key, 1))
+                        keyOccurrences[key]++;
+                }
+            }
+
+            List<string> incompleteKeys = keyOccurrences
+                .Where(pair => pair.Value < filesCount)
+                .Select(pair => pair.Key)
+                .OrderBy(key => key, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (incompleteKeys.Count == 0)
+            {
+                Debug.Log("SceneLocalizationScrapperHelper: all localization files share the same set of keys.");
+                return;
+            }
+
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("SceneLocalizationScrapperHelper: missing localization keys detected.");
+            builder.AppendLine("Keys not present in every file:");
+            builder.AppendLine(string.Join("\n", incompleteKeys));
+            builder.AppendLine();
+            builder.AppendLine("Missing keys per file:");
+
+            foreach (KeyValuePair<string, HashSet<string>> entry in keysByFile)
+            {
+                List<string> missingKeysForFile = incompleteKeys
+                    .Where(key => !entry.Value.Contains(key))
+                    .ToList();
+
+                if (missingKeysForFile.Count == 0)
+                    continue;
+
+                builder.Append(entry.Key);
+                builder.Append("\n");
+                builder.AppendLine(string.Join("\n", missingKeysForFile));
+            }
+
+            Debug.LogWarning(builder.ToString());
         }
     }
 }

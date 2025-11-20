@@ -15,7 +15,7 @@ using JovDK.SerializingTools.Json;
 
 namespace JovDK.LEGACY.Localization
 {
-    public class LocalizationService
+    public class LocalizationService : MonoBehaviour
     {
 
         // [Space(5), Header("[ Dependencies ]"), Space(10)]
@@ -155,36 +155,37 @@ namespace JovDK.LEGACY.Localization
         }
         */
 
-        public static string GetTextById(string _textId)
+        public static string GetTextById(string termId)
         {
-            string _textValue = ".....";
+            string termValue = ".....";
 
             Instance.DoIfNotNull(() =>
-                LocalizationService.Instance._currentLanguageTermsById.DoIfNotNull(() =>
+                Instance._currentLanguageTermsById.DoIfNotNull(() =>
                 {
+                    bool success = Instance._currentLanguageTermsById.TryGetValue(termId, out string foundTermValue);
 
-                    if (!LocalizationService.Instance._currentLanguageTermsById
-                        .TryGetValue(_textId, out _textValue))
+                    if (success)
+                        termValue = foundTermValue;
+                    else
                     {
-
-                        string debugText =
-                            "The id \"" + _textId + "\"" +
-                            " have NO CORRESPONDING text!";
-
-                        DebugExtension.DevLogWarning(debugText);
-
+                        string debugTermId = termId ?? ">NULL<";
+                        DebugExtension.DevLogWarning(
+                            "$$> ".ToColor(GoodColors.Red),
+                            "Term not found! ", "\n",
+                            "termId = ", debugTermId, "\n",
+                            "_currentLanguageTermsById.Count = ", Instance._currentLanguageTermsById.Count.ToString(), "\n",
+                            "");
                     }
-
                 }));
 
             // uncomment to debug translations on Development versions
-            /*
+            // /*
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            _textValue = "<color=#f0f>?</color>" + _textValue;
+            termValue = "<color=#f0f>?</color>" + termValue;
 #endif
-            */
+            // */
 
-            return _textValue;
+            return termValue;
         }
 
     }

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 956245553841337314}
   - component: {fileID: 4470259451730089869}
   - component: {fileID: 6157655255559460603}
-  - component: {fileID: 4477069288453362693}
   m_Layer: 5
   m_Name: title
   m_TagString: Untagged
@@ -137,20 +136,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &4477069288453362693
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 17592374676219049}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e114b30109f33274fa3ede660535af4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: JovDK.Core::MultiLanguageText
-  _baseTextMeshProUGUI: {fileID: 6157655255559460603}
-  _termKey: dropdown-layout-container-prefab.dropdown-layout-container-prefab.title
 --- !u!1 &918239891855616309
 GameObject:
   m_ObjectHideFlags: 0
@@ -244,7 +229,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
+  m_fontSize: 18
   m_fontSizeBase: 14
   m_fontWeight: 400
   m_enableAutoSizing: 1

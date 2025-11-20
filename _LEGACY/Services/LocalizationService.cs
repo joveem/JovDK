@@ -155,14 +155,16 @@ namespace JovDK.LEGACY.Localization
         }
         */
 
-        public static string GetTextById(string termId)
+        public static string GetTextById(string termId, string defaultValue = ".....")
         {
-            string termValue = ".....";
+            string termValue = defaultValue;
+
+            bool success = false;
 
             Instance.DoIfNotNull(() =>
                 Instance._currentLanguageTermsById.DoIfNotNull(() =>
                 {
-                    bool success = Instance._currentLanguageTermsById.TryGetValue(termId, out string foundTermValue);
+                    success = Instance._currentLanguageTermsById.TryGetValue(termId, out string foundTermValue);
 
                     if (success)
                         termValue = foundTermValue;
@@ -181,7 +183,14 @@ namespace JovDK.LEGACY.Localization
             // uncomment to debug translations on Development versions
             // /*
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            termValue = "<color=#f0f>?</color>" + termValue;
+            if (success)
+            {
+                termValue = "<color=#00f>T</color>" + termValue + "<color=#00f>T</color>";
+            }
+            else
+            {
+                termValue = "<color=#f0f>E</color>" + termValue + "<color=#f0f>E</color>";
+            }
 #endif
             // */
 

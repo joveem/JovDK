@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 // system / unity
 using System;
 using System.Collections.Generic;
@@ -592,3 +593,4 @@ namespace JovDK.LEGACY.Localization.Editor
         }
     }
 }
+#endif

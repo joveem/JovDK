@@ -30,7 +30,7 @@ public class MultiLanguageText : MonoBehaviour
 
     [Space(5), Header("[ Configs ]"), Space(10)]
 
-    [SerializeField] string _textId = UndefinedIdContent;
+    [SerializeField] string _termKey = UndefinedIdContent;
     const string UndefinedIdContent = "UNDEFINED";
 
 
@@ -52,15 +52,15 @@ public class MultiLanguageText : MonoBehaviour
 
     public void ApplyText()
     {
-        if (_textId == UndefinedIdContent)
+        if (_termKey == UndefinedIdContent)
         {
-            DebugExtension.DevLogWarning("$$> ".ToColor(GoodColors.Orange), "Undefined textId on object \"", gameObject.name, "\"!");
+            DebugExtension.DevLogWarning("$$> ".ToColor(GoodColors.Orange), "Undefined _textKey on object \"", gameObject.name, "\"!");
             return;
         }
 
         _baseTextMeshProUGUI.DoIfNotNull(() =>
         {
-            _baseTextMeshProUGUI.text = LocalizationService.GetTextById(_textId);
+            _baseTextMeshProUGUI.text = LocalizationService.GetTextById(_termKey);
         });
     }
     #endregion Controller

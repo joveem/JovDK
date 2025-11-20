@@ -18,115 +18,104 @@ namespace JovDK.LEGACY.Localization
     public class LocalizationService
     {
 
-        // TODO: REVIEW THIS
-        // TODO: replace this instance with an static confing
-        // TODO: confing to be used to all LocalizationServices
-        // TODO: objects
-        public static LocalizationService instance;
+        // [Space(5), Header("[ Dependencies ]"), Space(10)]
 
-        public LocalizationService()
-        {
-
-            if (LocalizationService.instance == null)
-            {
-
-                instance = this;
-            }
-            else
-            {
-
-                DebugExtension.DevLogWarning("one or more Language Managers instaces has been detected!");
-                // Destroy(this);
-
-            }
-
-        }
-
-
-        [Space(5), Header("[ Dependencies ]"), Space(10)]
-
-        bool dependencies;
+        // bool dependencies;
 
 
         [Space(5), Header("[ State ]"), Space(10)]
 
-        bool state;
+        // TODO: REVIEW THIS
+        // TODO: replace this instance with an static config
+        // TODO: config to be used to all LocalizationServices
+        // TODO: objects
+        public static LocalizationService Instance;
+
+        string _selectedLanguage = "en-us";
+        public string SelectedLanguage => _selectedLanguage;
 
 
         [Space(5), Header("[ Parts ]"), Space(10)]
 
-        bool parts;
+        [SerializeField] LanguageSelector _languageSelector;
 
 
         [Space(5), Header("[ Configs ]"), Space(10)]
 
-        bool configs;
-
-
-
-        public string selectedLanguage = "en-us";
-
-        public Dictionary<string, string> dictionary;
-
-        public Language[] languagesList;
-
+        // bool configs;
         [SerializeField]
-        private LanguageSelector languageSelector;
+        LocalizationLanguage[] _possibleLanguagesList = new LocalizationLanguage[]
+        {
+            new LocalizationLanguage()
+            {
+                LanguageId = "en-us",
+                CountryFlagSprite = null
+            },
+            new LocalizationLanguage()
+            {
+                LanguageId = "pt-br",
+                CountryFlagSprite = null
+            },
+        };
 
+        public LocalizationLanguage[] PossibleLanguagesList => _possibleLanguagesList;
+
+        Dictionary<string, string> _currentLanguageTermsById;
+
+
+
+
+        public LocalizationService()
+        {
+            if (LocalizationService.Instance == null)
+                Instance = this;
+            else
+            {
+                DebugExtension.DevLogWarning("$$> ".ToColor(GoodColors.Red), "One or more Language Managers instaces has been detected!");
+                // Destroy(this);
+            }
+        }
+
+        #region MonoBehaviour
         private void Awake()
         {
-
             SetupDictionary();
-
         }
 
         private void Start()
         {
-
             if (!PlayerPrefs.HasKey("language"))
             {
-
-                languageSelector.DoIfNotNull(
-                    () => languageSelector.ShowPanel(),
+                _languageSelector.DoIfNotNull(
+                    () => _languageSelector.ShowPanel(),
                     () =>
                     {
-
                         string debugText =
                             "languageSelector IS NULL!"
                             .ToColor(GoodColors.Orange);
 
                         DebugExtension.DevLogWarning(debugText);
-
                     });
-
-
             }
             else
-            {
-
                 SetLanguage(PlayerPrefs.GetString("language"));
-
-            }
-
         }
+        #endregion MonoBehaviour
 
         public void SetLanguage(string _language)
         {
-
             PlayerPrefs.SetString("language", _language);
-            selectedLanguage = _language;
+            _selectedLanguage = _language;
             SetupDictionary();
             ApplyCurrentLanguage();
-
         }
 
         public void SetupDictionary()
         {
+            _currentLanguageTermsById = new Dictionary<string, string>();
 
-            dictionary = new Dictionary<string, string>();
-
-            DebugExtension.DevLog("selectedLanguage = " + selectedLanguage);
-            TextAsset _textAsset = Resources.Load<TextAsset>("Locations/" + selectedLanguage);
+            DebugExtension.DevLog("_selectedLanguage = ", _selectedLanguage);
+            TextAsset _textAsset = Resources.Load<TextAsset>("localization-terms-content-by-language-id/" + _selectedLanguage + "/localization-terms");
 
             string[] _fileTextLines = _textAsset.text.Split(
                 new string[] { "\r\n", "\r", "\n" },
@@ -137,58 +126,44 @@ namespace JovDK.LEGACY.Localization
             {
                 if (_line != null && _line.Length > 1 && _line[0] != '#' && _line.IndexOf('=') != -1)
                 {
-
-
                     string _textId = _line.Substring(0, _line.IndexOf('='));
                     string _textValue = _line.Substring(_line.IndexOf('=') + 1, _line.Length - (_line.IndexOf('=') + 1));
 
-                    dictionary.Add(_textId, _textValue);
-
+                    _currentLanguageTermsById.Add(_textId, _textValue);
                 }
-
             }
-
         }
 
         private void ApplyCurrentLanguage()
         {
-
             MultiLanguageText[] multiLanguageTextList =
                 Resources.FindObjectsOfTypeAll(typeof(MultiLanguageText)) as MultiLanguageText[];
 
             foreach (MultiLanguageText _text in multiLanguageTextList)
             {
-
                 if (_text != null)
                     _text.ApplyText();
-
             }
-
         }
 
         /*
         private bool IsValidLine(string _line)
         {
-
             bool _value = false;
 
-
-
             return _value;
-
         }
         */
 
         public static string GetTextById(string _textId)
         {
-
             string _textValue = ".....";
 
-            instance.DoIfNotNull(() =>
-                LocalizationService.instance.dictionary.DoIfNotNull(() =>
+            Instance.DoIfNotNull(() =>
+                LocalizationService.Instance._currentLanguageTermsById.DoIfNotNull(() =>
                 {
 
-                    if (!LocalizationService.instance.dictionary
+                    if (!LocalizationService.Instance._currentLanguageTermsById
                         .TryGetValue(_textId, out _textValue))
                     {
 
@@ -202,16 +177,14 @@ namespace JovDK.LEGACY.Localization
 
                 }));
 
-
             // uncomment to debug translations on Development versions
             /*
-    #if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
             _textValue = "<color=#f0f>?</color>" + _textValue;
-    #endif
+#endif
             */
 
             return _textValue;
-
         }
 
     }

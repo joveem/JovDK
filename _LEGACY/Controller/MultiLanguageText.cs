@@ -7,36 +7,61 @@ using TMPro;
 
 using JovDK.Debugging;
 using JovDK.LEGACY.Localization;
+using JovDK.SafeActions;
 
 
 public class MultiLanguageText : MonoBehaviour
 {
 
+    // [Space(5), Header("[ Dependencies ]"), Space(10)]
 
-    public string textId = "undefined";
+    // [SerializeField] bool _dependencies;
 
-    private void Start()
+
+    // [Space(5), Header("[ State ]"), Space(10)]
+
+    // [SerializeField] bool _state;
+
+
+    [Space(5), Header("[ Parts ]"), Space(10)]
+
+    [SerializeField] TextMeshProUGUI _baseTextMeshProUGUI;
+
+
+    [Space(5), Header("[ Configs ]"), Space(10)]
+
+    [SerializeField] string _textId = UndefinedIdContent;
+    const string UndefinedIdContent = "UNDEFINED";
+
+
+
+    #region MonoBehaviour
+    void Awake()
     {
+        SetInitialState();
+    }
+    #endregion MonoBehaviour
+
+    #region Controller
+    void SetInitialState()
+    {
+        // DebugExtension.DevLog();
 
         ApplyText();
-
     }
 
     public void ApplyText()
     {
-
-        if (textId == "undefined")
+        if (_textId == UndefinedIdContent)
         {
-            DebugExtension.DevLogWarning("undefined textId on object \"" + gameObject.name + "\"!");
+            DebugExtension.DevLogWarning("$$> ".ToColor(GoodColors.Orange), "Undefined textId on object \"", gameObject.name, "\"!");
+            return;
         }
 
-        if (GetComponent<Text>() != null)
-            GetComponent<Text>().text = LocalizationService.GetTextById(textId);
-        else if (GetComponent<TextMeshProUGUI>() != null)
-            GetComponent<TextMeshProUGUI>().text = LocalizationService.GetTextById(textId);
-        else
-            DebugExtension.DevLogError("undefined Text / TextMeshProUGUI COMPONENT on object \"" + gameObject.name + "\"!");
-
+        _baseTextMeshProUGUI.DoIfNotNull(() =>
+        {
+            _baseTextMeshProUGUI.text = LocalizationService.GetTextById(_textId);
+        });
     }
-
+    #endregion Controller
 }

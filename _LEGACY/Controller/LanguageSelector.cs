@@ -30,7 +30,7 @@ namespace JovDK.LEGACY.Localization
         private void LanguageButton(string _languageId)
         {
 
-            LocalizationService.instance.SetLanguage(_languageId);
+            LocalizationService.Instance.SetLanguage(_languageId);
             HidePanel();
 
         }
@@ -39,16 +39,16 @@ namespace JovDK.LEGACY.Localization
 
         #region View
 
-        public void InstantiateLanguageButtons(Language[] _languages)
+        public void InstantiateLanguageButtons(LocalizationLanguage[] _languages)
         {
 
-            foreach (Language _language in _languages)
+            foreach (LocalizationLanguage _language in _languages)
             {
 
                 if (_language != null)
                 {
 
-                    if (!string.IsNullOrWhiteSpace(_language.languageId))
+                    if (!string.IsNullOrWhiteSpace(_language.LanguageId))
                     {
 
                         GameObject _intance = Instantiate(languageButtonPrefab.gameObject, languageButtonsPivot);
@@ -56,23 +56,23 @@ namespace JovDK.LEGACY.Localization
                         _intance.GetComponent<Button>().onClick.AddListener(() =>
                         {
 
-                            LanguageButton(_language.languageId);
+                            LanguageButton(_language.LanguageId);
 
                         });
 
                         if (_intance.GetComponent<Image>() != null)
                         {
 
-                            if (_language.sprite != null)
+                            if (_language.CountryFlagSprite != null)
                             {
 
-                                _intance.GetComponent<Image>().sprite = _language.sprite;
+                                _intance.GetComponent<Image>().sprite = _language.CountryFlagSprite;
 
                             }
                             else
                             {
 
-                                DebugExtension.DevLogWarning("language SPRITE IS NULL! ( languageId = " + _language.languageId + " )");
+                                DebugExtension.DevLogWarning("language SPRITE IS NULL! ( languageId = " + _language.LanguageId + " )");
 
                             }
 
@@ -114,7 +114,7 @@ namespace JovDK.LEGACY.Localization
                 if (!hasInstantiatedButtons)
                 {
 
-                    InstantiateLanguageButtons(LocalizationService.instance.languagesList);
+                    InstantiateLanguageButtons(LocalizationService.Instance.PossibleLanguagesList);
 
                 }
 

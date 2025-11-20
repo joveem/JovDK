@@ -6,12 +6,9 @@ using UnityEngine;
 namespace JovDK.LEGACY.Localization
 {
     [Serializable]
-    public class Language
+    public class LocalizationLanguage
     {
-
-
-        public string languageId = "en-us";
-        public Sprite sprite;
-
+        public string LanguageId = "en-us";
+        public Sprite CountryFlagSprite = null;
     }
 }

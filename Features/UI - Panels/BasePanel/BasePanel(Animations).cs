@@ -28,6 +28,8 @@ public partial class BasePanel : MonoBehaviour
         {
             _isShowing = true;
 
+            gameObject.SetActive(true);
+
             _fadeBackground.DoIfNotNull(
                 () =>
                 {
@@ -35,7 +37,7 @@ public partial class BasePanel : MonoBehaviour
                     _fadeBackground
                         .DOFade(_maxFadeOpacity, _showAnimationDelay)
                         .SetEase(_backgroundPanelShowAnimationEase);
-                });
+                }, false);
 
             _bodyContainer.DoIfNotNull(
                 () =>
@@ -47,7 +49,7 @@ public partial class BasePanel : MonoBehaviour
                         .SetEase(_backgroundPanelShowAnimationEase);
 
                     bodyTween.onComplete += () => onFinishCallback?.Invoke();
-                });
+                }, false);
         }
     }
 
@@ -64,8 +66,13 @@ public partial class BasePanel : MonoBehaviour
                         .DOFade(0f, _showAnimationDelay)
                         .SetEase(_backgroundPanelHideAnimationEase);
 
-                    fadeTween.onComplete += () => _fadeBackground.gameObject.SetActive(true);
-                });
+                    fadeTween.onComplete +=
+                        () =>
+                        {
+                            _fadeBackground.gameObject.SetActive(false);
+                            gameObject.SetActive(false);
+                        };
+                }, false);
 
             _bodyContainer.DoIfNotNull(
                 () =>
@@ -81,8 +88,13 @@ public partial class BasePanel : MonoBehaviour
                         .DOScale(Vector3.zero, _showAnimationDelay)
                         .SetEase(_backgroundPanelHideAnimationEase);
 
-                    bodyTween.onComplete += () => finalOnFinishCallback?.Invoke();
-                });
+                    bodyTween.onComplete +=
+                        () =>
+                        {
+                            finalOnFinishCallback?.Invoke();
+                            gameObject.SetActive(false);
+                        };
+                }, false);
         }
     }
 }

@@ -1,0 +1,226 @@
+// system / unity
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.UI;
+using SystemRandom = System.Random;
+using UnityRandom = UnityEngine.Random;
+
+// third
+// using DG.Tweening;
+using R3;
+using TMPro;
+
+// from company
+using JovDK.Debugging;
+using JovDK.SafeActions;
+using JovDK.SerializingTools.Json;
+using JovDK.Forms.PhoneNumber;
+
+// from project
+// ...
+
+
+namespace JovDK.Forms.PhoneNumber.Testing.Showcase
+{
+    public partial class Asmb_DdiDropdownShowcaseScene : MonoBehaviour
+    {
+
+        // [Space(5), Header("[ Dependencies ]"), Space(10)]
+
+        // [SerializeField] bool _dependencies;
+
+
+        // [Space(5), Header("[ State ]"), Space(10)]
+
+        // [SerializeField] bool _state1;
+        // ReactiveProperty<bool> _state2 = new ReactiveProperty<bool>(false);
+        // public ReactiveProperty<bool> State => _state2;
+        // Tween _curretBackgroundTween = null;
+        // public Func<bool> State3Getter = null;
+        // public Action OnIdkCallback = null;
+        // public Action<bool> OnIdkCallback = null;
+        // List<ISubscription> _onStartSubscriptions = new List<ISubscription>();
+        // List<ISubscription> _externalOnStartSubscriptions = new List<ISubscription>();
+        // public List<ISubscription> ExternalOnStartSubscriptions => _externalOnStartSubscriptions;
+        // List<ISubscription> _onEnableSubscriptions = new List<ISubscription>();
+        // List<ISubscription> _externalOnEnableSubscriptions = new List<ISubscription>();
+        // public List<ISubscription> ExternalOnEnableSubscriptions => _externalOnEnableSubscriptions;
+
+
+        // [Space(5), Header("[ Parts ]"), Space(10)]
+
+        // [SerializeField] bool _parts;
+        // [SerializeField] Button _mainButton;
+        // [SerializeField] TextMeshProUGUI _mainText;
+        // [SerializeField] Image _mainImage;
+        // [SerializeField] Transform _mainContainer;
+
+
+        // [Space(5), Header("[ Configs ]"), Space(10)]
+
+        // [SerializeField] bool _configs;
+
+
+
+        #region MonoBehaviour
+        // void Awake()
+        // {
+        //     // SetInitialState();
+        // }
+
+        // void OnEnable()
+        // {
+        //     // // TODO: review this!
+        //     // SubscribeAllListenersOnEnable();
+        // }
+
+        // void Start()
+        // {
+        //     // // TODO: review this!
+        //     // SubscribeAllListenersOnStart();
+        //     // SetupButtons();
+        // }
+
+        // void FixedUpdate()
+        // {
+
+        // }
+
+        // void Update()
+        // {
+
+        // }
+
+        // void OnDisable()
+        // {
+        //     // // TODO: review this!
+        //     // UnsubscribeAllListenersOnDisable();
+        // }
+
+        // void OnDestroy()
+        // {
+        //     // // TODO: review this!
+        //     // UnsubscribeAllListenersOnDestroy();
+        // }
+        #endregion MonoBehaviour
+
+        #region Callbacks
+        // // void OnIdk(bool value)
+        // void OnIdk()
+        // {
+        //     // DebugExtension.DefaultCallbackLog();
+
+        //     // OnIdkCallback?.Invoke(value);
+        //     OnIdkCallback?.Invoke();
+        // }
+        #endregion Callbacks
+
+        #region Buttons
+        // void SetupButtons()
+        // {
+        //     _mainButton.SetOnClickIfNotNull(MainButton);
+        // }
+
+        // void MainButton()
+        // {
+        //     DebugExtension.DefaultButtonLog();
+
+
+        // }
+        #endregion Buttons
+
+        #region Subscriptions
+        // // AWAKE/START <-> destroy
+        // // inverse of UnsubscribeAllListenersOnDestroy
+        // void SubscribeAllListenersOnStart()
+        // {
+        //     // ! REVIEW THIS
+        //     // ! start / destroy
+
+        //     // _randomDataBus.DoIfNotNull(() =>
+        //     // {
+        //     //     // this scripts -> other script
+        //     //     // _randomDataBus.IdkProperty.AsObservable().TakeUntilDestroy(gameObject).Subscribe(OnIdkPropertyUpdate);
+        //     //     _onStartSubscriptions.Register(
+        //     //         () => _randomDataBus.OnRandonActionCallback += OnRandonAction,
+        //     //         () => _randomDataBus.OnRandonActionCallback += OnRandonAction);
+        //     //     _onStartSubscriptions.RegisterFrom(_randomDataBus.RandonProperty, OnRandonPropertyUpdate);
+        //     // });
+        // }
+
+        // // awake/start <-> DESTROY
+        // // inverse of SubscribeAllListenersOnStart
+        // void UnsubscribeAllListenersOnDestroy()
+        // {
+        //     // ! REVIEW THIS
+        //     // ! start / destroy
+
+        //     // // this scripts -> other script
+        //     // _onStartSubscriptions.UnsubscribeAllAndClear();
+        //     // // this scripts -> external
+        //     // _externalOnStartSubscriptions.UnsubscribeAllAndClear();
+        // }
+
+        // // ENABLE <-> disable
+        // // inverse of UnsubscribeAllListenersOnDisable
+        // void SubscribeAllListenersOnEnable()
+        // {
+        //     // ! REVIEW THIS
+        //     // ! enable / disable
+
+        //     // _randomDataBus.DoIfNotNull(() =>
+        //     // {
+        //     //     // this scripts -> other script
+        //     //     // _randomDataBus.IdkProperty.AsObservable().TakeUntilDestroy(gameObject).Subscribe(OnIdkPropertyUpdate);
+        //     //     _onEnableSubscriptions.Register(
+        //     //         () => _randomDataBus.OnRandonActionCallback += OnRandonAction,
+        //     //         () => _randomDataBus.OnRandonActionCallback += OnRandonAction);
+        //     //     _onEnableSubscriptions.RegisterFrom(_randomDataBus.RandonProperty, OnRandonPropertyUpdate);
+        //     // });
+        // }
+
+        // // enable <-> DISABLE
+        // // inverse of SubscribeAllListenersOnEnable
+        // void UnsubscribeAllListenersOnDisable()
+        // {
+        //     // ! REVIEW THIS
+        //     // ! enable / disable
+
+        //     // // this scripts -> other script
+        //     // _onEnableSubscriptions.UnsubscribeAllAndClear();
+        //     // // this scripts -> external
+        //     // _externalOnEnableSubscriptions.UnsubscribeAllAndClear();
+        // }
+
+        // void OnIdkPropertyUpdate(int newValue)
+        // {
+        //     // DebugExtension.DefaultSubscriptionLog();
+        //     // DebugExtension.DefaultSubscriptionLog(
+        //     //     "newValue = ", newValue.SerializeObjectToJSON(), "\n",
+        //     //     "");
+
+
+        // }
+        #endregion Subscriptions
+
+        #region Controller
+        // void SetInitialState()
+        // {
+        //     DebugExtension.DefaultGenericLog();
+
+
+        // }
+        #endregion Controller
+
+        #region View
+        // protected virtual void TryToKillBackgroundTween()
+        // {
+        //     if (_curretBackgroundTween.IsActive())
+        //         _curretBackgroundTween.Kill();
+        // }
+        #endregion View
+    }
+}

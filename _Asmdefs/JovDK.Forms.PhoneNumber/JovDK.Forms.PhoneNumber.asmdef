@@ -1,0 +1,24 @@
+{
+    "name": "JovDK.Forms.PhoneNumber",
+    "rootNamespace": "JovDK.Forms.PhoneNumber",
+    "references": [
+        "JovDK.Core",
+        "JovDK.Localization.Countries",
+        "UniTask",
+        "R3.Unity",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "PhoneNumbers.dll",
+        "DOTween.dll",
+        "R3.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

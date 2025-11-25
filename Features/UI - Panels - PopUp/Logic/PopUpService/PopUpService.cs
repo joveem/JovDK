@@ -32,6 +32,9 @@ namespace JovDK.Services
         [Space(5), Header("[ State ]"), Space(10)]
 
         PopUp _loadingCoverPopup = null;
+        public Action GlobalPositiveActionCallback = null;
+        public Action GlobalNegativeActionCallback = null;
+        public Action GlobalCloseActionCallback = null;
 
 
 

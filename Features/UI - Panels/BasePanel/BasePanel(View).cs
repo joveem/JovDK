@@ -27,8 +27,8 @@ public partial class BasePanel : MonoBehaviour
         _isShowing = true;
 
         gameObject.SetActive(true);
-        _fadeBackground.SetActiveIfNotNull(true);
-        _bodyContainer.SetActiveIfNotNull(true);
+        _fadeBackground.SetActiveIfNotNull(true, false);
+        _bodyContainer.SetActiveIfNotNull(true, false);
 
         if (_fadeBackground != null)
         {
@@ -44,8 +44,8 @@ public partial class BasePanel : MonoBehaviour
     {
         _isShowing = false;
 
-        _fadeBackground.SetActiveIfNotNull(false);
-        _bodyContainer.SetActiveIfNotNull(false);
+        _fadeBackground.SetActiveIfNotNull(false, false);
+        _bodyContainer.SetActiveIfNotNull(false, false);
         gameObject.SetActive(false);
 
         if (_fadeBackground != null)

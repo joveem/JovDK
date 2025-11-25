@@ -24,18 +24,86 @@ namespace JovDK.Services
 {
     public partial class PopUpService : MonoBehaviour
     {
+        public PopUp ShowPopUp(PopUpOptions popUpOptions)
+        {
+            // prefab selection
+            PopUp basePrefab = _confirmationPopUpPrefab;
+
+            if (popUpOptions.ShowPositiveButton && !popUpOptions.ShowNegativeButton)
+                basePrefab = _informationPopUpPrefab;
+
+            // instance
+            PopUp popUpInstance = Instantiate(basePrefab, _popUpContainer);
+
+            // content text
+            popUpInstance.SetTexts(popUpOptions.Title, popUpOptions.Description);
+
+            // buttons view state
+            popUpInstance.SetPositiveButtonViewState(popUpOptions.ShowPositiveButton);
+            popUpInstance.SetNegativeButtonViewState(popUpOptions.ShowNegativeButton);
+            popUpInstance.SetCloseButtonViewState(popUpOptions.ShowCloseButton);
+
+            // buttons texts
+            string positiveButtonText = popUpOptions.ShowPositiveButton ? popUpOptions.PositiveButtonText : null;
+            string negativeButtonText = popUpOptions.ShowNegativeButton ? popUpOptions.NegativeButtonText : null;
+            string closeButtonText = null;
+
+            popUpInstance.SetButtonsText(positiveButtonText, negativeButtonText, closeButtonText);
+
+            // button callbacks
+            Action positiveCallback2 = () =>
+            {
+                GlobalPositiveActionCallback?.Invoke();
+                popUpOptions.PositiveButtonCallback?.Invoke();
+            };
+            Action negativeCallback2 = () =>
+            {
+                GlobalNegativeActionCallback?.Invoke();
+                popUpOptions.NegativeButtonCallback?.Invoke();
+            };
+            Action closeCallback2 = () =>
+            {
+                GlobalCloseActionCallback?.Invoke();
+                popUpOptions.CloseButtonCallback?.Invoke();
+            };
+
+            popUpInstance.SetConfirmationAction(positiveCallback2);
+            popUpInstance.SetCancelAction(negativeCallback2);
+            popUpInstance.SetCloseAction(closeCallback2);
+
+            // handle view state and animations
+            popUpInstance.HidePanelInstantaneously();
+            popUpInstance.PlayShowAnimation();
+
+            return popUpInstance;
+        }
+
         public PopUp ShowPopUpInformation(
             string title = null,
             string description = null,
             string positiveButtonText = null,
-            Action positiveCallback = null)
+            Action positiveCallback = null,
+            Action negativeCallback = null,
+            Action closeCallback = null)
         {
             PopUp popUpInstance = Instantiate(_informationPopUpPrefab, _popUpContainer);
 
             popUpInstance.SetTexts(title, description);
             popUpInstance.SetButtonsText(positiveButtonText);
 
-            positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback), false);
+            Action positiveCallback2 = () =>
+            {
+                GlobalPositiveActionCallback?.Invoke();
+                positiveCallback?.Invoke();
+            };
+            Action closeCallback2 = () =>
+            {
+                GlobalCloseActionCallback?.Invoke();
+                closeCallback?.Invoke();
+            };
+
+            popUpInstance.SetConfirmationAction(positiveCallback2);
+            popUpInstance.SetCloseAction(closeCallback2);
 
             popUpInstance.HidePanelInstantaneously();
             popUpInstance.PlayShowAnimation();
@@ -49,15 +117,33 @@ namespace JovDK.Services
             string positiveButtonText = null,
             string negativeButtonText = null,
             Action positiveCallback = null,
-            Action negativeCallback = null)
+            Action negativeCallback = null,
+            Action closeCallback = null)
         {
             PopUp popUpInstance = Instantiate(_confirmationPopUpPrefab, _popUpContainer);
 
             popUpInstance.SetTexts(title, description);
             popUpInstance.SetButtonsText(positiveButtonText, negativeButtonText);
 
-            positiveCallback.DoIfNotNull(() => popUpInstance.SetConfirmationAction(positiveCallback), false);
-            negativeCallback.DoIfNotNull(() => popUpInstance.SetCancelAction(positiveCallback), false);
+            Action positiveCallback2 = () =>
+            {
+                GlobalPositiveActionCallback?.Invoke();
+                positiveCallback?.Invoke();
+            };
+            Action negativeCallback2 = () =>
+            {
+                GlobalNegativeActionCallback?.Invoke();
+                negativeCallback?.Invoke();
+            };
+            Action closeCallback2 = () =>
+            {
+                GlobalCloseActionCallback?.Invoke();
+                closeCallback?.Invoke();
+            };
+
+            popUpInstance.SetConfirmationAction(positiveCallback2);
+            popUpInstance.SetCancelAction(negativeCallback2);
+            popUpInstance.SetCloseAction(closeCallback2);
 
             popUpInstance.HidePanelInstantaneously();
             popUpInstance.PlayShowAnimation();
@@ -95,5 +181,22 @@ namespace JovDK.Services
                 _loadingCoverPopup = null;
             });
         }
+    }
+
+    public class PopUpOptions
+    {
+        public string Title = null;
+        public string Description = null;
+
+        public string PositiveButtonText = "Ok";
+        public string NegativeButtonText = "No";
+
+        public bool ShowPositiveButton = true;
+        public bool ShowNegativeButton = false;
+        public bool ShowCloseButton = true;
+
+        public Action PositiveButtonCallback = null;
+        public Action NegativeButtonCallback = null;
+        public Action CloseButtonCallback = null;
     }
 }

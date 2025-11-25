@@ -49,6 +49,7 @@ namespace JovDK.Unity.Editor.Build
             DrawUILine();
             AppConfigViewSection(titleLabelStyle, fieldTitleStylesList, inputFieldStylesList);
             DrawUILine();
+            PcConfigViewSection(titleLabelStyle, fieldTitleStylesList, inputFieldStylesList);
             AndroidConfigViewSection(titleLabelStyle, fieldTitleStylesList, inputFieldStylesList);
             DrawUILine();
             BuildViewSection(titleLabelStyle, fieldTitleStylesList, inputFieldStylesList);

@@ -69,15 +69,42 @@ namespace JovDK.Unity.Editor.Build
         {
             string value = "NONE";
 
+            bool hasPreviousItem = false;
+
+            if (_hasToBuildPc)
+            {
+                if (!hasPreviousItem)
+                    value = "PC";
+                else
+                    value += ", PC";
+
+                hasPreviousItem = true;
+            }
+
             if (_hasToBuildAndroid)
-                value = "ANDROID";
+            {
+                if (!hasPreviousItem)
+                    value = "ANDROID";
+                else
+                    value += ", ANDROID";
+
+                hasPreviousItem = true;
+            }
 
             return value;
         }
 
         GUIStyle HandleBuildButtonColor(GUIStyle baseStyle)
         {
-            if (!_hasToBuildAndroid)
+            bool hasBuildTargets = false;
+
+            if (_hasToBuildPc)
+                hasBuildTargets = true;
+
+            if (_hasToBuildAndroid)
+                hasBuildTargets = true;
+
+            if (!hasBuildTargets)
                 baseStyle.normal.textColor = Color.red;
 
             return baseStyle;

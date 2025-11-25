@@ -1,0 +1,26 @@
+{
+    "name": "JovDK.Core",
+    "rootNamespace": "JovDK.Core",
+    "references": [
+        "Unity.TextMeshPro",
+        "com.Epic.OnlineServices",
+        "com.playeveryware.eos",
+        "com.playeveryware.eos.core",
+        "DOTweenModule",
+        "DOTween.Modules",
+        "R3.Unity"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll",
+        "DOTween.dll",
+        "R3.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

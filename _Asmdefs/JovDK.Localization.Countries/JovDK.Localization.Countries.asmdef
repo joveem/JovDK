@@ -1,0 +1,21 @@
+{
+    "name": "JovDK.Localization.Countries",
+    "rootNamespace": "JovDK.Localization.Countries",
+    "references": [
+        "JovDK.Core",
+        "UniTask",
+        "R3.Unity",
+        "Unity.TextMeshPro"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "DOTween.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

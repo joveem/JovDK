@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 // third
 using TMPro;
@@ -69,3 +72,35 @@ public partial class BasePanel : MonoBehaviour
     // }
 
 }
+
+#if UNITY_EDITOR
+[CustomEditor(typeof(BasePanel), true)]
+public class BasePanelEditor : UnityEditor.Editor
+{
+    BasePanel _basePanel;
+
+    public void OnEnable()
+    {
+        _basePanel = (BasePanel)target;
+    }
+
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
+
+        EditorGUILayout.Space(20);
+
+        if (GUILayout.Button("> ShowPanelInstantaneously()"))
+        {
+            DebugExtension.DevLog("> ShowPanelInstantaneously()");
+            _basePanel.ShowPanelInstantaneously();
+        }
+
+        if (GUILayout.Button("> HidePanelInstantaneously()"))
+        {
+            DebugExtension.DevLog("> HidePanelInstantaneously()");
+            _basePanel.HidePanelInstantaneously();
+        }
+    }
+}
+#endif

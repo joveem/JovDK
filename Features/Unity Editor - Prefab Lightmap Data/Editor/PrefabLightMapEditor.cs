@@ -22,25 +22,30 @@ public    string pathToFolder = "Assets/Resources/Lightmaps/";
 
 
     TextureImporterFormat[] options = new TextureImporterFormat[]
-{
-    TextureImporterFormat.Alpha8,
-      TextureImporterFormat.ARGB16,
-          TextureImporterFormat.ARGB32,
-        // TextureImporterFormat.Automatic16bit,
-        // TextureImporterFormat.AutomaticCompressed,
-        // TextureImporterFormat.AutomaticCrunched,
-        // TextureImporterFormat.AutomaticTruecolor,
-      TextureImporterFormat.DXT1,    TextureImporterFormat.DXT5,
-      TextureImporterFormat.ETC2_RGB4,    TextureImporterFormat.ETC2_RGB4_PUNCHTHROUGH_ALPHA,
-      TextureImporterFormat.ETC2_RGBA8,    TextureImporterFormat.ETC_RGB4,
-      TextureImporterFormat.PVRTC_RGB2,    TextureImporterFormat.RGB16,
-      TextureImporterFormat.RGBA32,
-
-            TextureImporterFormat.RGBA16,    TextureImporterFormat.RGB24,
-      TextureImporterFormat.PVRTC_RGBA4,    TextureImporterFormat.PVRTC_RGBA2,
-      TextureImporterFormat.PVRTC_RGB4,
-
-};
+        {
+            TextureImporterFormat.Alpha8,
+            TextureImporterFormat.ARGB16,
+            TextureImporterFormat.ARGB32,
+            // TODO: REVIEW THIS!
+            // TextureImporterFormat.Automatic16bit,
+            // TextureImporterFormat.AutomaticCompressed,
+            // TextureImporterFormat.AutomaticCrunched,
+            // TextureImporterFormat.AutomaticTruecolor,
+            TextureImporterFormat.DXT1,
+            TextureImporterFormat.DXT5,
+            TextureImporterFormat.ETC2_RGB4,
+            TextureImporterFormat.ETC2_RGB4_PUNCHTHROUGH_ALPHA,
+            TextureImporterFormat.ETC2_RGBA8,
+            TextureImporterFormat.ETC_RGB4,
+            TextureImporterFormat.PVRTC_RGB2,
+            TextureImporterFormat.RGB16,
+            TextureImporterFormat.RGBA32,
+            TextureImporterFormat.RGBA16,
+            TextureImporterFormat.RGB24,
+            TextureImporterFormat.PVRTC_RGBA4,
+            TextureImporterFormat.PVRTC_RGBA2,
+            TextureImporterFormat.PVRTC_RGB4,
+        };
 
    
 

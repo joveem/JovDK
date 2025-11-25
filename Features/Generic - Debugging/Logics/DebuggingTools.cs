@@ -3,7 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Threading.Tasks;
+using JovDK.SerializingTools.Json;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,58 +25,114 @@ namespace JovDK.Debugging
     {
         public static string TextIfIsNull(this object _object, string _textIfNull, string _textIfNotNull = "")
         {
-
             return _object == null ? _textIfNull : _textIfNotNull;
-
         }
 
         public static string TextIfIsNullOrEmpty(this string _text, string _textIfNull, string _textIfNotNull = "")
         {
-
             return string.IsNullOrEmpty(_text) ? _textIfNull : _textIfNotNull;
-
         }
+
         public static string TextIfIsNullOrWhiteSpace(this string _text, string _textIfNull, string _textIfNotNull = "")
         {
-
             return string.IsNullOrWhiteSpace(_text) ? _textIfNull : _textIfNotNull;
-
         }
 
-        public static string ToColor(this string _text, string _colorCode)
+        public static string ToColor(this string baseText, string colorHexCode, bool nullOrWhiteSpaceIsExpected = false)
         {
+            if (!string.IsNullOrWhiteSpace(colorHexCode))
+            {
+                StringBuilder baseStringBuilder = new StringBuilder();
 
-            if (!string.IsNullOrWhiteSpace(_colorCode))
-                return "<color=" + _colorCode + ">" + _text + "</color>";
+                baseStringBuilder.Append("<color=");
+                baseStringBuilder.Append(colorHexCode);
+                baseStringBuilder.Append(">");
+                baseStringBuilder.Append(baseText);
+                baseStringBuilder.Append("</color>");
+
+                return baseStringBuilder.ToString();
+            }
             else
-                return _text;
+            {
+                if (!nullOrWhiteSpaceIsExpected)
+                {
+                    DebugExtension.DevLogWarning(
+                        "$> ".ToColor(GoodColors.Red), "\n",
+                        "colorHexCode IsNullOrWhiteSpace!",
+                        "colorHexCode = ", colorHexCode.SerializeObjectToJSON(), "\n",
+                        "");
+                }
 
+                return baseText;
+            }
+        }
+
+        public static void AppendWithColor(this StringBuilder baseStringBuilder, string baseText, string colorHexCode)
+        {
+            if (!string.IsNullOrWhiteSpace(colorHexCode))
+            {
+                baseStringBuilder.Append("<color=");
+                baseStringBuilder.Append(colorHexCode);
+                baseStringBuilder.Append(">");
+                baseStringBuilder.Append(baseText);
+                baseStringBuilder.Append("</color>");
+            }
+            else
+                baseStringBuilder.Append(baseText);
+        }
+
+        public static void AppendMultiples(this StringBuilder baseStringBuilder, params string[] textList)
+        {
+            foreach (var baseText in textList)
+            {
+                if (baseText is not null)
+                    baseStringBuilder.Append(baseText);
+                else
+                    baseStringBuilder.Append("<NULL>");
+            }
+        }
+
+        public static void AppendType<T>(this StringBuilder baseStringBuilder, T baseObjectValue)
+        {
+            baseStringBuilder.Append(baseObjectValue.ToTypeText());
+        }
+
+        public static string ToTypeText<T>(this T baseObject)
+        {
+            return typeof(T).Name;
         }
 
         public static string ToShortId(
-            this string _text,
+            this string baseText,
             bool ignoreParentheses = false)
         {
+            StringBuilder baseStringBuilder = new StringBuilder();
 
             bool isShortable =
-                !string.IsNullOrWhiteSpace(_text) &&
-                _text.Length > 4;
-
-            string startParenteses = ignoreParentheses ? "" : "(";
-            string endParenteses = ignoreParentheses ? "" : ")";
+                !string.IsNullOrWhiteSpace(baseText) &&
+                baseText.Length > 4;
 
             if (isShortable)
-                return startParenteses + "..." + _text.Substring(_text.Length - 4) + endParenteses;
-            else
-                return _text;
+            {
+                string startParenteses = ignoreParentheses ? "" : "(";
+                string endParenteses = ignoreParentheses ? "" : ")";
 
+                baseStringBuilder.Append(startParenteses);
+                baseStringBuilder.Append("...");
+                baseStringBuilder.Append(baseText.Substring(baseText.Length - 4));
+                baseStringBuilder.Append(endParenteses);
+            }
+            else
+                baseStringBuilder.Append(baseText);
+
+            return baseStringBuilder.ToString();
         }
 
         public static string ToNestedText(
             this string _text,
             bool isSingleItem = false)
         {
-            string value = "";
+            StringBuilder baseStringBuilder = new StringBuilder();
 
             string[] breakLinesList = new string[] { "\r\n", "\r", "\n" };
             string[] textLines = _text.Split(breakLinesList, StringSplitOptions.RemoveEmptyEntries);
@@ -94,18 +152,34 @@ namespace JovDK.Debugging
                 if (!isSingleLine)
                 {
                     if (isLastInList)
-                        value += lastLineText + textLine + "\n";
+                    {
+                        baseStringBuilder.Append(lastLineText);
+                        baseStringBuilder.Append(textLine);
+                        baseStringBuilder.Append("\n");
+                    }
                     else if (isFirstInList)
-                        value += firstLineText + textLine + "\n";
+                    {
+                        baseStringBuilder.Append(firstLineText);
+                        baseStringBuilder.Append(textLine);
+                        baseStringBuilder.Append("\n");
+                    }
                     else
-                        value += middleLineText + textLine + "\n";
+                    {
+                        baseStringBuilder.Append(middleLineText);
+                        baseStringBuilder.Append(textLine);
+                        baseStringBuilder.Append("\n");
+                    }
                 }
                 // is single line
                 else
-                    value += "└─ " + textLine + "\n";
+                {
+                    baseStringBuilder.Append("└─ ");
+                    baseStringBuilder.Append(textLine);
+                    baseStringBuilder.Append("\n");
+                }
             }
 
-            return value;
+            return baseStringBuilder.ToString();
         }
     }
 

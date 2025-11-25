@@ -51,8 +51,8 @@ namespace JovDK.Generic.TimeManagement
         // const string _worldTimeApiUrl = "https://worldtimeapi.org/api/ip";
         // const string _worldTimeApiUrl = "http://www.worldtimeapi.org/api/ip";
         // const string _worldTimeApiUrl = "http://worldtimeapi.org/api/ip";
-        // const string _worldTimeApiUrl = "https://www.worldtimeapi.org/api/ip";
-        const string _worldTimeApiUrl = "https://worldtimeapi.org/api/timezone/Etc/UTC";
+        // const string _worldTimeApiUrl = "https://worldtimeapi.org/api/timezone/Etc/UTC";
+        const string _worldTimeApiUrl = "https://www.worldtimeapi.org/api/ip";
 
 
 

@@ -33,7 +33,7 @@ namespace JovDK.UI.CountDown.Testing.Showcase
         [Space(5), Header("[ State ]"), Space(10)]
 
         DateTime _deadLineTime;
-        float _elapsedTime = 0f;
+        float _elapsedTimeFromLastCountdownUpdate = 0f;
 
 
         [Space(5), Header("[ Parts ]"), Space(10)]
@@ -46,6 +46,7 @@ namespace JovDK.UI.CountDown.Testing.Showcase
         [Space(5), Header("[ Configs ]"), Space(10)]
 
         [SerializeField] int _testDeadlineDurationInSeconds = 120;
+        [SerializeField] float _countdownUpdateGap = 1f;
 
 
         // void Awake()

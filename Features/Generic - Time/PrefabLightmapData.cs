@@ -1,10 +1,11 @@
-﻿#if UNITY_EDITOR
+#if UNITY_EDITOR
 using UnityEditor;
 #endif
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using JovDK.Debugging;
+
 public class PrefabLightmapData : MonoBehaviour
 {
     [SerializeField] bool _ignorePrefabSaving = false;

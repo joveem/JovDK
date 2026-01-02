@@ -182,7 +182,7 @@ namespace JovDK.LEGACY.Localization
                 }));
 
             // uncomment to debug translations on Development versions
-            // /*
+            /*
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             if (success)
             {
@@ -193,7 +193,7 @@ namespace JovDK.LEGACY.Localization
                 termValue = "<color=#f0f>E</color>" + termValue + "<color=#f0f>E</color>";
             }
 #endif
-            // */
+            */
 
             return termValue;
         }

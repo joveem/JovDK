@@ -355,7 +355,8 @@ namespace JovDK.Animations.TextMeshPro
             this TextMeshProUGUI textComponent,
             float animationDuration,
             string text = null,
-            Color32 disabledColor = default)
+            Color32 disabledColor = default,
+            Action onFinishCallback = null)
         {
             List<Color32> _startCharactersColorsList = new List<Color32>();
             List<Color32> resetedColorList = new List<Color32>();
@@ -466,6 +467,8 @@ namespace JovDK.Animations.TextMeshPro
             }
 
             textComponent.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
+
+            onFinishCallback?.Invoke();
         }
 
         // public static IEnumerator RevelationAnimationCoroutine(
@@ -664,7 +667,9 @@ namespace JovDK.Animations.TextMeshPro
             this TextMeshProUGUI textComponent,
             float animationDuration,
             string text = null,
-            Color32 disabledColor = default)
+            Color32 disabledColor = default,
+            bool leftToRight = false,
+            Action onFinishCallback = null)
         {
             List<Color32> _startCharactersColorsList = new List<Color32>();
             List<Color32> resetedColorList = new List<Color32>();
@@ -694,8 +699,11 @@ namespace JovDK.Animations.TextMeshPro
             float characterAnimationDuration = animationDuration / charactersAmount;
 
             int characterNumber = 0;
+            int characterIndexStart = leftToRight ? 0 : textInfo.characterInfo.Length - 1;
+            int characterIndexEnd = leftToRight ? textInfo.characterInfo.Length : -1;
+            int characterIndexStep = leftToRight ? 1 : -1;
 
-            for (int characterIndex = 0; characterIndex < textInfo.characterInfo.Length; characterIndex++)
+            for (int characterIndex = characterIndexStart; characterIndex != characterIndexEnd; characterIndex += characterIndexStep)
             {
                 if (textInfo.characterInfo[characterIndex].isVisible)
                 {
@@ -704,15 +712,16 @@ namespace JovDK.Animations.TextMeshPro
 
                     vertexColors = textInfo.meshInfo[materialIndex].colors32;
 
-                    for (int i = characterNumber; i < vertexIndex + 4; i++)
+                    for (int i = vertexIndex; i < vertexIndex + 4; i++)
                         vertexColors[i] = disabledColor;
 
                     textComponent.UpdateVertexData(TMP_VertexDataUpdateFlags.Colors32);
 
-                    characterNumber += 4;
                     yield return new WaitForSeconds(characterAnimationDuration);
                 }
             }
+
+            onFinishCallback?.Invoke();
         }
 
         // public static IEnumerator F(

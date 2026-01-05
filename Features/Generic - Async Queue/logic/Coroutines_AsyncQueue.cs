@@ -456,47 +456,55 @@ namespace JovDK.Core.Queues.Coroutines
 
         private static IEnumerator WrapCoroutine(IEnumerator routine, CancellationToken ct, TaskCompletionSource<bool> tcs)
         {
-            // If the routine already manages completion itself (like our Task wrapper),
-            // we don't want to double-complete. So: only complete if the TCS isn't finished.
-            bool completed = false;
+            if (routine == null) throw new ArgumentNullException(nameof(routine));
 
-            try
+            // Helper to complete safely only once.
+            static bool TryComplete(TaskCompletionSource<bool> tcs, Action complete)
             {
-                while (true)
+                if (tcs.Task.IsCompleted) return false;
+                complete();
+                return true;
+            }
+
+            while (true)
+            {
+                if (ct.IsCancellationRequested)
                 {
-                    if (ct.IsCancellationRequested)
-                    {
-                        tcs.TrySetCanceled(ct);
-                        yield break;
-                    }
-
-                    if (!routine.MoveNext())
-                        break;
-
-                    yield return routine.Current;
+                    tcs.TrySetCanceled(ct);
+                    yield break;
                 }
 
-                completed = true;
-                tcs.TrySetResult(true);
-            }
-            catch (OperationCanceledException oce)
-            {
-                tcs.TrySetCanceled(oce.CancellationToken);
-            }
-            catch (Exception ex)
-            {
-                tcs.TrySetException(ex);
-            }
-            finally
-            {
-                // If routine ended without exceptions but some inner wrapper already completed/canceled,
-                // do nothing; TrySetResult is safe, but keeping a guard is clearer.
-                if (!completed && tcs.Task.IsCompleted)
+                bool movedNext;
+                object current = null;
+
+                // IMPORTANT: No yield inside try/catch. We only call MoveNext() here.
+                try
                 {
-                    // No-op: inner wrapper handled it.
+                    movedNext = routine.MoveNext();
+                    if (movedNext)
+                        current = routine.Current;
                 }
+                catch (OperationCanceledException oce)
+                {
+                    tcs.TrySetCanceled(oce.CancellationToken);
+                    yield break;
+                }
+                catch (Exception ex)
+                {
+                    tcs.TrySetException(ex);
+                    yield break;
+                }
+
+                if (!movedNext)
+                    break;
+
+                yield return current;
             }
+
+            // If some inner wrapper already completed/canceled, this is harmless.
+            TryComplete(tcs, () => tcs.TrySetResult(true));
         }
+
 
         private CancellationToken CreateLinkedToken(CancellationToken ct)
         {

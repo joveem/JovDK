@@ -392,6 +392,24 @@ namespace JovDK.Core.Queues.Coroutines
                 item.Tcs.TrySetCanceled(item.Ct);
         }
 
+        /// <summary>
+        /// Force the queue runner to resume if it was stopped while items are pending.
+        /// </summary>
+        public bool ForceResume()
+        {
+            ThrowIfDisposed();
+
+            lock (_gate)
+            {
+                if (_runner != null) return false;
+                if (_queue.Count == 0) return false;
+                if (!_host) return false;
+
+                _runner = _host.StartCoroutine(RunLoop());
+                return true;
+            }
+        }
+
         public void Dispose()
         {
             if (_disposed) return;

@@ -244,7 +244,17 @@ namespace JovDK.UI.Timers
                     stringBuilder.Append(_separatorCharacter);
             }
 
-            return stringBuilder.ToString();
+            string result = stringBuilder.ToString();
+
+            if (!isNegative)
+            {
+                if (!string.IsNullOrWhiteSpace(positiveHexColor))
+                    result = result.ToColor(positiveHexColor);
+            }
+            else if (!string.IsNullOrWhiteSpace(negativeHexColor))
+                result = result.ToColor(negativeHexColor);
+
+            return result;
         }
 
         void HandleTextColoring(
@@ -261,7 +271,7 @@ namespace JovDK.UI.Timers
                     _text.color = Color.white;
                 else
                     _text.color = _initialColor;
-                    // _text.color = Color.cyan;
+                // _text.color = Color.cyan;
             }
             else
             {
@@ -269,7 +279,7 @@ namespace JovDK.UI.Timers
                     _text.color = Color.white;
                 else
                     _text.color = _initialColor;
-                    // _text.color = Color.cyan;
+                // _text.color = Color.cyan;
             }
         }
 

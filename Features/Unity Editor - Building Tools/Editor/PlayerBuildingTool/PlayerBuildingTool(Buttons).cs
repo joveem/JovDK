@@ -60,9 +60,8 @@ namespace JovDK.Unity.Editor.Build
         string GetBuildFolderPatch()
         {
             // base configs
-            string buildFolderName = "_BUILDS";
             string assetsFolderPath = Application.dataPath;
-            string buildFoulderPath = assetsFolderPath + "/../" + buildFolderName;
+            string buildFoulderPath = Path.GetFullPath(Path.Combine(assetsFolderPath, "..", "_bin", "_app-player-builds"));
 
             Directory.CreateDirectory(buildFoulderPath);
 

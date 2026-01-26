@@ -63,10 +63,25 @@ namespace JovDK.LEGACY.Localization
 
         Dictionary<string, string> _currentLanguageTermsById;
 
+        [SerializeField] bool _overrideDefaultSelectedLanguage = false;
+        [SerializeField] string _defaultSelectedLanguage = "en-us";
+
 
 
 
         public LocalizationService()
+        {
+            // if (LocalizationService.Instance == null)
+            //     Instance = this;
+            // else
+            // {
+            //     DebugExtension.DevLogWarning("$$> ".ToColor(GoodColors.Red), "One or more Language Managers instaces has been detected!");
+            //     // Destroy(this);
+            // }
+        }
+
+        #region MonoBehaviour
+        private void Awake()
         {
             if (LocalizationService.Instance == null)
                 Instance = this;
@@ -75,11 +90,10 @@ namespace JovDK.LEGACY.Localization
                 DebugExtension.DevLogWarning("$$> ".ToColor(GoodColors.Red), "One or more Language Managers instaces has been detected!");
                 // Destroy(this);
             }
-        }
 
-        #region MonoBehaviour
-        private void Awake()
-        {
+            if (_overrideDefaultSelectedLanguage)
+                _selectedLanguage = _defaultSelectedLanguage;
+
             SetupDictionary();
         }
 

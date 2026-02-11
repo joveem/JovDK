@@ -66,5 +66,6 @@ namespace JovDK.Audio.Service
         public const string MenuVideoAudio = "menu-video-audio-01";
         public const string GamePlaySfx = "gameplay-sfx-01";
         public const string GamePlayMusic = "gameplay-music-01";
+        public const string GamePlayVoiceNarrationSfx = "gameplay-voice-narration-sfx-01";
     }
 }

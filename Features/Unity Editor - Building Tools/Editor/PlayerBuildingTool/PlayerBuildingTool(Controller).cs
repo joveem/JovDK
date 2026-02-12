@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -26,6 +27,13 @@ namespace JovDK.Unity.Editor.Build
 {
     public partial class PlayerBuildingTool : EditorWindow
     {
+        const string SevenZipExecutable = "7z.exe";
+        static readonly string[] SevenZipExcludeTokens = new string[]
+        {
+            "_DoNotShip",
+            "_ButDontShipItWithYourGame"
+        };
+
         void HandleBuildVersions()
         {
             _fileVersion = new Version(_fileVersion.Major, _fileVersion.Minor + 1);
@@ -52,11 +60,10 @@ namespace JovDK.Unity.Editor.Build
 
             // handle folder/file naming
             string buildFolderVersion = _fileVersion.Major.ToString("0000") + "_" + _fileVersion.Minor.ToString("0000");
-            string buildFileName = _fileAppName + "_" + buildFolderVersion + "_pc" + (_isDevelopmentBuild ? "_DEV" : "") +
-                // ! TODO: REVIEW THIS!
-                // "-settings" +
-                "/" + PlayerSettings.productName + ".exe";
-            string buildFilePath = GetBuildFolderPatch() + "/" + buildFileName;
+            string buildOutputFolderName = _fileAppName + "_" + buildFolderVersion + "_pc" + (_isDevelopmentBuild ? "_DEV" : "");
+            string buildOutputFolder = Path.Combine(GetBuildFolderPatch(), buildOutputFolderName);
+            string buildFileName = Path.Combine(buildOutputFolderName, PlayerSettings.productName + ".exe");
+            string buildFilePath = Path.Combine(GetBuildFolderPatch(), buildFileName);
 
             // handle scenes listing
             List<string> scenesPaths = new List<string>();
@@ -141,6 +148,19 @@ namespace JovDK.Unity.Editor.Build
                     }
             }
 
+            bool buildSucceeded = summary.result == BuildResult.Succeeded;
+            LogBuildResult("[ PC ] ", buildSucceeded);
+
+            if (buildSucceeded)
+            {
+                bool compressionSucceeded = TryCompressBuildFolder(buildOutputFolder, out string archivePath, out string compressionMessage);
+                LogCompressionResult("[ PC ] ", compressionSucceeded, archivePath, compressionMessage);
+            }
+            else
+            {
+                LogCompressionResult("[ PC ] ", false, null, "Compression skipped because build did not succeed.");
+            }
+
             PlayerSettings.bundleVersion = previousBundleVersion;
             OnFinish?.Invoke();
         }
@@ -158,8 +178,12 @@ namespace JovDK.Unity.Editor.Build
 
             // handle folder/file naming
             string buildFolderVersion = _fileVersion.Major.ToString("0000") + "_" + _fileVersion.Minor.ToString("0000");
-            string buildFileName = _fileAppName + "_" + buildFolderVersion + "_android" + (_isDevelopmentBuild ? "_DEV" : "") + (_buildApkInsteadOfAab ? ".apk" : ".aab");
-            string buildFilePath = GetBuildFolderPatch() + "/" + buildFileName;
+            string buildOutputFolderName = _fileAppName + "_" + buildFolderVersion + "_android" + (_isDevelopmentBuild ? "_DEV" : "");
+            string buildOutputFolder = Path.Combine(GetBuildFolderPatch(), buildOutputFolderName);
+            string buildFileName = buildOutputFolderName + (_buildApkInsteadOfAab ? ".apk" : ".aab");
+            string buildFilePath = Path.Combine(buildOutputFolder, buildFileName);
+
+            Directory.CreateDirectory(buildOutputFolder);
 
             // handle scenes listing
             List<string> scenesPaths = new List<string>();
@@ -198,7 +222,173 @@ namespace JovDK.Unity.Editor.Build
             if (summary.result == BuildResult.Failed)
                 DebugExtension.DevLogError("[ Android ] ".ToColor(GoodColors.Red) + "Build failed (duration = " + buildDuration.ToString() + ")");
 
+            bool buildSucceeded = summary.result == BuildResult.Succeeded;
+            LogBuildResult("[ Android ] ", buildSucceeded);
+
+            if (buildSucceeded)
+            {
+                bool compressionSucceeded = TryCompressBuildFolder(buildOutputFolder, out string archivePath, out string compressionMessage);
+                LogCompressionResult("[ Android ] ", compressionSucceeded, archivePath, compressionMessage);
+            }
+            else
+            {
+                LogCompressionResult("[ Android ] ", false, null, "Compression skipped because build did not succeed.");
+            }
+
             OnFinish?.Invoke();
+        }
+
+        static void LogBuildResult(string tag, bool succeeded)
+        {
+            if (succeeded)
+                DebugExtension.DevLog(tag.ToColor(GoodColors.Green) + "Build result: Succeeded.");
+            else
+                DebugExtension.DevLogWarning(tag.ToColor(GoodColors.Red) + "Build result: Failed or Cancelled.");
+        }
+
+        static void LogCompressionResult(string tag, bool succeeded, string archivePath, string message)
+        {
+            if (succeeded)
+            {
+                DebugExtension.DevLog(
+                    tag.ToColor(GoodColors.Green),
+                    "Compression succeeded: ",
+                    archivePath ?? "(unknown archive path)",
+                    message != null ? " | " + message : "");
+            }
+            else
+            {
+                DebugExtension.DevLogError(
+                    tag.ToColor(GoodColors.Red),
+                    "Compression failed: ",
+                    message ?? "(no details)");
+            }
+        }
+
+        static bool TryCompressBuildFolder(string buildOutputFolder, out string archivePath, out string message)
+        {
+            archivePath = null;
+            message = null;
+
+            if (string.IsNullOrWhiteSpace(buildOutputFolder))
+            {
+                message = "Build output folder path was empty.";
+                return false;
+            }
+
+            if (!Directory.Exists(buildOutputFolder))
+            {
+                message = "Build output folder does not exist: " + buildOutputFolder;
+                return false;
+            }
+
+            DirectoryInfo buildDir = new DirectoryInfo(buildOutputFolder);
+            DirectoryInfo parentDir = buildDir.Parent;
+            if (parentDir == null)
+            {
+                message = "Cannot resolve parent directory for build output folder: " + buildOutputFolder;
+                return false;
+            }
+
+            archivePath = Path.Combine(parentDir.FullName, buildDir.Name + ".7z");
+
+            List<string> relativeFiles = GetCompressibleRelativeFiles(buildOutputFolder);
+            if (relativeFiles.Count == 0)
+            {
+                message = "No files found to compress after exclusions.";
+                return false;
+            }
+
+            string listFileName = "_7z_file_list_" + Guid.NewGuid().ToString("N") + ".txt";
+            string listFilePath = Path.Combine(buildOutputFolder, listFileName);
+
+            try
+            {
+                File.WriteAllLines(listFilePath, relativeFiles);
+
+                ProcessStartInfo psi = new ProcessStartInfo
+                {
+                    FileName = SevenZipExecutable,
+                    Arguments = "a -t7z -mx=9 -y \"" + archivePath + "\" @" + listFileName,
+                    WorkingDirectory = buildOutputFolder,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true
+                };
+
+                using (Process process = Process.Start(psi))
+                {
+                    if (process == null)
+                    {
+                        message = "Failed to start 7-Zip process.";
+                        return false;
+                    }
+
+                    string stdout = process.StandardOutput.ReadToEnd();
+                    string stderr = process.StandardError.ReadToEnd();
+
+                    process.WaitForExit();
+
+                    if (process.ExitCode != 0)
+                    {
+                        message = "7-Zip exited with code " + process.ExitCode + ". " + (string.IsNullOrWhiteSpace(stderr) ? stdout : stderr);
+                        return false;
+                    }
+
+                    message = string.IsNullOrWhiteSpace(stdout) ? "7-Zip completed successfully." : stdout.Trim();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                message = "Compression failed: " + ex.Message;
+                return false;
+            }
+            finally
+            {
+                try
+                {
+                    if (File.Exists(listFilePath))
+                        File.Delete(listFilePath);
+                }
+                catch
+                {
+                    // best effort cleanup
+                }
+            }
+        }
+
+        static List<string> GetCompressibleRelativeFiles(string buildOutputFolder)
+        {
+            List<string> result = new List<string>();
+            foreach (string filePath in Directory.EnumerateFiles(buildOutputFolder, "*", SearchOption.AllDirectories))
+            {
+                if (IsExcludedPath(filePath))
+                    continue;
+
+                string relativePath = Path.GetRelativePath(buildOutputFolder, filePath);
+                if (IsExcludedPath(relativePath))
+                    continue;
+
+                result.Add(relativePath);
+            }
+
+            return result;
+        }
+
+        static bool IsExcludedPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                return false;
+
+            for (int i = 0; i < SevenZipExcludeTokens.Length; i++)
+            {
+                if (path.IndexOf(SevenZipExcludeTokens[i], StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

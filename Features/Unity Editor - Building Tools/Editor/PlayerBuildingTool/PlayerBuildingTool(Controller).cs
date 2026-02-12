@@ -28,6 +28,7 @@ namespace JovDK.Unity.Editor.Build
     public partial class PlayerBuildingTool : EditorWindow
     {
         const string SevenZipExecutable = "7z.exe";
+        const string SevenZipEditorPrefKey = "PlayerBuildingTool.SevenZipPath";
         static readonly string[] SevenZipExcludeTokens = new string[]
         {
             "_DoNotShip",
@@ -306,9 +307,16 @@ namespace JovDK.Unity.Editor.Build
             {
                 File.WriteAllLines(listFilePath, relativeFiles);
 
+                string sevenZipPath = ResolveSevenZipPath();
+                if (string.IsNullOrEmpty(sevenZipPath))
+                {
+                    message = "7-Zip executable not found. Set EditorPrefs '" + SevenZipEditorPrefKey + "' or ensure 7z.exe is on PATH.";
+                    return false;
+                }
+
                 ProcessStartInfo psi = new ProcessStartInfo
                 {
-                    FileName = SevenZipExecutable,
+                    FileName = sevenZipPath,
                     Arguments = "a -t7z -mx=9 -y \"" + archivePath + "\" @" + listFileName,
                     WorkingDirectory = buildOutputFolder,
                     UseShellExecute = false,
@@ -375,6 +383,33 @@ namespace JovDK.Unity.Editor.Build
             }
 
             return result;
+        }
+
+        static string ResolveSevenZipPath()
+        {
+            string configured = EditorPrefs.GetString(SevenZipEditorPrefKey, string.Empty);
+            if (!string.IsNullOrWhiteSpace(configured))
+            {
+                string fullConfigured = Path.GetFullPath(configured);
+                if (File.Exists(fullConfigured))
+                    return fullConfigured;
+            }
+
+            string[] candidatePaths = new string[]
+            {
+                SevenZipExecutable,
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "7-Zip", "7z.exe"),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), "7-Zip", "7z.exe")
+            };
+
+            for (int i = 0; i < candidatePaths.Length; i++)
+            {
+                string candidate = candidatePaths[i];
+                if (File.Exists(candidate))
+                    return candidate;
+            }
+
+            return null;
         }
 
         static bool IsExcludedPath(string path)

@@ -39,7 +39,7 @@ namespace JovDK.Debugging
 
         static public void NotImplementedLogWarning()
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             int stackBackSteps = 1;
             DevLogWarning(stackBackSteps, "[NOT IMPLEMENTED!]".ToColor(GoodColors.Red));
 #endif
@@ -47,7 +47,7 @@ namespace JovDK.Debugging
 
         static public void DefaultGenericLog(params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             int stackBackSteps = 1;
             string logPrefix = ">".ToColor(GoodColors.Orange);
 
@@ -68,7 +68,7 @@ namespace JovDK.Debugging
 
         static public void DefaultButtonLog(params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             int stackBackSteps = 1;
             string logPrefix = "#>".ToColor(GoodColors.Blue);
 
@@ -89,7 +89,7 @@ namespace JovDK.Debugging
 
         static public void DefaultCallbackLog(params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             int stackBackSteps = 1;
             string logPrefix = ">".ToColor(GoodColors.Pink);
 
@@ -110,7 +110,7 @@ namespace JovDK.Debugging
 
         static public void DefaultSubscriptionLog(params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             int stackBackSteps = 1;
             string logPrefix = "#>".ToColor(GoodColors.Pink);
 
@@ -137,7 +137,7 @@ namespace JovDK.Debugging
         /// </param>
         static public void DevLog(params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             int stackBackSteps = 1;
             DevLog(stackBackSteps, context: null, messages);
 #endif
@@ -156,7 +156,7 @@ namespace JovDK.Debugging
             int stackBackSteps,
             params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             stackBackSteps++;
             DevLog(stackBackSteps, context: null, messages);
 #endif
@@ -175,7 +175,7 @@ namespace JovDK.Debugging
             UnityObject context = null,
             params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             int stackBackSteps = 1;
             DevLog(stackBackSteps, context, messages);
 #endif
@@ -198,7 +198,7 @@ namespace JovDK.Debugging
             UnityObject context = null,
             params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             stackBackSteps++;
             string debugText = DevLogText(stackBackSteps, messages);
 
@@ -217,7 +217,7 @@ namespace JovDK.Debugging
         /// </param>
         static public void DevLogWarning(params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             int stackBackSteps = 1;
             DevLogWarning(stackBackSteps, context: null, messages);
 #endif
@@ -236,7 +236,7 @@ namespace JovDK.Debugging
             int stackBackSteps,
             params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             stackBackSteps++;
             DevLogWarning(stackBackSteps, context: null, messages);
 #endif
@@ -256,7 +256,7 @@ namespace JovDK.Debugging
             UnityObject context = null,
             params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             int stackBackSteps = 1;
             DevLogWarning(stackBackSteps, context, messages);
 #endif
@@ -279,7 +279,7 @@ namespace JovDK.Debugging
             UnityObject context = null,
             params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             stackBackSteps++;
             string debugText = DevLogText(stackBackSteps, messages);
 
@@ -298,7 +298,7 @@ namespace JovDK.Debugging
         /// </param>
         static public void DevLogError(params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             int stackBackSteps = 1;
             DevLogError(stackBackSteps, context: null, messages);
 #endif
@@ -317,7 +317,7 @@ namespace JovDK.Debugging
             int stackBackSteps,
             params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             stackBackSteps++;
             DevLogError(stackBackSteps, context: null, messages);
 #endif
@@ -336,7 +336,7 @@ namespace JovDK.Debugging
             UnityObject context = null,
             params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             int stackBackSteps = 1;
             DevLogError(stackBackSteps, context: null, messages);
 #endif
@@ -358,7 +358,7 @@ namespace JovDK.Debugging
             UnityObject context = null,
             params string[] messages)
         {
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             stackBackSteps++;
             string debugText = DevLogText(stackBackSteps, messages);
 
@@ -398,12 +398,12 @@ namespace JovDK.Debugging
             StringBuilder stringBuilder = new StringBuilder();
             stackBackSteps++;
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             stringBuilder.AppendWithColor("DEVLOG", GoodColors.Pink);
             stringBuilder.Append(" | ");
 #endif
 
-#if UNITY_EDITOR || (DEVELOPMENT_BUILD && !UNITY_WEBGL)
+#if UNITY_EDITOR || ((DEVELOPMENT_BUILD || true) && !UNITY_WEBGL)
             System.Reflection.MethodBase _methodInfo = null;
             StackFrame _stackFrame = null;
 
@@ -435,7 +435,7 @@ namespace JovDK.Debugging
 
 #endif
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD 
+#if UNITY_EDITOR || (DEVELOPMENT_BUILD || true)
             foreach (string message in messages)
             {
                 if (message != null)

@@ -423,7 +423,7 @@ namespace JovDK.Debugging
 
             if (_methodInfo != null)
             {
-                stringBuilder.AppendWithColor(_methodInfo.ReflectedType.FullName, GoodColors.Yellow);
+                stringBuilder.AppendWithColor(_methodInfo.ReflectedType.Name, GoodColors.Yellow);
                 stringBuilder.Append(" | ");
             }
 
@@ -562,7 +562,7 @@ namespace JovDK.Debugging
             StackFrame _stackFrame = new StackFrame(stackBackSteps, true);
             System.Reflection.MethodBase _methodInfo = _stackFrame.GetMethod();
 
-            stringBuilder.AppendWithColor(_methodInfo.ReflectedType.FullName, GoodColors.Yellow);
+            stringBuilder.AppendWithColor(_methodInfo.ReflectedType.Name, GoodColors.Yellow);
             stringBuilder.Append(" | ");
             stringBuilder.AppendWithColor(_stackFrame.GetMethod().Name, GoodColors.Yellow);
             stringBuilder.Append(" | ");

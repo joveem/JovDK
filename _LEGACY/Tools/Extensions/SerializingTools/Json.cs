@@ -91,6 +91,13 @@ namespace JovDK.SerializingTools.Json
 
         }
 
+        public static T DeserializeJsonToObject<T>(
+            this string text,
+            JsonSerializerSettings jsonSerializerSettings)
+        {
+            return JsonConvert.DeserializeObject<T>(text, jsonSerializerSettings);
+        }
+
         public static T ConvertDynamicJsonToObject<T>(dynamic dynamicObject)
         {
 

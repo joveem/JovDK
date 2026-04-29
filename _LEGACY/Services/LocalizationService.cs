@@ -31,8 +31,8 @@ namespace JovDK.LEGACY.Localization
         // TODO: objects
         public static LocalizationService Instance;
 
-        string _selectedLanguage = "en-us";
-        // string _selectedLanguage = "pt-br";
+        // string _selectedLanguage = "en-us";
+        string _selectedLanguage = "pt-br";
         public string SelectedLanguage => _selectedLanguage;
 
 

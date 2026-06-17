@@ -52,6 +52,8 @@ namespace JovDK.App.Settings.Video
         {
             // TODO: REVIEW THIS!
             Application.targetFrameRate = 60;
+
+            DebugExtension.DevLog("Application.targetFrameRate = ", Application.targetFrameRate.ToString());
         }
 
         // void Update()

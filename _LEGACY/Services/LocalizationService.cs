@@ -170,30 +170,42 @@ namespace JovDK.LEGACY.Localization
         }
         */
 
-        public static string GetTextById(string termId, string defaultValue = ".....")
+        public static string GetTextById(
+            string termId,
+            string defaultValue = ".....",
+            LocalizationService baseInstance = null)
+        {
+            if (baseInstance is not null)
+                return baseInstance.GetTextById(termId, defaultValue: defaultValue);
+            else
+                return Instance.GetTextById(termId, defaultValue: defaultValue);
+        }
+
+        public string GetTextById(
+            string termId,
+            string defaultValue = ".....")
         {
             string termValue = defaultValue;
 
             bool success = false;
 
-            Instance.DoIfNotNull(() =>
-                Instance._currentLanguageTermsById.DoIfNotNull(() =>
-                {
-                    success = Instance._currentLanguageTermsById.TryGetValue(termId, out string foundTermValue);
+            _currentLanguageTermsById.DoIfNotNull(() =>
+            {
+                success = _currentLanguageTermsById.TryGetValue(termId, out string foundTermValue);
 
-                    if (success)
-                        termValue = foundTermValue;
-                    else
-                    {
-                        string debugTermId = termId ?? ">NULL<";
-                        DebugExtension.DevLogWarning(
-                            "$$> ".ToColor(GoodColors.Red),
-                            "Term not found! ", "\n",
-                            "termId = ", debugTermId, "\n",
-                            "_currentLanguageTermsById.Count = ", Instance._currentLanguageTermsById.Count.ToString(), "\n",
-                            "");
-                    }
-                }));
+                if (success)
+                    termValue = foundTermValue;
+                else
+                {
+                    string debugTermId = termId ?? ">NULL<";
+                    DebugExtension.DevLogWarning(
+                        "$$> ".ToColor(GoodColors.Red),
+                        "Term not found! ", "\n",
+                        "termId = ", debugTermId, "\n",
+                        "_currentLanguageTermsById.Count = ", _currentLanguageTermsById.Count.ToString(), "\n",
+                        "");
+                }
+            });
 
             // uncomment to debug translations on Development versions
             /*

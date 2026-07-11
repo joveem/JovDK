@@ -263,7 +263,7 @@ namespace JovDK.Audio.Service
                 int randomIndex = 0;
                 int variationsAmount = audioConfig.AudioClipsVariationsList.Length;
 
-                if (variationsAmount > 0)
+                if (variationsAmount > 1)
                 {
                     if (forceRandomIndex == null)
                     {

@@ -115,11 +115,12 @@ namespace JovDK.Generic.UnityEngineExtensions
         #endregion MonoBehaviour
 
         #region Controller
-        public static void ValidateInstance()
-        {
-            if (_instance == null)
-                _instance = FindFirstObjectByType<DisabledMonoBehaviourTriggersExtensionService>(FindObjectsInactive.Include);
-        }
+        // TODO: REVIEW THIS! (9ghn0208g2e)
+        // public static void ValidateInstance()
+        // {
+        //     // if (_instance == null)
+        //     //     _instance = FindFirstObjectByType<DisabledMonoBehaviourTriggersExtensionService>(FindObjectsInactive.Include);
+        // }
 
         void ValidateSingleton()
         {
@@ -163,7 +164,8 @@ namespace JovDK.Generic.UnityEngineExtensions
 
         public static void RefreshAllLists()
         {
-            ValidateInstance();
+            // TODO: REVIEW THIS! (9ghn0208g2e)
+            // ValidateInstance();
 
             DisabledMonoBehaviourTriggersExtensionService instance = _instance;
             if (instance == null)

@@ -474,6 +474,8 @@ namespace JovDK.Audio.Service
             string sfxId,
             AudioTaskOptions audioTaskOptions)
         {
+            // DebugExtension.DevLogError("sfxId = ", sfxId.SerializeObjectToJSON());
+
             AudioTaskResult result = new AudioTaskResult();
             result.Success = false;
 
@@ -517,6 +519,7 @@ namespace JovDK.Audio.Service
             AudioTaskOptions audioTaskOptions)
         {
             // DebugExtension.DevLog("sfxId = ", sfxId.SerializeObjectToJSON());
+            // DebugExtension.DevLogError("sfxId = ", sfxId.SerializeObjectToJSON());
 
             AudioTaskResult result = new AudioTaskResult();
             result.Success = false;

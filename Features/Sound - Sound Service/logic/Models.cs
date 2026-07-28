@@ -43,6 +43,7 @@ namespace JovDK.Audio.Service
         public float? OverrideVolumeMultiplier = null;
         public int? IgnoreRandomIndex = null;
         public int? ForceRandomIndex = null;
+        public double? InitialPlaybackPositionSeconds = null;
     }
 
     public class AudioTaskResult

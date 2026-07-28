@@ -302,6 +302,16 @@ namespace JovDK.Audio.Service
                     audioSourceToPlay.pitch = audioConfig.PitchFactor * pitchMultiplier;
                     audioSourceToPlay.volume = audioConfig.VolumeFactor * finalVolumeFactor;
                     audioSourceToPlay.loop = loop;
+
+                    if (audioTaskOptions.InitialPlaybackPositionSeconds.HasValue)
+                    {
+                        double duration = audioSourceToPlay.clip.length;
+                        double position = duration > 0d
+                            ? audioTaskOptions.InitialPlaybackPositionSeconds.Value % duration
+                            : audioTaskOptions.InitialPlaybackPositionSeconds.Value;
+                        audioSourceToPlay.time = (float)System.Math.Max(0d, position);
+                    }
+
                     audioSourceToPlay.Play();
 
                     result.Success = true;

@@ -361,11 +361,9 @@ namespace JovDK.Audio.Service
 
                     if (audioTaskOptions.InitialPlaybackPositionSeconds.HasValue)
                     {
-                        double duration = audioSourceToPlay.clip.length;
-                        double position = duration > 0d
-                            ? audioTaskOptions.InitialPlaybackPositionSeconds.Value % duration
-                            : audioTaskOptions.InitialPlaybackPositionSeconds.Value;
-                        audioSourceToPlay.time = (float)System.Math.Max(0d, position);
+                        AudioPlaybackPositionTools.TryApplySeconds(
+                            audioSourceToPlay,
+                            audioTaskOptions.InitialPlaybackPositionSeconds.Value);
                     }
 
                     audioSourceToPlay.Play();

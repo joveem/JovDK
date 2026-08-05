@@ -413,12 +413,13 @@ namespace JovDK.Core.Queues.Coroutines
         public void Dispose()
         {
             if (_disposed) return;
-            _disposed = true;
 
             _disposeCts.Cancel();
 
             // Cancel pending work.
             CancelPending();
+
+            _disposed = true;
 
             // Stop runner if host still exists.
             if (_host && _runner != null)

@@ -68,7 +68,7 @@ namespace JovDK.Audio.Service
 
 
         #region MonoBehaviour
-        void Awake()
+        protected virtual void Awake()
         {
             SetInitialState();
         }
@@ -130,7 +130,7 @@ namespace JovDK.Audio.Service
             });
         }
 
-        bool IsAudioRegistered(string audioId, out AudioConfig foundAudioConfig)
+        protected bool IsAudioRegistered(string audioId, out AudioConfig foundAudioConfig)
         {
             bool value = false;
 
@@ -157,6 +157,62 @@ namespace JovDK.Audio.Service
             }
 
             return value;
+        }
+
+        protected AudioTaskResult ResolveAudioTask(
+            string audioId,
+            AudioTaskOptions audioTaskOptions)
+        {
+            AudioTaskResult result = new AudioTaskResult();
+            result.Success = false;
+
+            if (audioTaskOptions == null ||
+                !IsAudioRegistered(audioId, out AudioConfig audioConfig))
+            {
+                return result;
+            }
+
+            int variationsAmount = audioConfig.AudioClipsVariationsList?.Length ?? 0;
+
+            if (variationsAmount <= 0)
+                return result;
+
+            int variationIndex = 0;
+
+            if (variationsAmount > 1)
+            {
+                if (audioTaskOptions.ForceRandomIndex.HasValue)
+                {
+                    variationIndex = audioTaskOptions.ForceRandomIndex.Value;
+                }
+                else if (!audioTaskOptions.IgnoreRandomIndex.HasValue)
+                {
+                    variationIndex = UnityRandom.Range(0, variationsAmount);
+                }
+                else
+                {
+                    do
+                    {
+                        variationIndex = UnityRandom.Range(0, variationsAmount);
+                    }
+                    while (variationIndex == audioTaskOptions.IgnoreRandomIndex.Value);
+                }
+            }
+
+            if (variationIndex < 0 || variationIndex >= variationsAmount)
+                return result;
+
+            AudioSource audioSource = audioConfig.AudioSourceIntances[variationIndex];
+
+            if (audioSource == null || audioSource.clip == null)
+                return result;
+
+            result.SetAudioSourceResult(audioSource);
+            result.DefaultAudioVolumeFactor = audioConfig.VolumeFactor;
+            result.AudioMaxDuration = audioSource.clip.length;
+            result.RandomVariationIndex = variationIndex;
+            result.Success = true;
+            return result;
         }
 
         public void SetGategoryVolumeFactor(string categoryId, float volumeFactor)
@@ -228,7 +284,7 @@ namespace JovDK.Audio.Service
             return value;
         }
 
-        public AudioTaskResult _INTERNAL_PlaySfx(
+        public virtual AudioTaskResult _INTERNAL_PlaySfx(
             string sfxId,
             float pitchMultiplier = 1f,
             int? ignoreRandomIndex = null,
@@ -244,7 +300,7 @@ namespace JovDK.Audio.Service
             return _INTERNAL_PlaySfx(sfxId, audioTaskOptions);
         }
 
-        public AudioTaskResult _INTERNAL_PlaySfx(
+        public virtual AudioTaskResult _INTERNAL_PlaySfx(
             string sfxId,
             AudioTaskOptions audioTaskOptions)
         {
@@ -305,11 +361,9 @@ namespace JovDK.Audio.Service
 
                     if (audioTaskOptions.InitialPlaybackPositionSeconds.HasValue)
                     {
-                        double duration = audioSourceToPlay.clip.length;
-                        double position = duration > 0d
-                            ? audioTaskOptions.InitialPlaybackPositionSeconds.Value % duration
-                            : audioTaskOptions.InitialPlaybackPositionSeconds.Value;
-                        audioSourceToPlay.time = (float)System.Math.Max(0d, position);
+                        AudioPlaybackPositionTools.TryApplySeconds(
+                            audioSourceToPlay,
+                            audioTaskOptions.InitialPlaybackPositionSeconds.Value);
                     }
 
                     audioSourceToPlay.Play();
@@ -330,7 +384,9 @@ namespace JovDK.Audio.Service
             return result;
         }
 
-        public AudioTaskResult _INTERNAL_StopSfx(string sfxId, float pitchMultiplier = 1f)
+        public virtual AudioTaskResult _INTERNAL_StopSfx(
+            string sfxId,
+            float pitchMultiplier = 1f)
         {
             AudioTaskResult result = new AudioTaskResult();
             result.Success = false;
@@ -366,7 +422,7 @@ namespace JovDK.Audio.Service
             return result;
         }
 
-        public AudioTaskResult _INTERNAL_PlayOneShotSfx(
+        public virtual AudioTaskResult _INTERNAL_PlayOneShotSfx(
             string sfxId,
             float pitchMultiplier = 1f,
             int? ignoreRandomIndex = null,
@@ -382,7 +438,7 @@ namespace JovDK.Audio.Service
             return _INTERNAL_PlayOneShotSfx(sfxId, audioTaskOptions);
         }
 
-        public AudioTaskResult _INTERNAL_PlayOneShotSfx(
+        public virtual AudioTaskResult _INTERNAL_PlayOneShotSfx(
             string sfxId,
             AudioTaskOptions audioTaskOptions)
         {

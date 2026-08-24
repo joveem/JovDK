@@ -57,7 +57,7 @@ namespace JovDK.Animations.TextMeshPro
 
         // [SerializeField] bool _parts;
         // [SerializeField] Button _mainButton;
-        // [SerializeField] TextMeshProUGUI _mainText;
+        // [SerializeField] TMP_Text _mainText;
         // [SerializeField] Image _mainImage;
         // [SerializeField] Transform _mainContainer;
 
@@ -231,7 +231,7 @@ namespace JovDK.Animations.TextMeshPro
         // TODO: animationDuration, based on this
         // TODO: changing:e9ed10aa5bf265e16e0700abd1263324fe888ab1
         public static async void RevelationAnimation(
-            this TextMeshProUGUI textComponent,
+            this TMP_Text textComponent,
             float animationDuration,
             string text = null,
             Color32 disabledColor = default)
@@ -256,7 +256,7 @@ namespace JovDK.Animations.TextMeshPro
         // TODO: animationDuration, based on this
         // TODO: changing:e9ed10aa5bf265e16e0700abd1263324fe888ab1
         public static async void RevelationAnimationUnsafe(
-            this TextMeshProUGUI textComponent,
+            this TMP_Text textComponent,
             float animationDuration,
             string text = null,
             Color32 disabledColor = default)
@@ -352,7 +352,7 @@ namespace JovDK.Animations.TextMeshPro
         }
 
         public static IEnumerator RevelationAnimationCoroutine(
-            this TextMeshProUGUI textComponent,
+            this TMP_Text textComponent,
             float animationDuration,
             string text = null,
             Color32 disabledColor = default,
@@ -483,7 +483,7 @@ namespace JovDK.Animations.TextMeshPro
         //     if (disabledColor.Equals(default(Color32)))
         //         disabledColor = new Color32(0, 0, 0, 0);
 
-        //     TextMeshProUGUI firstTextComponent = textComponents[0];
+        //     TMP_Text firstTextComponent = textComponents[0];
 
         //     if (text != null)
         //         firstTextComponent.text = text;
@@ -608,7 +608,7 @@ namespace JovDK.Animations.TextMeshPro
         // TODO: animationDuration, based on this
         // TODO: changing:e9ed10aa5bf265e16e0700abd1263324fe888ab1
         public static async void ReverseRevelationAnimation(
-            this TextMeshProUGUI textComponent,
+            this TMP_Text textComponent,
             float animationDuration,
             string text = null,
             Color32 disabledColor = default)
@@ -664,7 +664,7 @@ namespace JovDK.Animations.TextMeshPro
         }
 
         public static IEnumerator ReverseRevelationAnimationCoroutine(
-            this TextMeshProUGUI textComponent,
+            this TMP_Text textComponent,
             float animationDuration,
             string text = null,
             Color32 disabledColor = default,
@@ -736,7 +736,7 @@ namespace JovDK.Animations.TextMeshPro
         //     if (disabledColor.Equals(default(Color32)))
         //         disabledColor = new Color32(0, 0, 0, 0);
 
-        //     TextMeshProUGUI firstTextComponent = textComponents[0];
+        //     TMP_Text firstTextComponent = textComponents[0];
 
         //     if (text != null)
         //     {

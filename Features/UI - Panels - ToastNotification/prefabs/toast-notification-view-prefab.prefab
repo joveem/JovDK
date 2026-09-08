@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2699859883364596175}
   - component: {fileID: 8512478665194457706}
   - component: {fileID: 1889855345093016623}
+  - component: {fileID: 4008955860477777200}
   m_Layer: 5
   m_Name: content-text
   m_TagString: Untagged
@@ -152,6 +153,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 0
   m_VerticalFit: 2
+--- !u!114 &4008955860477777200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 241612625556422325}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e114b30109f33274fa3ede660535af4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JovDK.Core::MultiLanguageText
+  _baseTextMeshProUGUI: {fileID: 8512478665194457706}
+  _termKey: toast-notification-view-prefab.toast-notification-view-prefab.content-text
 --- !u!1 &3506580607983678828
 GameObject:
   m_ObjectHideFlags: 0
@@ -602,6 +617,7 @@ GameObject:
   - component: {fileID: 1375438793875204053}
   - component: {fileID: 4846545494892204986}
   - component: {fileID: 3833204821407816069}
+  - component: {fileID: 5498442523913765126}
   m_Layer: 5
   m_Name: text
   m_TagString: Untagged
@@ -727,3 +743,17 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &5498442523913765126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8314769196937683675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e114b30109f33274fa3ede660535af4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JovDK.Core::MultiLanguageText
+  _baseTextMeshProUGUI: {fileID: 3833204821407816069}
+  _termKey: toast-notification-view-prefab.toast-notification-view-prefab.close-button.text

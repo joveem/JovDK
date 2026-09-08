@@ -7,36 +7,64 @@ using TMPro;
 
 using JovDK.Debugging;
 using JovDK.LEGACY.Localization;
+using JovDK.SafeActions;
 
 
-public class MultiLanguageText : MonoBehaviour
+namespace JovDK.LEGACY.Localization
 {
-
-
-    public string textId = "undefined";
-
-    private void Start()
+    public class MultiLanguageText : MonoBehaviour
     {
 
-        ApplyText();
+        // [Space(5), Header("[ Dependencies ]"), Space(10)]
 
-    }
+        // [SerializeField] bool _dependencies;
 
-    public void ApplyText()
-    {
 
-        if (textId == "undefined")
+        // [Space(5), Header("[ State ]"), Space(10)]
+
+        // [SerializeField] bool _state;
+
+
+        [Space(5), Header("[ Parts ]"), Space(10)]
+
+        [SerializeField] TextMeshProUGUI _baseTextMeshProUGUI;
+
+
+        [Space(5), Header("[ Configs ]"), Space(10)]
+
+        [SerializeField] string _termKey = UndefinedIdContent;
+        const string UndefinedIdContent = "UNDEFINED";
+
+
+
+        #region MonoBehaviour
+        void Awake()
         {
-            DebugExtension.DevLogWarning("undefined textId on object \"" + gameObject.name + "\"!");
+            SetInitialState();
+        }
+        #endregion MonoBehaviour
+
+        #region Controller
+        void SetInitialState()
+        {
+            // DebugExtension.DevLog();
+
+            ApplyText();
         }
 
-        if (GetComponent<Text>() != null)
-            GetComponent<Text>().text = LocalizationService.GetTextById(textId);
-        else if (GetComponent<TextMeshProUGUI>() != null)
-            GetComponent<TextMeshProUGUI>().text = LocalizationService.GetTextById(textId);
-        else
-            DebugExtension.DevLogError("undefined Text / TextMeshProUGUI COMPONENT on object \"" + gameObject.name + "\"!");
+        public void ApplyText()
+        {
+            if (_termKey == UndefinedIdContent)
+            {
+                DebugExtension.DevLogWarning("$$> ".ToColor(GoodColors.Orange), "Undefined _textKey on object \"", gameObject.name, "\"!");
+                return;
+            }
 
+            _baseTextMeshProUGUI.DoIfNotNull(() =>
+            {
+                _baseTextMeshProUGUI.text = LocalizationService.GetTextById(_termKey);
+            });
+        }
+        #endregion Controller
     }
-
 }

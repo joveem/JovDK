@@ -301,7 +301,7 @@ namespace JovDK.SafeActions
         #endregion Image
 
         #region Text
-        public static void SetTextIfNotNull(this TextMeshProUGUI text, string content, bool debugIfNull = true)
+        public static void SetTextIfNotNull(this TMP_Text text, string content, bool debugIfNull = true)
         {
             text.DoIfNotNull(() => text.text = content, debugIfNull);
         }

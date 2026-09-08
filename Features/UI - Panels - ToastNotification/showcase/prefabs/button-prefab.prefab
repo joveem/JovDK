@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 545044878925323170}
   - component: {fileID: 3374951886403572800}
   - component: {fileID: 509210521990426446}
+  - component: {fileID: 4216000117534300711}
   m_Layer: 5
   m_Name: text
   m_TagString: Untagged
@@ -136,6 +137,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4216000117534300711
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7333609682321352862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e114b30109f33274fa3ede660535af4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JovDK.Core::MultiLanguageText
+  _baseTextMeshProUGUI: {fileID: 509210521990426446}
+  _termKey: button-prefab.button-prefab.text
 --- !u!1 &8002790725542805735
 GameObject:
   m_ObjectHideFlags: 0

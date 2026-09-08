@@ -156,6 +156,7 @@ GameObject:
   - component: {fileID: 7073034322923508792}
   - component: {fileID: 7679525219529458298}
   - component: {fileID: 8071883118796619074}
+  - component: {fileID: 1342540990518627011}
   m_Layer: 5
   m_Name: ddi-text
   m_TagString: Untagged
@@ -281,6 +282,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1342540990518627011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6077620806160131554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e114b30109f33274fa3ede660535af4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: JovDK.Core::MultiLanguageText
+  _baseTextMeshProUGUI: {fileID: 8071883118796619074}
+  _termKey: ddi-dropdown-layout-01-prefab.ddi-dropdown-layout-01-prefab.ddi-text
 --- !u!1 &6646766446713458884
 GameObject:
   m_ObjectHideFlags: 0

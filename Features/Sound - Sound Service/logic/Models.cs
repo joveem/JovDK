@@ -43,6 +43,7 @@ namespace JovDK.Audio.Service
         public float? OverrideVolumeMultiplier = null;
         public int? IgnoreRandomIndex = null;
         public int? ForceRandomIndex = null;
+        public double? InitialPlaybackPositionSeconds = null;
     }
 
     public class AudioTaskResult
@@ -60,11 +61,43 @@ namespace JovDK.Audio.Service
         }
     }
 
+    public static class AudioPlaybackPositionTools
+    {
+        public static int ResolveTimeSamples(
+            double positionSeconds,
+            int clipFrequency,
+            int clipSamples)
+        {
+            if (clipFrequency <= 0 || clipSamples <= 0)
+                return 0;
+
+            double normalizedSeconds = System.Math.Max(0d, positionSeconds);
+            long requestedSamples =
+                (long)System.Math.Floor(normalizedSeconds * clipFrequency);
+            return (int)(requestedSamples % clipSamples);
+        }
+
+        public static bool TryApplySeconds(
+            AudioSource audioSource,
+            double positionSeconds)
+        {
+            if (audioSource == null || audioSource.clip == null)
+                return false;
+
+            audioSource.timeSamples = ResolveTimeSamples(
+                positionSeconds,
+                audioSource.clip.frequency,
+                audioSource.clip.samples);
+            return true;
+        }
+    }
+
     public static class AudioCategoriesKeys
     {
         public const string MenuUiSfx = "menu-ui-sfx-01";
         public const string MenuVideoAudio = "menu-video-audio-01";
         public const string GamePlaySfx = "gameplay-sfx-01";
         public const string GamePlayMusic = "gameplay-music-01";
+        public const string GamePlayVoiceNarrationSfx = "gameplay-voice-narration-sfx-01";
     }
 }

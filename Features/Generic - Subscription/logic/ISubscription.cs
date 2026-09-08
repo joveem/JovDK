@@ -49,6 +49,15 @@ namespace JovDK.Core.Subscription
             baseSubscriptionsList.Add(subscription);
         }
 
+        public static void RegisterFrom<T>(
+            this List<ISubscription> baseSubscriptionsList,
+            ReadOnlyReactiveProperty<T> reactiveProperty,
+            Action<T> relativeCallback)
+        {
+            R3ReadOnlySubscription<T> subscription = R3ReadOnlySubscription.From(reactiveProperty, relativeCallback);
+            baseSubscriptionsList.Add(subscription);
+        }
+
         public static void RegisterFrom(
             this List<ISubscription> baseSubscriptionsList,
             Delegate target,
@@ -211,6 +220,16 @@ namespace JovDK.Core.Subscription
         }
     }
 
+    public static class R3ReadOnlySubscription
+    {
+        public static R3ReadOnlySubscription<T> From<T>(
+            ReadOnlyReactiveProperty<T> reactiveProperty,
+            Action<T> relativeCallback)
+        {
+            return new R3ReadOnlySubscription<T>(reactiveProperty, relativeCallback);
+        }
+    }
+
     public class R3Subscription<T> : ISubscription
     {
         ReactiveProperty<T> _reactiveProperty;
@@ -219,6 +238,45 @@ namespace JovDK.Core.Subscription
 
         public R3Subscription(
             ReactiveProperty<T> reactiveProperty,
+            Action<T> relativeCallback)
+        {
+            _reactiveProperty = reactiveProperty;
+            _relativeCallback = relativeCallback;
+
+            Subscribe();
+        }
+
+        void Subscribe()
+        {
+            _disposable = _reactiveProperty.Subscribe(_relativeCallback);
+        }
+
+        void ISubscription.Unsubscribe()
+        {
+            try
+            {
+                _disposable.Dispose();
+            }
+            catch (Exception exception)
+            {
+                DebugExtension.DevLogError(
+                    "$$> ".ToColor(GoodColors.Red),
+                    "exception = ", "\n",
+                    exception.ToString());
+
+                // throw;
+            }
+        }
+    }
+
+    public class R3ReadOnlySubscription<T> : ISubscription
+    {
+        ReadOnlyReactiveProperty<T> _reactiveProperty;
+        Action<T> _relativeCallback;
+        IDisposable _disposable;
+
+        public R3ReadOnlySubscription(
+            ReadOnlyReactiveProperty<T> reactiveProperty,
             Action<T> relativeCallback)
         {
             _reactiveProperty = reactiveProperty;

@@ -41,6 +41,7 @@ namespace JovDK.Unity.Editor.Build
         public static event Action<BuildReport> BuildCompleted;
         // One optional project-owned scope. Acquired after saving version counters under the
         // original identifier, and disposed before the outer transaction releases its guard.
+        public static Func<string[]> GetProjectScriptingDefines { get; set; }
         public static Func<BuildTarget, bool, IDisposable> BeginProjectBuildScope { get; set; }
         public static event Action DrawProjectOptions;
         static void DrawProjectBuildOptions() => DrawProjectOptions?.Invoke();
@@ -158,6 +159,7 @@ namespace JovDK.Unity.Editor.Build
             string previousBundleVersion = PlayerSettings.bundleVersion;
             PlayerSettings.bundleVersion = _appVersion.ToString();
 
+            buildPlayerOptions.extraScriptingDefines = GetProjectScriptingDefines?.Invoke();
             buildPlayerOptions.options = GetEffectiveBuildOptions(buildPlayerOptions.options);
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildCompleted?.Invoke(report);
@@ -281,6 +283,7 @@ namespace JovDK.Unity.Editor.Build
             PlayerSettings.Android.bundleVersionCode = _currentBuildBundleCode;
             PlayerSettings.bundleVersion = _appVersion.ToString();
 
+            buildPlayerOptions.extraScriptingDefines = GetProjectScriptingDefines?.Invoke();
             buildPlayerOptions.options = GetEffectiveBuildOptions(buildPlayerOptions.options);
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildCompleted?.Invoke(report);

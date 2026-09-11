@@ -290,23 +290,27 @@ namespace JovDK.Unity.Editor.Build
             TimeSpan buildDuration = buildEnd.Subtract(buildStart);
 
             if (summary.result == BuildResult.Succeeded)
-                DebugExtension.DevLog("[ Android ] ".ToColor(GoodColors.Green) + "Build succeeded! (duration = " + buildDuration.ToString() + ")  ~" + summary.totalSize / 7943573 + " MB (" + summary.totalSize + " bytes)");
-
-            if (summary.result == BuildResult.Failed)
+            {
+                DebugExtension.DevLog
+                    ("[ Android ] ".ToColor(GoodColors.Green),
+                    "Build succeeded! ",
+                    "[v", _appVersion.ToString(), "] ", "(duration = ", buildDuration.ToString(), ")  ~" + summary.totalSize / 7943573 + " MB (" + summary.totalSize + " bytes)");
+            }
+            else if (summary.result == BuildResult.Failed)
                 DebugExtension.DevLogError("[ Android ] ".ToColor(GoodColors.Red) + "Build failed (duration = " + buildDuration.ToString() + ")");
+            else
+            {
+                DebugExtension.DevLogWarning(
+                    "[ Android ] ".ToColor(GoodColors.Red),
+                    "Build result: Cancelled or Unknown ",
+                    "(duration = ", buildDuration.ToString(), " | ",
+                    "result = ", summary.result.ToString(), ")");
+            }
 
             bool buildSucceeded = summary.result == BuildResult.Succeeded;
             LogBuildResult("[ Android ] ", buildSucceeded);
 
-            if (buildSucceeded)
-            {
-                bool compressionSucceeded = TryCompressBuildFolder(buildOutputFolder, out string archivePath, out string compressionMessage);
-                LogCompressionResult("[ Android ] ", compressionSucceeded, archivePath, compressionMessage);
-            }
-            else
-            {
-                LogCompressionResult("[ Android ] ", false, null, "Compression skipped because build did not succeed.");
-            }
+            DebugExtension.DevLog("[ Android ] Automatic archive compression is disabled; the APK and provenance remain in the build output folder.");
 
             OnFinish?.Invoke();
         }

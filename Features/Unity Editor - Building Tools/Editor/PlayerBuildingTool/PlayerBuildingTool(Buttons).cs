@@ -26,13 +26,11 @@ namespace JovDK.Unity.Editor.Build
     {
         void BuildAndroidButton()
         {
-            HandleBuildVersions();
             BuildAndroid();
         }
 
         void BuildPcButton()
         {
-            HandleBuildVersions();
             BuildPc();
         }
 

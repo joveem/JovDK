@@ -35,6 +35,66 @@ namespace JovDK.Unity.Editor.Build
             "_ButDontShipItWithYourGame"
         };
 
+        public static bool IsBuilding => PlayerBuildTransaction.Active;
+        public static string AuthorizedOutput => PlayerBuildTransaction.Output;
+        public static event Action<BuildTarget, string, bool, bool> ValidateBuild;
+        public static event Action<BuildReport> BuildCompleted;
+        // Opt-in project policy; shared consumers keep their original options by default.
+        public static event Func<BuildOptions, BuildOptions> ConfigureBuildOptions;
+        public static BuildOptions GetEffectiveBuildOptions(BuildOptions options)
+        {
+            if (ConfigureBuildOptions != null)
+                foreach (Func<BuildOptions, BuildOptions> configure in ConfigureBuildOptions.GetInvocationList()) options = configure(options);
+            return options;
+        }
+        public void BuildAndroid(Action OnFinish = null) => ExecuteBuild(BuildTarget.Android, OnFinish);
+        public void BuildPc(Action OnFinish = null) => ExecuteBuild(BuildTarget.StandaloneWindows64, OnFinish);
+        public void BuildAndroidApk(bool development, Action onFinish = null)
+        {
+            bool previousDevelopment = _isDevelopmentBuild, previousApk = _buildApkInsteadOfAab;
+            try { _isDevelopmentBuild = development; _buildApkInsteadOfAab = true; BuildAndroid(onFinish); }
+            finally { _isDevelopmentBuild = previousDevelopment; _buildApkInsteadOfAab = previousApk; SaveBuildProperties(); }
+        }
+
+        void ExecuteBuild(BuildTarget target, Action onFinish)
+        {
+            if (IsBuilding) throw new InvalidOperationException("PlayerBuildingTool is already building.");
+            if (string.IsNullOrWhiteSpace(_fileAppName) || _fileAppName == "UNDEFINED" ||
+                _fileAppName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                throw new InvalidOperationException("Configure a valid file app name in JovDK/Tools/Build.");
+            var next = new Version(_fileVersion.Major, _fileVersion.Minor + 1);
+            string suffix = target == BuildTarget.Android ? "_android" : "_pc";
+            string folder = _fileAppName + "_" + next.Major.ToString("0000") + "_" + next.Minor.ToString("0000") + suffix + (_isDevelopmentBuild ? "_DEV" : "");
+            string outputDirectory = Path.Combine(GetBuildFolderPatch(), folder);
+            string output = Path.Combine(outputDirectory, target == BuildTarget.Android ? folder + (_buildApkInsteadOfAab ? ".apk" : ".aab") : PlayerSettings.productName + ".exe");
+            if (Directory.Exists(outputDirectory) || File.Exists(outputDirectory) || File.Exists(outputDirectory + ".7z"))
+                throw new InvalidOperationException("Build output already exists; choose a new file version.");
+            bool signingConfigured = !string.IsNullOrEmpty(_keystorePassword) && !string.IsNullOrEmpty(_keystoreAliasPassword);
+            ValidateBuild?.Invoke(target, output, _isDevelopmentBuild, signingConfigured);
+            var previousVersion = PlayerSettings.bundleVersion;
+            var previousCode = PlayerSettings.Android.bundleVersionCode;
+            var previousBundle = EditorUserBuildSettings.buildAppBundle;
+            var previousSymbols = EditorUserBuildSettings.androidCreateSymbols;
+            var previousStorePassword = PlayerSettings.Android.keystorePass;
+            var previousAliasPassword = PlayerSettings.Android.keyaliasPass;
+            using var transaction = new PlayerBuildTransaction(output);
+            try
+            {
+                HandleBuildVersions();
+                if (target == BuildTarget.Android) BuildAndroidCore(onFinish); else BuildPcCore(onFinish);
+            }
+            finally
+            {
+                PlayerSettings.bundleVersion = previousVersion;
+                PlayerSettings.Android.bundleVersionCode = previousCode;
+                EditorUserBuildSettings.buildAppBundle = previousBundle;
+                EditorUserBuildSettings.androidCreateSymbols = previousSymbols;
+                PlayerSettings.Android.keystorePass = previousStorePassword;
+                PlayerSettings.Android.keyaliasPass = previousAliasPassword;
+                // Transaction disposal follows this finally, including exceptional exits.
+            }
+        }
+
         void HandleBuildVersions()
         {
             _fileVersion = new Version(_fileVersion.Major, _fileVersion.Minor + 1);
@@ -48,7 +108,7 @@ namespace JovDK.Unity.Editor.Build
             SaveBuildProperties();
         }
 
-        public void BuildPc(Action OnFinish = null)
+        void BuildPcCore(Action OnFinish = null)
         {
             DateTime buildStart = DateTime.UtcNow;
 
@@ -92,7 +152,9 @@ namespace JovDK.Unity.Editor.Build
             string previousBundleVersion = PlayerSettings.bundleVersion;
             PlayerSettings.bundleVersion = _appVersion.ToString();
 
+            buildPlayerOptions.options = GetEffectiveBuildOptions(buildPlayerOptions.options);
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
+            BuildCompleted?.Invoke(report);
             BuildSummary summary = report.summary;
 
             DateTime buildEnd = DateTime.UtcNow;
@@ -166,7 +228,7 @@ namespace JovDK.Unity.Editor.Build
             OnFinish?.Invoke();
         }
 
-        public void BuildAndroid(Action OnFinish = null)
+        void BuildAndroidCore(Action OnFinish = null)
         {
             DateTime buildStart = DateTime.UtcNow;
 
@@ -184,6 +246,8 @@ namespace JovDK.Unity.Editor.Build
             string buildFileName = buildOutputFolderName + (_buildApkInsteadOfAab ? ".apk" : ".aab");
             string buildFilePath = Path.Combine(buildOutputFolder, buildFileName);
 
+            if (Directory.Exists(buildOutputFolder) || File.Exists(buildOutputFolder))
+                throw new InvalidOperationException("Build output already exists; choose a new file version.");
             Directory.CreateDirectory(buildOutputFolder);
 
             // handle scenes listing
@@ -211,7 +275,9 @@ namespace JovDK.Unity.Editor.Build
             PlayerSettings.Android.bundleVersionCode = _currentBuildBundleCode;
             PlayerSettings.bundleVersion = _appVersion.ToString();
 
+            buildPlayerOptions.options = GetEffectiveBuildOptions(buildPlayerOptions.options);
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
+            BuildCompleted?.Invoke(report);
             BuildSummary summary = report.summary;
 
             DateTime buildEnd = DateTime.UtcNow;
@@ -292,6 +358,11 @@ namespace JovDK.Unity.Editor.Build
             }
 
             archivePath = Path.Combine(parentDir.FullName, buildDir.Name + ".7z");
+            if (File.Exists(archivePath))
+            {
+                message = "Archive already exists; preserving the previous output.";
+                return false;
+            }
 
             List<string> relativeFiles = GetCompressibleRelativeFiles(buildOutputFolder);
             if (relativeFiles.Count == 0)

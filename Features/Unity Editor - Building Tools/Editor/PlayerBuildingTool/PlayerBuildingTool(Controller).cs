@@ -39,6 +39,11 @@ namespace JovDK.Unity.Editor.Build
         public static string AuthorizedOutput => PlayerBuildTransaction.Output;
         public static event Action<BuildTarget, string, bool, bool> ValidateBuild;
         public static event Action<BuildReport> BuildCompleted;
+        // One optional project-owned scope. Acquired after saving version counters under the
+        // original identifier, and disposed before the outer transaction releases its guard.
+        public static Func<BuildTarget, bool, IDisposable> BeginProjectBuildScope { get; set; }
+        public static event Action DrawProjectOptions;
+        static void DrawProjectBuildOptions() => DrawProjectOptions?.Invoke();
         // Opt-in project policy; shared consumers keep their original options by default.
         public static event Func<BuildOptions, BuildOptions> ConfigureBuildOptions;
         public static BuildOptions GetEffectiveBuildOptions(BuildOptions options)
@@ -81,6 +86,7 @@ namespace JovDK.Unity.Editor.Build
             try
             {
                 HandleBuildVersions();
+                using var projectScope = BeginProjectBuildScope?.Invoke(target, _isDevelopmentBuild);
                 if (target == BuildTarget.Android) BuildAndroidCore(onFinish); else BuildPcCore(onFinish);
             }
             finally

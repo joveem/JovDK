@@ -45,6 +45,7 @@ namespace JovDK.Unity.Editor.Build
 
             GUILayout.Space(15);
 
+            DrawProjectBuildOptions();
             FileConfigViewSection(titleLabelStyle, fieldTitleStylesList, inputFieldStylesList);
             DrawUILine();
             AppConfigViewSection(titleLabelStyle, fieldTitleStylesList, inputFieldStylesList);

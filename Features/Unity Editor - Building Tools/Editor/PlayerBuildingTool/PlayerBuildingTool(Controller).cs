@@ -39,6 +39,14 @@ namespace JovDK.Unity.Editor.Build
         public static string AuthorizedOutput => PlayerBuildTransaction.Output;
         public static event Action<BuildTarget, string, bool, bool> ValidateBuild;
         public static event Action<BuildReport> BuildCompleted;
+        // Opt-in project policy; shared consumers keep their original options by default.
+        public static event Func<BuildOptions, BuildOptions> ConfigureBuildOptions;
+        public static BuildOptions GetEffectiveBuildOptions(BuildOptions options)
+        {
+            if (ConfigureBuildOptions != null)
+                foreach (Func<BuildOptions, BuildOptions> configure in ConfigureBuildOptions.GetInvocationList()) options = configure(options);
+            return options;
+        }
         public void BuildAndroid(Action OnFinish = null) => ExecuteBuild(BuildTarget.Android, OnFinish);
         public void BuildPc(Action OnFinish = null) => ExecuteBuild(BuildTarget.StandaloneWindows64, OnFinish);
         public void BuildAndroidApk(bool development, Action onFinish = null)
@@ -144,6 +152,7 @@ namespace JovDK.Unity.Editor.Build
             string previousBundleVersion = PlayerSettings.bundleVersion;
             PlayerSettings.bundleVersion = _appVersion.ToString();
 
+            buildPlayerOptions.options = GetEffectiveBuildOptions(buildPlayerOptions.options);
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildCompleted?.Invoke(report);
             BuildSummary summary = report.summary;
@@ -266,6 +275,7 @@ namespace JovDK.Unity.Editor.Build
             PlayerSettings.Android.bundleVersionCode = _currentBuildBundleCode;
             PlayerSettings.bundleVersion = _appVersion.ToString();
 
+            buildPlayerOptions.options = GetEffectiveBuildOptions(buildPlayerOptions.options);
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildCompleted?.Invoke(report);
             BuildSummary summary = report.summary;

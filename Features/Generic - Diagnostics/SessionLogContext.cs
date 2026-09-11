@@ -4,7 +4,7 @@ namespace JovDK.Diagnostics
     public static class SessionLogContext
     {
         public static string BootRecord { get; private set; }
-        public static void Reset() { BootRecord = null; ConsoleSnapshot.Source = null; }
+        public static void Reset() { BootRecord = null; ConsoleSnapshot.Reset(); }
         public static bool TryCapture(string record)
         {
             if (string.IsNullOrEmpty(record) || BootRecord != null) return false;

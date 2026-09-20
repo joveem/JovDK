@@ -38,6 +38,8 @@ namespace JovDK.Control.Touch
         {
             // DebugExtension.DefaultSubscriptionLog();
 
+            // A pointer can arrive before Start; capture before moving either visual.
+            CaptureRestPosition();
             _touchDownPosition = eventData.position;
             ApplyStickPosition(_touchDownPosition);
 

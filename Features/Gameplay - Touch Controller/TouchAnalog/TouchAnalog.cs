@@ -33,7 +33,9 @@ namespace JovDK.Control.Touch
 
         [Space(5), Header("[ State ]"), Space(10)]
 
-        Vector3 _localStickInitialPosition;
+        Vector3 _baseRestAnchoredPosition;
+        Vector3 _centerRestAnchoredPosition;
+        bool _hasRestPosition;
         float _stickHeight = 100f;
         float _canvasHeight = 1080f;
 
@@ -74,6 +76,11 @@ namespace JovDK.Control.Touch
         void Awake()
         {
             SetupComponent();
+        }
+
+        void OnDisable()
+        {
+            ApplyInitialStickPosition();
         }
 
         void Start()

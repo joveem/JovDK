@@ -26,8 +26,7 @@ namespace JovDK.Control.Touch
     {
         void SetInitialValue()
         {
-            // _stickInitialPosition = _stickBaseImage.rectTransform.position;
-            // _localStickInitialPosition = _stickBaseImage.rectTransform.localPosition;
+            CaptureRestPosition();
             _stickHeight = _stickBaseImage.rectTransform.sizeDelta.y;
             CanvasScaler stickCanvasScaler = _stickBaseImage.rectTransform.GetComponentInParent<CanvasScaler>();
             stickCanvasScaler.DoIfNotNull(() => _canvasHeight = stickCanvasScaler.referenceResolution.y);

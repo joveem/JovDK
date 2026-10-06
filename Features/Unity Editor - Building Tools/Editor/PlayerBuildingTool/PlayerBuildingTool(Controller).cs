@@ -39,6 +39,12 @@ namespace JovDK.Unity.Editor.Build
         public static string AuthorizedOutput => PlayerBuildTransaction.Output;
         public static event Action<BuildTarget, string, bool, bool> ValidateBuild;
         public static event Action<BuildReport> BuildCompleted;
+        // One optional project-owned scope. Acquired after saving version counters under the
+        // original identifier, and disposed before the outer transaction releases its guard.
+        public static Func<string[]> GetProjectScriptingDefines { get; set; }
+        public static Func<BuildTarget, bool, IDisposable> BeginProjectBuildScope { get; set; }
+        public static event Action DrawProjectOptions;
+        static void DrawProjectBuildOptions() => DrawProjectOptions?.Invoke();
         // Opt-in project policy; shared consumers keep their original options by default.
         public static event Func<BuildOptions, BuildOptions> ConfigureBuildOptions;
         public static BuildOptions GetEffectiveBuildOptions(BuildOptions options)
@@ -81,6 +87,7 @@ namespace JovDK.Unity.Editor.Build
             try
             {
                 HandleBuildVersions();
+                using var projectScope = BeginProjectBuildScope?.Invoke(target, _isDevelopmentBuild);
                 if (target == BuildTarget.Android) BuildAndroidCore(onFinish); else BuildPcCore(onFinish);
             }
             finally
@@ -152,6 +159,7 @@ namespace JovDK.Unity.Editor.Build
             string previousBundleVersion = PlayerSettings.bundleVersion;
             PlayerSettings.bundleVersion = _appVersion.ToString();
 
+            buildPlayerOptions.extraScriptingDefines = GetProjectScriptingDefines?.Invoke();
             buildPlayerOptions.options = GetEffectiveBuildOptions(buildPlayerOptions.options);
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildCompleted?.Invoke(report);
@@ -275,6 +283,7 @@ namespace JovDK.Unity.Editor.Build
             PlayerSettings.Android.bundleVersionCode = _currentBuildBundleCode;
             PlayerSettings.bundleVersion = _appVersion.ToString();
 
+            buildPlayerOptions.extraScriptingDefines = GetProjectScriptingDefines?.Invoke();
             buildPlayerOptions.options = GetEffectiveBuildOptions(buildPlayerOptions.options);
             BuildReport report = BuildPipeline.BuildPlayer(buildPlayerOptions);
             BuildCompleted?.Invoke(report);
@@ -284,23 +293,27 @@ namespace JovDK.Unity.Editor.Build
             TimeSpan buildDuration = buildEnd.Subtract(buildStart);
 
             if (summary.result == BuildResult.Succeeded)
-                DebugExtension.DevLog("[ Android ] ".ToColor(GoodColors.Green) + "Build succeeded! (duration = " + buildDuration.ToString() + ")  ~" + summary.totalSize / 7943573 + " MB (" + summary.totalSize + " bytes)");
-
-            if (summary.result == BuildResult.Failed)
+            {
+                DebugExtension.DevLog
+                    ("[ Android ] ".ToColor(GoodColors.Green),
+                    "Build succeeded! ",
+                    "[v", _appVersion.ToString(), "] ", "(duration = ", buildDuration.ToString(), ")  ~" + summary.totalSize / 7943573 + " MB (" + summary.totalSize + " bytes)");
+            }
+            else if (summary.result == BuildResult.Failed)
                 DebugExtension.DevLogError("[ Android ] ".ToColor(GoodColors.Red) + "Build failed (duration = " + buildDuration.ToString() + ")");
+            else
+            {
+                DebugExtension.DevLogWarning(
+                    "[ Android ] ".ToColor(GoodColors.Red),
+                    "Build result: Cancelled or Unknown ",
+                    "(duration = ", buildDuration.ToString(), " | ",
+                    "result = ", summary.result.ToString(), ")");
+            }
 
             bool buildSucceeded = summary.result == BuildResult.Succeeded;
             LogBuildResult("[ Android ] ", buildSucceeded);
 
-            if (buildSucceeded)
-            {
-                bool compressionSucceeded = TryCompressBuildFolder(buildOutputFolder, out string archivePath, out string compressionMessage);
-                LogCompressionResult("[ Android ] ", compressionSucceeded, archivePath, compressionMessage);
-            }
-            else
-            {
-                LogCompressionResult("[ Android ] ", false, null, "Compression skipped because build did not succeed.");
-            }
+            DebugExtension.DevLog("[ Android ] Automatic archive compression is disabled; the APK and provenance remain in the build output folder.");
 
             OnFinish?.Invoke();
         }

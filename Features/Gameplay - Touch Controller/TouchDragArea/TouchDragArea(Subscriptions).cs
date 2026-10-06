@@ -36,7 +36,7 @@ namespace JovDK.Control.Touch
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
-            DebugExtension.DefaultSubscriptionLog();
+            // DebugExtension.DefaultSubscriptionLog();
 
             Vector3 screenPosition = eventData.position;
             OnTouchBegin(screenPosition);
@@ -44,7 +44,7 @@ namespace JovDK.Control.Touch
 
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
-            DebugExtension.DefaultSubscriptionLog();
+            // DebugExtension.DefaultSubscriptionLog();
 
             Vector3 screenPosition = eventData.position;
             Vector3 positionDelta = eventData.delta;
@@ -56,7 +56,7 @@ namespace JovDK.Control.Touch
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
-            DebugExtension.DefaultSubscriptionLog();
+            // DebugExtension.DefaultSubscriptionLog();
 
             Vector3 screenPosition = eventData.position;
             OnTouchFinish(screenPosition);

@@ -35,10 +35,25 @@ namespace JovDK.Control.Touch
             _stickCenterImage.rectTransform.position = screenPosition;
         }
 
+        void CaptureRestPosition()
+        {
+            if (_hasRestPosition || _stickBaseImage == null || _stickCenterImage == null)
+                return;
+
+            // Anchor-relative coordinates preserve the authored offset across canvas resizing.
+            _baseRestAnchoredPosition = _stickBaseImage.rectTransform.anchoredPosition3D;
+            _centerRestAnchoredPosition = _stickCenterImage.rectTransform.anchoredPosition3D;
+            _hasRestPosition = true;
+        }
+
         void ApplyInitialStickPosition()
         {
-            _stickBaseImage.rectTransform.localPosition = Vector3.zero;
-            _stickCenterImage.rectTransform.localPosition = Vector3.zero;
+            // Disable may occur before initialization or while dependencies are being destroyed.
+            if (!_hasRestPosition) return;
+            if (_stickBaseImage != null)
+                _stickBaseImage.rectTransform.anchoredPosition3D = _baseRestAnchoredPosition;
+            if (_stickCenterImage != null)
+                _stickCenterImage.rectTransform.anchoredPosition3D = _centerRestAnchoredPosition;
         }
     }
 }

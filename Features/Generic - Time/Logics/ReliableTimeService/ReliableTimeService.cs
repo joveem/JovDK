@@ -1,71 +1,49 @@
-// system / unity
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
-using SystemRandom = System.Random;
-using UnityRandom = UnityEngine.Random;
-
-// third
-using TMPro;
-
-// from company
-using JovDK.Debugging;
-using JovDK.SafeActions;
+using UnityEngine.Networking;
 using JovDK.SerializingTools.Json;
-
-// from project
-// ...
-
 
 namespace JovDK.Generic.TimeManagement
 {
     public partial class ReliableTimeService : MonoBehaviour
     {
-
-        // [Space(5), Header("[ Dependencies ]"), Space(10)]
-
-        // bool _dependencies;
-
-
-        [Space(5), Header("[ State ]"), Space(10)]
-
-        bool _isInitialized = false;
-        DateTime _startUTCTime;
-
-        public Action OnInitializedCallback = null;
-
-
-        // [Space(5), Header("[ Parts ]"), Space(10)]
-
-        // bool _parts;
-
-
-        [Space(5), Header("[ Configs ]"), Space(10)]
-
-        const string _worldTimeApiUrl = "https://worldtimeapi.org/api/ip";
-
-
-        // void Awake()
-        // {
-
-        // }
-
-        void Start()
+        SampledUtcClock _clock;
+        bool _started;
+        bool _isInitialized;
+        public bool HasRemoteTime { get; private set; }
+        public Action OnInitializedCallback;
+        const string TimeUrl = "https://www.worldtimeapi.org/api/ip";
+        void Awake() => EnsureClock();
+        void Start() => SetInitialState();
+        void EnsureClock()
         {
-            SetInitialState();
+            if (_clock != null) return;
+            _clock = new SampledUtcClock(() => Time.realtimeSinceStartupAsDouble);
+            _clock.SetSample(DateTime.UtcNow);
         }
-
-        // void Update()
-        // {
-
-        // }
-
-        // void FixedUpdate()
-        // {
-
-        // }
+        public void SetInitialState()
+        {
+            EnsureClock();
+            if (_started) return;
+            _started = true;
+            StartCoroutine(GetNTPTime());
+        }
+        IEnumerator GetNTPTime()
+        {
+            using (var request = UnityWebRequest.Get(TimeUrl))
+            {
+                request.timeout = RemoteTimeSample.TimeoutSeconds;
+                yield return request.SendWebRequest();
+                if (RemoteTimeSample.TryRead(request.result == UnityWebRequest.Result.Success,
+                    request.downloadHandler == null ? null : request.downloadHandler.text, out var utc))
+                { _clock.SetSample(utc); HasRemoteTime = true; }
+                if (!HasRemoteTime) Debug.LogWarning("Reliable time unavailable; using local UTC with monotonic elapsed time. Access data is preserved.");
+            }
+            _isInitialized = true;
+            OnInitializedCallback?.Invoke();
+        }
+        public DateTime ReliableUTCTimeNow() { EnsureClock(); return _clock.UtcNow; }
+        public bool IsInitialized() => _isInitialized;
     }
 }
